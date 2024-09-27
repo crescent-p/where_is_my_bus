@@ -1,0 +1,3 @@
+const supabaseDatabaseUrl = 'https://afunpnlbayobnvspmjdg.supabase.co';
+const supabaseAnon =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwb3dtdnBodG9veHVrY3dlZnlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTAzOTQ5ODcsImV4cCI6MjAyNTk3MDk4N30.GknjEcGK7V2YcBJiVS_eH0MgTPsX2cdDEJwvvbBaiGk';
