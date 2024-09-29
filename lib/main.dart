@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     return BlocSelector<UserCubit, UserState, UserState>(
         selector: (state) => state,
         builder: (context, state) {
-          if (state nis UserLoggedIn) {
+          if (state is UserLoggedIn) {
             return BusListPage(user: state.getUser);
           } else {
             return Loginpage();

@@ -39,7 +39,6 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
   @override
   Future<Either<Failure, myUser.User>> signInWithGoogle() async {
     try {
-      await googleSignIn.signOut();
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         return Left(Failure(message: "Sign In Failed!"));

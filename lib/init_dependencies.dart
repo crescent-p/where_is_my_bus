@@ -14,10 +14,14 @@ import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-
   final supabase = await Supabase.initialize(
       url: supabaseDatabaseUrl, anonKey: supabaseAnon);
-  serviceLocator.registerLazySingleton<GoogleSignIn>(() => GoogleSignIn());
+  serviceLocator.registerLazySingleton<GoogleSignIn>(
+      () => GoogleSignIn(clientId: webClientId, scopes: [
+            "email",
+            "profile",
+            "openid",
+          ]));
   serviceLocator.registerLazySingleton(() => supabase.client);
   initAuth();
 }

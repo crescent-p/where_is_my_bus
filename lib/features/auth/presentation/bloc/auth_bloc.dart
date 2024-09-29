@@ -35,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthSignInEvent authSignOutEvent, Emitter<AuthState> emit) async {
     final res = await _authSignUpWithGoogleUsecase(NoParams());
     res.fold((l) => emit(AuthFailure(message: l.message)),
-        (r) => _emitAuthSucces);
+        (r) => _emitAuthSucces(r, emit));
   }
 
   void _authSignOutEvent(
@@ -49,7 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Emitter<AuthState> emit) async {
     final res = await _authGetCurrentUserUsecase(NoParams());
     res.fold((onLeft) => emit(AuthFailure(message: onLeft.message)),
-        (onRight) => _emitAuthSucces);
+        (onRight) => _emitAuthSucces(onRight, emit));
   }
 
   void _emitAuthSucces(myUser.User user, Emitter<AuthState> emit) {

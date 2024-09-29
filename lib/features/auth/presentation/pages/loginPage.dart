@@ -5,6 +5,7 @@ import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:where_is_my_bus/core/secrets/secrets.dart';
+import 'package:where_is_my_bus/core/utils/dialog_box.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_list_page.dart';
 
@@ -19,8 +20,18 @@ class _LoginpageState extends State<Loginpage> {
   final GoogleSignIn googleSignIn = GoogleSignIn(clientId: clientId);
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-        builder: (BuildContext context, AuthState state) {
+    return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+      if (state is AuthFailure) {
+        return showMessageDialog(context, state.message);
+      }
+      if (state is AuthSuccess) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          BusListPage.route(state.user),
+          (route) => false,
+        );
+      }
+    }, builder: (BuildContext context, AuthState state) {
       if (state is AuthSuccess) {
         return BusListPage(user: state.user);
       } else {
