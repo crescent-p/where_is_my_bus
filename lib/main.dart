@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
+import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_list_page.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
@@ -17,7 +18,10 @@ void main() async {
     BlocProvider(
       create: (_) => serviceLocator<AuthBloc>(),
     ),
-  ], child: const MyApp()));
+    BlocProvider(
+      create: (_) => serviceLocator<LocationsBloc>(),
+    ),
+  ], child: MaterialApp(home: const MyApp())));
 }
 
 class MyApp extends StatefulWidget {

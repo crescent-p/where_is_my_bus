@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:where_is_my_bus/core/secrets/secrets.dart';
 import 'package:where_is_my_bus/core/utils/dialog_box.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_list_page.dart';
 
 class Loginpage extends StatefulWidget {
@@ -25,6 +26,7 @@ class _LoginpageState extends State<Loginpage> {
         return showMessageDialog(context, state.message);
       }
       if (state is AuthSuccess) {
+        context.read<LocationsBloc>().add(GetBusLocationsEvent());
         Navigator.pushAndRemoveUntil(
           context,
           BusListPage.route(state.user),
