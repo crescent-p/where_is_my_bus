@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/features/bus_list_page/data/data_sources/locations_remote_datasource.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
@@ -29,15 +30,30 @@ class LocationsRepositoryImpl implements LocationsRepository {
   }
 
   @override
-  Future<Either<Failure, String>> updateCurrentLocation(
-      {required Coordinates coordinates}) {
-    // TODO: implement updateCurrentLocation
-    throw UnimplementedError();
+  Future<Either<Failure, String>> updateCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.bestForNavigation),
+      );
+      final Coordinates coordinates = Coordinates(
+        x: position.latitude,
+        y: position.longitude,
+      );
+      final res =
+          await repository.updateCurrentLocation(coordinates: coordinates);
+      return res.fold((l) => Left(l), (r) => Right(r));
+    } catch (e) {
+      return Left(Failure(message: e.toString()));
+    }
   }
 
   List<Bus> processCoordinates(List<Coordinates> coordinates) {
     List<Bus> busLocations = [Bus(coordinates: Coordinates(x: 12, y: 34))];
     //TODO:: juicy juicy
+    busLocations = coordinates
+        .map((e) => Bus(coordinates: Coordinates(x: e.x, y: e.y)))
+        .toList();
     return busLocations;
   }
 }

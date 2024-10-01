@@ -18,23 +18,28 @@ class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
   @override
   Future<Either<Failure, List<Coordinates>>> getCoordinatesTable() async {
     try {
-      final DateTime timePeriod = DateTime.now().subtract(Duration(days: 900)); // Example: last 7 days
+      final DateTime timePeriod =
+          DateTime.now().subtract(Duration(days: 900)); // Example: last 7 days
       final String formattedTime = timePeriod.toIso8601String();
-      
+
       final response = await client
           .from("coordinates")
           .select('x-coordinate, y-coordinate')
           .gte('time-added', formattedTime);
-      
+
       if (response == null) {
         return Left(Failure(message: "empty response"));
       }
 
       final List<Coordinates> coordinatesList = (response as List)
           .map((item) => Coordinates(
-            x: item['x-coordinate'],
-            y: item['y-coordinate'],
-          ))
+                x: item['x-coordinate'] is double
+                    ? item['x-coordinate']
+                    : (item['x-coordinate'] as num).toDouble(),
+                y: item['y-coordinate'] is double
+                    ? item['y-coordinate']
+                    : (item['y-coordinate'] as num).toDouble(),
+              ))
           .toList();
 
       return Right(coordinatesList);
@@ -52,8 +57,20 @@ class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
 
   @override
   Future<Either<Failure, String>> updateCurrentLocation(
-      {required Coordinates coordinates}) {
-    // TODO: implement updateCurrentLocation
-    throw UnimplementedError();
+      {required Coordinates coordinates}) async {
+    try {
+      final response = await client.from("coordinates").upsert({
+        'x-coordinate': coordinates.x,
+        'y-coordinate': coordinates.y,
+        'time-added': DateTime.now().toIso8601String(),
+      }, onConflict: 'id');
+      if (response == null) {
+        return Left(Failure(message: "Failed to insert coordinates"));
+      }
+
+      return const Right("Coordinates updated successfully");
+    } catch (e) {
+      return Left(Failure(message: e.toString()));
+    }
   }
 }

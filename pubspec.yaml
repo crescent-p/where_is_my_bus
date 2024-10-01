@@ -36,6 +36,7 @@ dependencies:
   flutter_signin_button: ^2.0.0
   flutter_svg: ^2.0.10+1
   fpdart: ^1.1.0
+  geolocator: ^13.0.1
   get_it: ^8.0.0
   google_sign_in: ^6.2.1
   supabase_flutter: ^2.6.0

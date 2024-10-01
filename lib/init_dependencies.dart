@@ -1,4 +1,5 @@
 import 'package:flutter_background/flutter_background.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -30,6 +31,15 @@ Future<void> initDependencies() async {
             "openid",
           ]));
   serviceLocator.registerLazySingleton(() => supabase.client);
+
+  var permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      var _locationMessage = "Location permission denied.";
+    }
+  }
+
   initAuth();
   initLocations();
   initBackground();
@@ -42,7 +52,8 @@ Future<void> initBackground() async {
     enableWifiLock: true, // Keep Wi-Fi active during background execution
   );
 
-  bool success = await FlutterBackground.initialize(androidConfig: androidConfig);
+  bool success =
+      await FlutterBackground.initialize(androidConfig: androidConfig);
 
   if (success) {
     FlutterBackground.enableBackgroundExecution();

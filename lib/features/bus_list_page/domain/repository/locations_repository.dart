@@ -5,6 +5,6 @@ import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinat
 
 abstract interface class LocationsRepository {
 
-  Future<Either<Failure, String>> updateCurrentLocation({required Coordinates coordinates});
+  Future<Either<Failure, String>> updateCurrentLocation();
   Future<Either<Failure, List<Bus>>> getBusLocations();
 }

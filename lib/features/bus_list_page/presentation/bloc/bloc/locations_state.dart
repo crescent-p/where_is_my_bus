@@ -9,7 +9,6 @@ final class UpdateLocationSuccess extends LocationsState {
   final String message;
 
   UpdateLocationSuccess({required this.message});
-
 }
 
 final class GetCurrentBusLocationsSuccess extends LocationsState {
@@ -23,3 +22,5 @@ class LocationEventFailed extends LocationsState {
   final String message;
   LocationEventFailed({required this.message});
 }
+
+class LocationPermissionDenied extends LocationsState {}

@@ -1,5 +1,5 @@
 class Coordinates {
-  int x;
-  int y;
+  double x;
+  double y;
   Coordinates({required this.x, required this.y});
 }
