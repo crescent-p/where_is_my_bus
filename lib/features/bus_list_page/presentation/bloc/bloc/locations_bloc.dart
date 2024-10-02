@@ -26,9 +26,11 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
         Timer.periodic(Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
       add(GetBusLocationsEvent());
     });
-    _updateLocationtimer =
-        Timer.periodic(Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
+    _updateLocationtimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      final now = DateTime.now();
+      if (now.second % 5 == 0) {
       add(UpdateCurrentLocationEvent());
+      }
     });
     on<LocationsEvent>((event, emit) {});
     on<GetBusLocationsEvent>(_getBusLocationsEvent);
