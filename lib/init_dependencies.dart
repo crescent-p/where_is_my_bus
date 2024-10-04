@@ -1,9 +1,15 @@
-import 'package:flutter_background/flutter_background.dart';
+import 'dart:async';
+import 'dart:ui';
+
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
+import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/secrets/secrets.dart';
 import 'package:where_is_my_bus/features/auth/data/datasource/auth_remote_datasource.dart';
 import 'package:where_is_my_bus/features/auth/data/repository/auth_repository.dart';
@@ -45,18 +51,52 @@ Future<void> initDependencies() async {
   initBackground();
 }
 
+const notificationChannelId = 'Location Service for Where is my bus';
+
 Future<void> initBackground() async {
-  const androidConfig = FlutterBackgroundAndroidConfig(
-    notificationTitle: "Background Service",
-    notificationText: "Your app is running in the background",
-    enableWifiLock: true, // Keep Wi-Fi active during background execution
-  );
+  FlutterForegroundTask.initCommunicationPort();
+  @pragma('vm:entry-point')
+  void startCallback() {
+    // The setTaskHandler function must be called to handle the task in the background.
+    FlutterForegroundTask.setTaskHandler(LocationsHandler());
+  }
 
-  bool success =
-      await FlutterBackground.initialize(androidConfig: androidConfig);
+  Future<ServiceRequestResult> _startService() async {
+    if (await FlutterForegroundTask.isRunningService) {
+      return FlutterForegroundTask.restartService();
+    } else {
+      return FlutterForegroundTask.startService(
+        serviceId: 256,
+        notificationTitle: 'Foreground Service is running',
+        notificationText: 'Tap to return to the app',
+        notificationIcon: null,
+        notificationButtons: [
+          const NotificationButton(id: 'btn_hello', text: 'hello'),
+        ],
+        callback: startCallback,
+      );
+    }
+  }
 
-  if (success) {
-    FlutterBackground.enableBackgroundExecution();
+  _startService();
+}
+
+class LocationsHandler extends TaskHandler {
+  @override
+  Future<void> onDestroy(DateTime timestamp) async {
+    print("Background Task completed\n");
+  }
+
+  @override
+  void onRepeatEvent(DateTime timestamp) {
+    if (timestamp.second % 5 == 0) {
+      FlutterForegroundTask.sendDataToMain("update_location");
+    }
+  }
+
+  @override
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
+    print("Background Process Started\n");
   }
 }
 

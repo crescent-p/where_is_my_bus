@@ -21,7 +21,7 @@ void main() async {
     BlocProvider(
       create: (_) => serviceLocator<LocationsBloc>(),
     ),
-  ], child: MaterialApp(home: const MyApp())));
+  ], child: MaterialApp(home: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -34,8 +34,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    context.read<AuthBloc>().add(AuthCurrentUserEvent());
     super.initState();
+    context.read<AuthBloc>().add(AuthCurrentUserEvent());
   }
 
   @override

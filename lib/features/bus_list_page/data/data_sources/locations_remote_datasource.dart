@@ -22,12 +22,12 @@ class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
   Future<Either<Failure, List<BusCoordinates>>> getCoordinatesTable() async {
     try {
       final DateTime timePeriod =
-          DateTime.now().subtract(Duration(days: 900)); // Example: last 7 days
+          DateTime.now().subtract(Duration(days: 1)); // Example: last 7 days
       final String formattedTime = timePeriod.toIso8601String();
 
       final response = await client
           .from("coordinates")
-          .select('x-coordinate, y-coordinate')
+          .select('x-coordinate, y-coordinate, time-added')
           .gte('time-added', formattedTime);
 
       if (response == null) {

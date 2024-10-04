@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/usecases/usecases.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/get_bus_locations_usecase.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/update_current_location_usecase.dart';
 
@@ -13,7 +12,6 @@ part 'locations_state.dart';
 
 class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   Timer? _getListtimer;
-  Timer? _updateLocationtimer;
   final GetBusLocationsUsecase _getBusLocationsUsecase;
   final UpdateCurrentLocationUsecase _updateCurrentLocationUsecase;
   LocationsBloc({
@@ -25,12 +23,6 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     _getListtimer =
         Timer.periodic(Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
       add(GetBusLocationsEvent());
-    });
-    _updateLocationtimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      final now = DateTime.now();
-      if (now.second % 5 == 0) {
-      add(UpdateCurrentLocationEvent());
-      }
     });
     on<LocationsEvent>((event, emit) {});
     on<GetBusLocationsEvent>(_getBusLocationsEvent);

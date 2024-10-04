@@ -18,7 +18,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
   Future<Either<Failure, myUser.User>> getCurrentUser() async {
     try {
       final currentSession = client.auth.currentSession;
-      final googleUser = googleSignIn.currentUser;
+      final googleUser = await googleSignIn.signIn();
       if (currentSession == null || googleUser == null) {
         return Left(Failure(message: "No User Logged In !"));
       }
@@ -45,7 +45,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
       }
       final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
-      
+
       final idToken = googleAuth.idToken;
       if (accessToken == null) {
         return Left(Failure(message: "No access token found"));

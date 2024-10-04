@@ -16,6 +16,8 @@ final class GetCurrentBusLocationsSuccess extends LocationsState {
   GetCurrentBusLocationsSuccess({required this.buses});
 }
 
+final class GetCurrentBusLocationsFailed extends LocationsState{}
+
 final class LocationLoading extends LocationsState {}
 
 class LocationEventFailed extends LocationsState {
