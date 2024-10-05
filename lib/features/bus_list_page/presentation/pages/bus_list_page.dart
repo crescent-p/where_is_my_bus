@@ -5,9 +5,12 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:loading_indicator/loading_indicator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as my_user;
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_list.dart';
+import 'package:where_is_my_bus/init_dependencies.dart';
 
 const notificationChannelId = 'my_foreground';
 
@@ -72,17 +75,16 @@ class _BusListPageState extends State<BusListPage> {
   Widget previousWidget = Container();
   @override
   Widget build(BuildContext context) {
-    
     service = FlutterBackgroundService();
     service.startService();
     service.on("set_location").listen((data) {
       if (data != null) {
-        context.read<LocationsBloc>().add(UpdateCurrentLocationEvent());
+        serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
       }
     });
 
     return Scaffold(
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: const Color.fromARGB(255, 230, 238, 241),
       body: BlocListener<LocationsBloc, LocationsState>(
         listener: (context, state) {
           if (state is LocationEventFailed) {
@@ -100,7 +102,8 @@ class _BusListPageState extends State<BusListPage> {
         child: BlocBuilder<LocationsBloc, LocationsState>(
           builder: (context, state) {
             if (state is LocationsInitial || state is LocationLoading) {
-              previousWidget = CircularProgressIndicator();
+              previousWidget = const LoadingIndicator(
+                  indicatorType: Indicator.cubeTransition);
               return previousWidget;
             } else if (state is GetCurrentBusLocationsSuccess) {
               previousWidget = BusList(busStream: state.buses);
@@ -119,31 +122,23 @@ class _BusListPageState extends State<BusListPage> {
 }
 
 Future<void> _handlePermission(BuildContext context) async {
-  bool serviceEnabled;
-  LocationPermission permission;
-  String _locationMessage = "";
-  // Check if location services are enabled
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    _locationMessage = "Location services are disabled.";
-  }
+  // Step 1: Request foreground location permission
+  PermissionStatus foregroundStatus =
+      await Permission.locationWhenInUse.request();
 
-  // Check for location permission
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      _locationMessage = "Location permission denied.";
+  if (foregroundStatus == PermissionStatus.granted) {
+    // Step 2: Request background location permission after foreground permission is granted
+    PermissionStatus backgroundStatus =
+        await Permission.locationAlways.request();
+
+    if (backgroundStatus == PermissionStatus.granted) {
+      print("Background location permission granted.");
+    } else {
+      print("Background location permission denied.");
     }
+  } else {
+    print("Foreground location permission denied.");
   }
-
-  if (permission == LocationPermission.deniedForever) {
-    _locationMessage = "Location permissions are permanently denied.";
-  }
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(_locationMessage)),
-  );
 }
 
 Future<void> initBackground() async {

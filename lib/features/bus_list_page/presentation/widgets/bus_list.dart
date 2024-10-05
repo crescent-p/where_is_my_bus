@@ -19,30 +19,8 @@ class _BusListState extends State<BusList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Scaffold(
-          body: SafeArea(
-            child: IndexedStack(
-              index: _currentIndex,
-              children: [TileView(busStream: widget.busStream)],
-            ),
-          ),
-          bottomNavigationBar: SalomonBottomBar(
-            currentIndex: _currentIndex,
-            onTap: (i) => setState(() => _currentIndex = i),
-            items: [
-              SalomonBottomBarItem(
-                icon: const Icon(Icons.list),
-                title: const Text("List"),
-                selectedColor: Colors.red,
-              ),
-
-              // SalomonBottomBarItem(
-              //   icon: const Icon(Icons.map),
-              //   title: const Text("Map"),
-              //   selectedColor: Colors.red,
-              // ),
-            ],
-          )),
-    );
+        body: TileView(
+      busStream: widget.busStream,
+    ));
   }
 }
