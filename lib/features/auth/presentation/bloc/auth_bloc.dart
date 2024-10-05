@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as myUser;
 import 'package:flutter/material.dart';
+import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/core/usecases/usecases.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_current_user_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_in_usecase.dart';
@@ -49,12 +50,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _authCurrentUserEvent(AuthCurrentUserEvent authCurrentUserEvent,
       Emitter<AuthState> emit) async {
     final res = await _authGetCurrentUserUsecase(NoParams());
-    res.fold((onLeft) => emit(AuthFailure(message: onLeft.message)),
+    res.fold((onLeft) => _emitAuthFailure(onLeft, emit),
         (onRight) => _emitAuthSucces(onRight, emit));
   }
 
   void _emitAuthSucces(myUser.User user, Emitter<AuthState> emit) {
     _userCubit.updateUser(user);
     emit(AuthSuccess(user: user));
+  }
+  void _emitAuthFailure(Failure left, Emitter<AuthState> emit) {
+    _userCubit.noUserFound();
+    emit(AuthFailure(message: left.message));
   }
 }

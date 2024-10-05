@@ -10,3 +10,5 @@ final class UserLoggedIn extends UserState {
   UserLoggedIn({required this.user});
   myUser.User get getUser => user;
 }
+
+final class UserLoggedOut extends UserState {}

@@ -40,9 +40,9 @@ class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
                 x: item['x-coordinate'] is double
                     ? item['x-coordinate']
                     : (item['x-coordinate'] as num).toDouble(),
-                y: item['x-coordinate'] is double
-                    ? item['x-coordinate']
-                    : (item['x-coordinate'] as num).toDouble(),
+                y: item['y-coordinate'] is double
+                    ? item['y-coordinate']
+                    : (item['y-coordinate'] as num).toDouble(),
               ),
               lastSeen: DateTime.parse(item['time-added'] as String)))
           .toList();

@@ -18,7 +18,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
   Future<Either<Failure, myUser.User>> getCurrentUser() async {
     try {
       final currentSession = client.auth.currentSession;
-      final googleUser = await googleSignIn.signIn();
+      await googleSignIn.signInSilently();
+      final googleUser = googleSignIn.currentUser;
       if (currentSession == null || googleUser == null) {
         return Left(Failure(message: "No User Logged In !"));
       }

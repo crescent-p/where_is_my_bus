@@ -11,7 +11,12 @@ class UserCubit extends Cubit<UserState> {
     if (user != null) {
       emit(UserLoggedIn(user: user));
     } else {
-      emit(UserInitial());
+      emit(UserLoggedOut());
     }
+  }
+
+  void noUserFound() {
+    emit(UserLoggedOut());
+    
   }
 }

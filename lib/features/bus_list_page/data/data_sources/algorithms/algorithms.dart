@@ -64,16 +64,22 @@ List<Bus> processCoordinates(List<BusCoordinates> coordinates) {
   for (int i = 0; i < coordinates.length; i++) {
     List<BusCoordinates> currCoordinates = [];
     Set<int> currSelecion = {};
+    DateTime lowest = DateTime(1960);
     for (int j = 0; j < coordinates.length; j++) {
       if (selectedIndex.contains(j)) continue;
       if (calculateDistance(coordinates[i], coordinates[j]) < 10) {
         currSelecion.add(j);
         currCoordinates.add(coordinates[j]);
+        lowest = (coordinates[j].lastSeen.difference(lowest).inSeconds > 0)
+            ? coordinates[j].lastSeen
+            : lowest;
       }
     }
     if (currSelecion.length >= NUMBER_OF_GROPUED_POINTS_TO_BE_CALLED_BUS) {
       selectedIndex.addAll(currSelecion);
-      busLocations.add(coordinates[i]);
+      BusCoordinates temp = BusCoordinates(
+          coordinates: coordinates[i].coordinates, lastSeen: lowest);
+      busLocations.add(temp);
     }
   }
 
@@ -84,7 +90,9 @@ List<Bus> mapCoordinatesToAddress(List<BusCoordinates> coordinates) {
   // TODO::
   List<Bus> buses = [];
   buses.addAll(coordinates.map((e) => Bus(
-      location: "Somewhere in Campus @${e.coordinates.x}, ${e.coordinates.y} ",
+      location:
+          "Somewhere in Campus\nx-Coordinate: ${e.coordinates.x}\ny-Coordinate: ${e.coordinates.y}\n",
       lastUpdated: e.lastSeen)));
+  buses.sort((a, b) => -(a.lastUpdated.difference(b.lastUpdated).inSeconds));
   return buses;
 }

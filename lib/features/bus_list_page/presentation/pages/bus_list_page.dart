@@ -7,7 +7,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
+import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as my_user;
+import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_list.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
@@ -26,15 +30,15 @@ Future<void> onStart(ServiceInstance service) async {
 
   // bring to foreground
   Timer.periodic(const Duration(seconds: 1), (timer) async {
-    if (DateTime.now().second % 5 == 0) {
+    if (DateTime.now().second % UPDATE_LOCATION_INTERVAL == 0) {
       service.invoke("set_location", {'value': 'myvalue'});
     }
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
         flutterLocalNotificationsPlugin.show(
           notificationId,
-          'COOL SERVICE',
-          'Awesome ${DateTime.now()}',
+          'Background Service for Where is my bus?',
+          'Keep this notification alive to assist in bus tracking!',
           const NotificationDetails(
             android: AndroidNotificationDetails(
               notificationChannelId,
@@ -60,62 +64,89 @@ class BusListPage extends StatefulWidget {
 
 class _BusListPageState extends State<BusListPage> {
   late final FlutterBackgroundService service;
+
+  bool backgroundServiceActive = false;
+
   @override
   void initState() {
+    backgroundServiceActive = true;
     super.initState();
     _handlePermission(context);
     initBackground();
+
+    service = FlutterBackgroundService();
+    service.startService();
+
+    // Listening for background events
+    service.on("set_location").listen((data) {
+      if (data != null && backgroundServiceActive) {
+        serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
+      }
+    });
   }
 
   @override
   void dispose() {
+    service.invoke('stopService'); // Stop the service to prevent memory leaks
+    backgroundServiceActive = false;
     super.dispose();
   }
 
-  Widget previousWidget = Container();
   @override
   Widget build(BuildContext context) {
-    service = FlutterBackgroundService();
-    service.startService();
-    service.on("set_location").listen((data) {
-      if (data != null) {
-        serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
-      }
-    });
-
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 230, 238, 241),
-      body: BlocListener<LocationsBloc, LocationsState>(
-        listener: (context, state) {
-          if (state is LocationEventFailed) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-          }
-          if (state is UpdateLocationSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
-            return;
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          // AuthBloc listener
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthSignOutSuccess) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  Loginpage.route(),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+          // LocationsBloc listener
+          BlocListener<LocationsBloc, LocationsState>(
+            listener: (context, state) {
+              if (state is LocationEventFailed) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message)),
+                );
+              }
+              if (state is UpdateLocationSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.message)),
+                );
+              }
+              if (state is AuthSignOutEvent) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  Loginpage.route(),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
         child: BlocBuilder<LocationsBloc, LocationsState>(
           builder: (context, state) {
             if (state is LocationsInitial || state is LocationLoading) {
-              previousWidget = const LoadingIndicator(
-                  indicatorType: Indicator.cubeTransition);
-              return previousWidget;
+              serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
+              return const LoadingScreen();
             } else if (state is GetCurrentBusLocationsSuccess) {
-              previousWidget = BusList(busStream: state.buses);
-              return previousWidget;
+              return BusList(busStream: state.buses);
             } else if (state is GetCurrentBusLocationsFailed) {
-              previousWidget = Center(child: Text("Failed to fetch data"));
-              return previousWidget;
+              return Center(child: Text("Failed to fetch data"));
             } else {
-              return previousWidget;
+              return Container(); // Default state handling
             }
           },
-        ),
+        ), // Additional UI can go here if needed
       ),
     );
   }
@@ -171,8 +202,8 @@ Future<void> initBackground() async {
 
       notificationChannelId:
           notificationChannelId, // this must match with notification channel you created above.
-      initialNotificationTitle: 'AWESOME SERVICE',
-      initialNotificationContent: 'Initializing',
+      initialNotificationTitle: 'Background Service for Where is my Bus?',
+      initialNotificationContent: 'Initializing GPS',
       foregroundServiceNotificationId: notificationId,
     ),
     iosConfiguration: IosConfiguration(),
