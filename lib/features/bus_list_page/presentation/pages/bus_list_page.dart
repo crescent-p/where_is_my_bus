@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -19,7 +18,6 @@ const notificationChannelId = 'my_foreground';
 
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 888;
-
 late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<void> onStart(ServiceInstance service) async {
@@ -44,25 +42,35 @@ class BusListPage extends StatefulWidget {
 }
 
 class _BusListPageState extends State<BusListPage> {
-  late final FlutterBackgroundService service;
-
-  bool backgroundServiceActive = false;
-  bool initied = false;
+  late final FlutterBackgroundService flutterBackgroundService;
+  static bool initied = false;
   @override
   void initState() {
-    backgroundServiceActive = true;
     super.initState();
-    _handlePermission(context);
+
     if (!initied) {
+      _handlePermission(context);
       initBackground();
       initied = true;
     }
+    flutterBackgroundService = FlutterBackgroundService();
+    flutterBackgroundService.startService();
 
+    // Listening for background events
+    flutterBackgroundService.on("set_location").listen((data) {
+      if (data != null) {
+        serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
+      }
+    });
   }
 
   @override
   void dispose() async {
-    await flutterLocalNotificationsPlugin.cancel(notificationId);
+    try {
+      await flutterLocalNotificationsPlugin.cancel(notificationId);
+    } catch (e) {
+      print(e);
+    }
     super.dispose();
   }
 
@@ -156,9 +164,11 @@ Future<void> initBackground() async {
         'This channel is used for important notifications.', // description
     importance: Importance.low, // importance must be at low or higher level
   );
-
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
+  try {
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  } catch (e) {
+    print(e);
+  }
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
