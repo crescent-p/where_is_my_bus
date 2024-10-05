@@ -57,15 +57,7 @@ class _BusListPageState extends State<BusListPage> {
       initBackground();
       initied = true;
     }
-    service = FlutterBackgroundService();
-    service.startService();
 
-    // Listening for background events
-    service.on("set_location").listen((data) {
-      if (data != null && backgroundServiceActive) {
-        serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
-      }
-    });
   }
 
   @override
