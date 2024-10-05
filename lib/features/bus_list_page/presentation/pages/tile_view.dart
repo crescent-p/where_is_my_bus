@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lottie/lottie.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
@@ -38,44 +39,62 @@ class _TileViewState extends State<TileView> {
         ),
       ),
       backgroundColor: AppPallete.backgroundColor,
-      body: ListView.builder(
-        itemCount: widget.busStream.length,
-        itemBuilder: (context, index) {
-          final bus = widget.busStream[index];
-          return Container(
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-            margin: EdgeInsetsGeometry.lerp(
-                EdgeInsets.all(8), EdgeInsets.zero, 0.5),
-            child: ListTile(
-              shape: ShapeBorder.lerp(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                1, // This is the interpolation factor
-              ),
-              tileColor: AppPallete.gradient1,
-              visualDensity: VisualDensity.compact,
-              title: Text(
-                'Bus ${index + 1}',
-                style: const TextStyle(
-                  color: AppPallete.gradient2,
-                  fontSize: 24,
-                  decorationThickness: BorderSide.strokeAlignCenter,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: Text(
-                '${bus.location}Last Updated at: ${(bus.lastUpdated.hour % 12).toString().padLeft(2, '0')}:${bus.lastUpdated.minute.toString().padLeft(2, '0')}:${bus.lastUpdated.second.toString().padLeft(2, '0')} ${bus.lastUpdated.hour > 12 ? 'PM' : 'AM'}',
-                style: const TextStyle(
-                  color: AppPallete.textColor,
-                  fontSize: 12,
-                  decorationThickness: BorderSide.strokeAlignCenter,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+      body: widget.busStream.length == 0
+          ? Column(
+              children: [
+                Lottie.asset("assets/animations/monkey.json"),
+                Flex(direction: Axis.vertical),
+                Text(
+                  textAlign: TextAlign.center,
+                  "Oops I couldn't find any buses Sorry!",
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppPallete.textColor),
+                )
+              ],
+            )
+          : ListView.builder(
+              itemCount: widget.busStream.length,
+              itemBuilder: (context, index) {
+                final bus = widget.busStream[index];
+                return Container(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                  margin: EdgeInsetsGeometry.lerp(
+                      EdgeInsets.all(8), EdgeInsets.zero, 0.5),
+                  child: ListTile(
+                    shape: ShapeBorder.lerp(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                      1, // This is the interpolation factor
+                    ),
+                    tileColor: AppPallete.gradient1,
+                    visualDensity: VisualDensity.compact,
+                    title: Text(
+                      'Bus ${index + 1}',
+                      style: const TextStyle(
+                        color: AppPallete.gradient2,
+                        fontSize: 24,
+                        decorationThickness: BorderSide.strokeAlignCenter,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${bus.location}Last Updated at: ${(bus.lastUpdated.hour % 12).toString().padLeft(2, '0')}:${bus.lastUpdated.minute.toString().padLeft(2, '0')}:${bus.lastUpdated.second.toString().padLeft(2, '0')} ${bus.lastUpdated.hour > 12 ? 'PM' : 'AM'}',
+                      style: const TextStyle(
+                        color: AppPallete.textColor,
+                        fontSize: 12,
+                        decorationThickness: BorderSide.strokeAlignCenter,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }

@@ -1,11 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
@@ -21,34 +20,16 @@ const notificationChannelId = 'my_foreground';
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 888;
 
+late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
 Future<void> onStart(ServiceInstance service) async {
   // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
-
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   // bring to foreground
   Timer.periodic(const Duration(seconds: 1), (timer) async {
     if (DateTime.now().second % UPDATE_LOCATION_INTERVAL == 0) {
       service.invoke("set_location", {'value': 'myvalue'});
-    }
-    if (service is AndroidServiceInstance) {
-      if (await service.isForegroundService()) {
-        flutterLocalNotificationsPlugin.show(
-          notificationId,
-          'Background Service for Where is my bus?',
-          'Keep this notification alive to assist in bus tracking!',
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              notificationChannelId,
-              'MY FOREGROUND SERVICE',
-              icon: 'ic_bg_service_small',
-              ongoing: true,
-            ),
-          ),
-        );
-      }
     }
   });
 }
@@ -66,14 +47,16 @@ class _BusListPageState extends State<BusListPage> {
   late final FlutterBackgroundService service;
 
   bool backgroundServiceActive = false;
-
+  bool initied = false;
   @override
   void initState() {
     backgroundServiceActive = true;
     super.initState();
     _handlePermission(context);
-    initBackground();
-
+    if (!initied) {
+      initBackground();
+      initied = true;
+    }
     service = FlutterBackgroundService();
     service.startService();
 
@@ -86,9 +69,8 @@ class _BusListPageState extends State<BusListPage> {
   }
 
   @override
-  void dispose() {
-    service.invoke('stopService'); // Stop the service to prevent memory leaks
-    backgroundServiceActive = false;
+  void dispose() async {
+    await flutterLocalNotificationsPlugin.cancel(notificationId);
     super.dispose();
   }
 
@@ -183,8 +165,7 @@ Future<void> initBackground() async {
     importance: Importance.low, // importance must be at low or higher level
   );
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
