@@ -1,14 +1,50 @@
-import 'dart:io';
-
+import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as my_user;
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_list.dart';
-import 'package:where_is_my_bus/init_dependencies.dart';
 
+const notificationChannelId = 'my_foreground';
+
+// this will be used for notification id, So you can update your custom notification with this id.
+const notificationId = 888;
+
+Future<void> onStart(ServiceInstance service) async {
+  // Only available for flutter 3.0.0 and later
+  DartPluginRegistrant.ensureInitialized();
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  // bring to foreground
+  Timer.periodic(const Duration(seconds: 1), (timer) async {
+    if (DateTime.now().second % 5 == 0) {
+      service.invoke("set_location", {'value': 'myvalue'});
+    }
+    if (service is AndroidServiceInstance) {
+      if (await service.isForegroundService()) {
+        flutterLocalNotificationsPlugin.show(
+          notificationId,
+          'COOL SERVICE',
+          'Awesome ${DateTime.now()}',
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              notificationChannelId,
+              'MY FOREGROUND SERVICE',
+              icon: 'ic_bg_service_small',
+              ongoing: true,
+            ),
+          ),
+        );
+      }
+    }
+  });
+}
 
 class BusListPage extends StatefulWidget {
   final my_user.User user;
@@ -20,26 +56,31 @@ class BusListPage extends StatefulWidget {
 }
 
 class _BusListPageState extends State<BusListPage> {
+  late final FlutterBackgroundService service;
   @override
   void initState() {
     super.initState();
     _handlePermission(context);
-    FlutterForegroundTask.addTaskDataCallback(_onReceiveTaskData);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _requestPermissions();
-      _initService();
-    });
+    initBackground();
   }
 
   @override
   void dispose() {
-    FlutterForegroundTask.removeTaskDataCallback(_onReceiveTaskData);
     super.dispose();
   }
 
   Widget previousWidget = Container();
   @override
   Widget build(BuildContext context) {
+    
+    service = FlutterBackgroundService();
+    service.startService();
+    service.on("set_location").listen((data) {
+      if (data != null) {
+        context.read<LocationsBloc>().add(UpdateCurrentLocationEvent());
+      }
+    });
+
     return Scaffold(
       backgroundColor: Colors.lightBlue,
       body: BlocListener<LocationsBloc, LocationsState>(
@@ -77,57 +118,6 @@ class _BusListPageState extends State<BusListPage> {
   }
 }
 
-Future<void> _requestPermissions() async {
-  // Android 13+, you need to allow notification permission to display foreground service notification.
-  //
-  // iOS: If you need notification, ask for permission.
-  final NotificationPermission notificationPermission =
-      await FlutterForegroundTask.checkNotificationPermission();
-  if (notificationPermission != NotificationPermission.granted) {
-    await FlutterForegroundTask.requestNotificationPermission();
-  }
-
-  if (Platform.isAndroid) {
-    // "android.permission.SYSTEM_ALERT_WINDOW" permission must be granted for
-
-    // To restart the service on device reboot or unexpected problem, you need to allow below permission.
-    if (!await FlutterForegroundTask.isIgnoringBatteryOptimizations) {
-      // This function requires `android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` permission.
-      await FlutterForegroundTask.requestIgnoreBatteryOptimization();
-    }
-  }
-}
-
-void _initService() {
-  FlutterForegroundTask.init(
-    androidNotificationOptions: AndroidNotificationOptions(
-      channelId: 'foreground_service',
-      channelName: 'Foreground Service Notification',
-      channelDescription:
-          'This notification appears when the foreground service is running.',
-      channelImportance: NotificationChannelImportance.LOW,
-      priority: NotificationPriority.LOW,
-    ),
-    iosNotificationOptions: const IOSNotificationOptions(
-      showNotification: false,
-      playSound: false,
-    ),
-    foregroundTaskOptions: ForegroundTaskOptions(
-      eventAction: ForegroundTaskEventAction.repeat(5000),
-      autoRunOnBoot: true,
-      autoRunOnMyPackageReplaced: true,
-      allowWakeLock: true,
-      allowWifiLock: true,
-    ),
-  );
-}
-
-void _onReceiveTaskData(Object data) {
-  if (data is String) {
-    serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
-  }
-}
-
 Future<void> _handlePermission(BuildContext context) async {
   bool serviceEnabled;
   LocationPermission permission;
@@ -153,5 +143,43 @@ Future<void> _handlePermission(BuildContext context) async {
 
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(content: Text(_locationMessage)),
+  );
+}
+
+Future<void> initBackground() async {
+  final service = FlutterBackgroundService();
+
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    notificationChannelId, // id
+    'MY FOREGROUND SERVICE', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.low, // importance must be at low or higher level
+  );
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  await service.configure(
+    androidConfiguration: AndroidConfiguration(
+      // this will be executed when app is in foreground or background in separated isolate
+      onStart: onStart,
+
+      // auto start service
+      autoStart: false,
+      isForegroundMode: true,
+
+      notificationChannelId:
+          notificationChannelId, // this must match with notification channel you created above.
+      initialNotificationTitle: 'AWESOME SERVICE',
+      initialNotificationContent: 'Initializing',
+      foregroundServiceNotificationId: notificationId,
+    ),
+    iosConfiguration: IosConfiguration(),
   );
 }

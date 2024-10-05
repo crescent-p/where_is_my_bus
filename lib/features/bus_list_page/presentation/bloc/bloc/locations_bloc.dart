@@ -39,7 +39,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   Future<void> _updateCurrentLocation(
       UpdateCurrentLocationEvent event, Emitter<LocationsState> emit) async {
     final res = await _updateCurrentLocationUsecase(NoParams());
-    res.fold((l) => emit(LocationEventFailed(message: l.message)),
-        (r) => emit(UpdateLocationSuccess(message: r)));
+    // res.fold((l) => emit(LocationEventFailed(message: l.message)),
+    //     (r) => emit(UpdateLocationSuccess(message: r)));
   }
 }
