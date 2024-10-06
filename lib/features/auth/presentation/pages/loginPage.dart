@@ -4,6 +4,7 @@ import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:where_is_my_bus/core/secrets/secrets.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/core/utils/login_error_dialog_box.dart';
@@ -23,6 +24,16 @@ class Loginpage extends StatefulWidget {
 
 class _LoginpageState extends State<Loginpage> {
   final GoogleSignIn googleSignIn = GoogleSignIn(clientId: clientId);
+
+  @override
+  void initState() {
+    super.initState();
+    if (_handlePermission(context) == 1) {
+      showErrorDialog(context,
+          callFunction: true, message: "Please enable Location Notifications!");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
@@ -81,5 +92,26 @@ class _LoginpageState extends State<Loginpage> {
         );
       }
     });
+  }
+}
+
+Future<int> _handlePermission(BuildContext context) async {
+  // 1 success;
+  // Step 1: Request foreground location permission
+  PermissionStatus foregroundStatus =
+      await Permission.locationWhenInUse.request();
+
+  if (foregroundStatus == PermissionStatus.granted) {
+    // Step 2: Request background location permission after foreground permission is granted
+    PermissionStatus backgroundStatus =
+        await Permission.locationAlways.request();
+
+    if (backgroundStatus == PermissionStatus.granted) {
+      return 1;
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
   }
 }

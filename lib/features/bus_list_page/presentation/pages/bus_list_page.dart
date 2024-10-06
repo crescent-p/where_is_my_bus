@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as my_user;
@@ -43,15 +42,12 @@ class BusListPage extends StatefulWidget {
 
 class _BusListPageState extends State<BusListPage> {
   late final FlutterBackgroundService flutterBackgroundService;
-  static bool initied = false;
   @override
   void initState() {
     super.initState();
 
-    if (!initied) {
-      _handlePermission(context);
-      initBackground();
-    }
+    initBackground();
+
     flutterBackgroundService = FlutterBackgroundService();
     flutterBackgroundService.startService();
 
@@ -64,12 +60,8 @@ class _BusListPageState extends State<BusListPage> {
   }
 
   @override
-  void dispose() async {
-    try {
-      await flutterLocalNotificationsPlugin.cancel(notificationId);
-    } catch (e) {
-      print(e);
-    }
+  void dispose() {
+    flutterLocalNotificationsPlugin.cancel(notificationId);
     super.dispose();
   }
 
@@ -130,26 +122,6 @@ class _BusListPageState extends State<BusListPage> {
         ), // Additional UI can go here if needed
       ),
     );
-  }
-}
-
-Future<void> _handlePermission(BuildContext context) async {
-  // Step 1: Request foreground location permission
-  PermissionStatus foregroundStatus =
-      await Permission.locationWhenInUse.request();
-
-  if (foregroundStatus == PermissionStatus.granted) {
-    // Step 2: Request background location permission after foreground permission is granted
-    PermissionStatus backgroundStatus =
-        await Permission.locationAlways.request();
-
-    if (backgroundStatus == PermissionStatus.granted) {
-      print("Background location permission granted.");
-    } else {
-      print("Background location permission denied.");
-    }
-  } else {
-    print("Foreground location permission denied.");
   }
 }
 
