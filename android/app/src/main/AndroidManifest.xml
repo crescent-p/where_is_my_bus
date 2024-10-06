@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:label="where_is_my_train"
+        android:label="Where is my Bus?"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

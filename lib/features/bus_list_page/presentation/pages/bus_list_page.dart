@@ -51,7 +51,6 @@ class _BusListPageState extends State<BusListPage> {
     if (!initied) {
       _handlePermission(context);
       initBackground();
-      initied = true;
     }
     flutterBackgroundService = FlutterBackgroundService();
     flutterBackgroundService.startService();
