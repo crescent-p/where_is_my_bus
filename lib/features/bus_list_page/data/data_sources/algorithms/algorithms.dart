@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:where_is_my_bus/core/constants/constants.dart';
+import 'package:where_is_my_bus/core/constants/mapping_from_coordinate_to_string.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
@@ -86,13 +87,27 @@ List<Bus> processCoordinates(List<BusCoordinates> coordinates) {
   return mapCoordinatesToAddress(busLocations);
 }
 
+String findClosestKnownLocation(BusCoordinates currCordinate) {
+  double shortestYet = double.infinity;
+  String result = "";
+  mapFromCoordinateToString.forEach((key, value) {
+    BusCoordinates temp =
+        BusCoordinates(coordinates: key, lastSeen: DateTime.now());
+    if (calculateDistance(temp, currCordinate) < shortestYet) {
+      shortestYet = calculateDistance(temp, currCordinate);
+      result = value;
+    }
+  });
+  return result;
+}
+
 List<Bus> mapCoordinatesToAddress(List<BusCoordinates> coordinates) {
   // TODO::
   List<Bus> buses = [];
   buses.addAll(coordinates.map((e) => Bus(
       coordinates: e.coordinates,
       location:
-          "Somewhere in Campus\nx-Coordinate: ${e.coordinates.x}\ny-Coordinate: ${e.coordinates.y}\n",
+          "Near ${findClosestKnownLocation(BusCoordinates(coordinates: e.coordinates, lastSeen: DateTime.now()))}\nx-Coordinate: ${e.coordinates.x}\ny-Coordinate: ${e.coordinates.y}\n",
       lastUpdated: e.lastSeen)));
   buses.sort((a, b) => -(a.lastUpdated.difference(b.lastUpdated).inSeconds));
   return buses;
