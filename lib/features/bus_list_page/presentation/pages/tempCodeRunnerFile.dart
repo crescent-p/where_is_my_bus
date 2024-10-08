@@ -1,0 +1,2 @@
+
+    flutterLocalNotificationsPlugin.cancel(notificationId);

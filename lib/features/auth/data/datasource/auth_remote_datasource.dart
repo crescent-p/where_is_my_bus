@@ -58,9 +58,6 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
         provider: OAuthProvider.google,
         idToken: idToken,
       );
-      if (response == null) {
-        return Left(Failure(message: "Supabase authentication Failed!"));
-      }
 
       return Right(
         myUser.User(

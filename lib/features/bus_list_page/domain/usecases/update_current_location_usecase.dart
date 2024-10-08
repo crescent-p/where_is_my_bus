@@ -1,7 +1,6 @@
 import 'package:fpdart/src/either.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/core/usecases/usecases.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/repository/locations_repository.dart';
 
 class UpdateCurrentLocationUsecase implements UseCases<String, NoParams> {

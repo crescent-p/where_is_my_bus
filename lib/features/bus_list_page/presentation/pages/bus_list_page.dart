@@ -45,21 +45,32 @@ class _BusListPageState extends State<BusListPage> {
   @override
   void initState() {
     super.initState();
-    initBackground();
+    try {
+      initBackground();
+    } on Exception catch (e) {
+      print(e.toString());
+    }
 
-    flutterBackgroundService = FlutterBackgroundService();
-    flutterBackgroundService.startService();
+    try {
+      flutterBackgroundService = FlutterBackgroundService();
 
-    flutterBackgroundService.on("set_location").listen((data) {
-      if (data != null) {
-        serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
-      }
-    });
+      flutterBackgroundService.on("set_location").listen((data) {
+        if (data != null) {
+          serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
+        }
+      });
+    } on Exception catch (e) {
+      print(e.toString());
+    }
   }
 
   @override
   void dispose() {
-    flutterLocalNotificationsPlugin.cancel(notificationId);
+    try {
+      flutterLocalNotificationsPlugin.cancel(notificationId);
+    } on Exception catch (e) {
+      print(e.toString());
+    }
     super.dispose();
   }
 
@@ -152,4 +163,5 @@ Future<void> initBackground() async {
     ),
     iosConfiguration: IosConfiguration(),
   );
+  service.startService();
 }

@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:fpdart/fpdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
@@ -29,10 +26,6 @@ class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
           .from("coordinates")
           .select('x-coordinate, y-coordinate, time-added')
           .gte('time-added', formattedTime);
-
-      if (response == null) {
-        return Left(Failure(message: "empty response"));
-      }
 
       final List<BusCoordinates> coordinatesList = (response as List)
           .map((item) => BusCoordinates(

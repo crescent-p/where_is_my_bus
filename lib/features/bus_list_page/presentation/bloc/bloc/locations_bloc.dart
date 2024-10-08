@@ -11,7 +11,6 @@ part 'locations_event.dart';
 part 'locations_state.dart';
 
 class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
-  Timer? _getListtimer;
   final GetBusLocationsUsecase _getBusLocationsUsecase;
   final UpdateCurrentLocationUsecase _updateCurrentLocationUsecase;
   LocationsBloc({
@@ -20,7 +19,6 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   })  : _getBusLocationsUsecase = getBusLocationsUsecase,
         _updateCurrentLocationUsecase = updateCurrentLocationUsecase,
         super(LocationsInitial()) {
-    _getListtimer =
         Timer.periodic(Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
       add(GetBusLocationsEvent());
     });
@@ -38,8 +36,6 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
 
   Future<void> _updateCurrentLocation(
       UpdateCurrentLocationEvent event, Emitter<LocationsState> emit) async {
-    final res = await _updateCurrentLocationUsecase(NoParams());
-    // res.fold((l) => emit(LocationEventFailed(message: l.message)),
-    //     (r) => emit(UpdateLocationSuccess(message: r)));
+      await _updateCurrentLocationUsecase(NoParams());
   }
 }
