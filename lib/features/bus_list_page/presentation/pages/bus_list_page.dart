@@ -14,16 +14,12 @@ import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 const notificationChannelId = 'my_foreground';
-
-// this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 888;
 late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 Future<void> onStart(ServiceInstance service) async {
-  // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
 
-  // bring to foreground
   Timer.periodic(const Duration(seconds: 1), (timer) async {
     if (DateTime.now().second % UPDATE_LOCATION_INTERVAL == 0) {
       service.invoke("set_location", {'value': 'myvalue'});
@@ -33,25 +29,27 @@ Future<void> onStart(ServiceInstance service) async {
 
 class BusListPage extends StatefulWidget {
   final my_user.User user;
-  const BusListPage({super.key, required this.user});
-  static route(my_user.User user) =>
+
+  const BusListPage({Key? key, required this.user}) : super(key: key);
+
+  static Route<dynamic> route(my_user.User user) =>
       MaterialPageRoute(builder: (context) => BusListPage(user: user));
+
   @override
   State<BusListPage> createState() => _BusListPageState();
 }
 
 class _BusListPageState extends State<BusListPage> {
   late final FlutterBackgroundService flutterBackgroundService;
+
   @override
   void initState() {
     super.initState();
-
     initBackground();
 
     flutterBackgroundService = FlutterBackgroundService();
     flutterBackgroundService.startService();
 
-    // Listening for background events
     flutterBackgroundService.on("set_location").listen((data) {
       if (data != null) {
         serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
@@ -71,7 +69,6 @@ class _BusListPageState extends State<BusListPage> {
       backgroundColor: const Color.fromARGB(255, 230, 238, 241),
       body: MultiBlocListener(
         listeners: [
-          // AuthBloc listener
           BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is AuthSignOutSuccess) {
@@ -83,20 +80,17 @@ class _BusListPageState extends State<BusListPage> {
               }
             },
           ),
-          // LocationsBloc listener
           BlocListener<LocationsBloc, LocationsState>(
             listener: (context, state) {
               if (state is LocationEventFailed) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.message)),
                 );
-              }
-              if (state is UpdateLocationSuccess) {
+              } else if (state is UpdateLocationSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.message)),
                 );
-              }
-              if (state is AuthSignOutEvent) {
+              } else if (state is AuthSignOutEvent) {
                 Navigator.pushAndRemoveUntil(
                   context,
                   Loginpage.route(),
@@ -114,12 +108,12 @@ class _BusListPageState extends State<BusListPage> {
             } else if (state is GetCurrentBusLocationsSuccess) {
               return BusList(busStream: state.buses);
             } else if (state is GetCurrentBusLocationsFailed) {
-              return Center(child: Text("Failed to fetch data"));
+              return const Center(child: Text("Failed to fetch data"));
             } else {
-              return Container(); // Default state handling
+              return const SizedBox(); // Default state handling
             }
           },
-        ), // Additional UI can go here if needed
+        ),
       ),
     );
   }
@@ -129,17 +123,18 @@ Future<void> initBackground() async {
   final service = FlutterBackgroundService();
 
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    notificationChannelId, // id
-    'MY FOREGROUND SERVICE', // title
-    description:
-        'This channel is used for important notifications.', // description
-    importance: Importance.low, // importance must be at low or higher level
+    notificationChannelId,
+    'MY FOREGROUND SERVICE',
+    description: 'This channel is used for important notifications.',
+    importance: Importance.low,
   );
+
   try {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   } catch (e) {
-    print(e);
+    debugPrint(e.toString());
   }
+
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
@@ -147,15 +142,10 @@ Future<void> initBackground() async {
 
   await service.configure(
     androidConfiguration: AndroidConfiguration(
-      // this will be executed when app is in foreground or background in separated isolate
       onStart: onStart,
-
-      // auto start service
-      autoStart: false,
+      autoStart: true, // Auto-start service upon initialization
       isForegroundMode: true,
-
-      notificationChannelId:
-          notificationChannelId, // this must match with notification channel you created above.
+      notificationChannelId: notificationChannelId,
       initialNotificationTitle: 'Background Service for Where is my Bus?',
       initialNotificationContent: 'Initializing GPS',
       foregroundServiceNotificationId: notificationId,

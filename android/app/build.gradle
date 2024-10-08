@@ -44,12 +44,23 @@ android {
         versionName = flutterVersionName
     }
 
+    signingConfigs {
+        release {
+            keyAlias = "mykey"
+            keyPassword = "1aA@GOOD"
+            storeFile = file("C:/Users/cresc/where_is_my_bus/keystore/key.jks")
+            storePassword = "1aA@GOOD"
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            signingConfig = signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        
     }
 }
 
