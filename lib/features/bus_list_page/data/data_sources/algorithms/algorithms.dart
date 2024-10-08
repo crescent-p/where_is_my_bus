@@ -90,6 +90,7 @@ List<Bus> mapCoordinatesToAddress(List<BusCoordinates> coordinates) {
   // TODO::
   List<Bus> buses = [];
   buses.addAll(coordinates.map((e) => Bus(
+      coordinates: e.coordinates,
       location:
           "Somewhere in Campus\nx-Coordinate: ${e.coordinates.x}\ny-Coordinate: ${e.coordinates.y}\n",
       lastUpdated: e.lastSeen)));

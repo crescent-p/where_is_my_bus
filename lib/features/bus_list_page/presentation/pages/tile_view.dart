@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
@@ -37,7 +38,7 @@ class _TileViewState extends State<TileView> {
         ),
       ),
       backgroundColor: AppPallete.backgroundColor,
-      body: widget.busStream.length == 0
+      body: widget.busStream.isEmpty
           ? Column(
               children: [
                 Lottie.asset("assets/animations/monkey.json"),
@@ -62,6 +63,12 @@ class _TileViewState extends State<TileView> {
                   margin: EdgeInsetsGeometry.lerp(
                       EdgeInsets.all(8), EdgeInsets.zero, 0.5),
                   child: ListTile(
+                    onTap: () {
+                      MapsLauncher.launchCoordinates(
+                          widget.busStream[index].coordinates.x,
+                          widget.busStream[index].coordinates.y,
+                          "Bus Number ${index + 1}");
+                    },
                     shape: ShapeBorder.lerp(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16)),
