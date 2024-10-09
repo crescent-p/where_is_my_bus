@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppPallete {
-  static const Color backgroundColor = Color.fromRGBO(230, 244, 247, 1);
-  static const Color gradient1 = Color(0xFF8BD0DF);
-  static const Color gradient2 = Color.fromRGBO(53, 78, 160, 1);
-  static const Color gradient3 = Color.fromRGBO(245, 181, 84, 1);
+  static const Color backgroundColor = Color.fromARGB(255, 214, 240, 245);
+  static const Color gradient1 = Color.fromARGB(255, 98, 150, 202);
+  static const Color gradient2 = Color.fromARGB(255, 6, 75, 152);
+  static const Color gradient3 = Color(0xFFFFC857);
   static const Color borderColor = Color.fromRGBO(223, 74, 23, 1);
-  static const Color textColor = Color.fromRGBO(98, 52, 0, 1);
+  static const Color textColor = Color.fromRGBO(0, 0, 0, 1);
   static const Color whiteColor = Colors.white;
   static const Color greyColor = Colors.grey;
-  static const Color errorColor = Color(0xFFFF5252);
+  static const Color errorColor = Color.fromARGB(255, 255, 0, 0);
   static const Color transparentColor = Colors.transparent;
-  static const Color success = Color.fromARGB(255, 72, 244, 121);
+  static const Color success = Color.fromARGB(255, 55, 255, 5);
 }

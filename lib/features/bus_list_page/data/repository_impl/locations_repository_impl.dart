@@ -49,6 +49,8 @@ class LocationsRepositoryImpl implements LocationsRepository {
       if ((speed >= THRESHOLD_SPEED_TO_BE_CALLED_MOVING) &&
           (position.speedAccuracy < THRESHOLD_SPEED_ACCURACY)) {
         deviceIsMoving = true;
+      } else {
+        deviceIsMoving = false;
       }
       if (deviceIsMoving &&
           (calculateDistance(

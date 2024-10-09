@@ -9,7 +9,7 @@ BorderSide b =
 double t = 0.2; // Interpolation factor (0.0 to 1.0)
 
 void showErrorDialog(BuildContext context,
-    {bool callFunction = false, String message = "Ok....Lemme try again :)"}) {
+    {bool callFunction = false, String message = "Let me try again!"}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {

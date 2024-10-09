@@ -107,7 +107,7 @@ List<Bus> mapCoordinatesToAddress(List<BusCoordinates> coordinates) {
   buses.addAll(coordinates.map((e) => Bus(
       coordinates: e.coordinates,
       location:
-          "Near ${findClosestKnownLocation(BusCoordinates(coordinates: e.coordinates, lastSeen: DateTime.now()))}\nx-Coordinate: ${e.coordinates.x}\ny-Coordinate: ${e.coordinates.y}\n",
+          "Near ${findClosestKnownLocation(BusCoordinates(coordinates: e.coordinates, lastSeen: DateTime.now()))}",
       lastUpdated: e.lastSeen)));
   buses.sort((a, b) => -(a.lastUpdated.difference(b.lastUpdated).inSeconds));
   return buses;
