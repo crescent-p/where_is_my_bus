@@ -1,4 +1,3 @@
-
 import 'package:fpdart/fpdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
@@ -36,6 +35,7 @@ class LocationsRepositoryImpl implements LocationsRepository {
   @override
   Future<Either<Failure, String>> updateCurrentLocation() async {
     try {
+      print("Update Location Called\n");
       Position position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.bestForNavigation),
@@ -46,10 +46,17 @@ class LocationsRepositoryImpl implements LocationsRepository {
       );
       double speed = position.speed;
       bool deviceIsMoving = false;
-      if (speed >= THRESHOLD_SPEED_TO_BE_CALLED_MOVING) {
+      if ((speed >= THRESHOLD_SPEED_TO_BE_CALLED_MOVING) &&
+          (position.speedAccuracy < THRESHOLD_SPEED_ACCURACY)) {
         deviceIsMoving = true;
       }
-      if (deviceIsMoving && true) {
+      if (deviceIsMoving &&
+          (calculateDistance(
+                  BusCoordinates(
+                      coordinates: NITCcoordinate, lastSeen: DateTime.now()),
+                  BusCoordinates(
+                      coordinates: coordinates, lastSeen: DateTime.now())) <=
+              1000)) {
         final res =
             await repository.updateCurrentLocation(coordinates: coordinates);
         return res.fold((l) => Left(l), (r) => Right(r));

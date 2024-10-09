@@ -24,7 +24,10 @@ class _TileViewState extends State<TileView> {
               onPressed: () {
                 serviceLocator<AuthBloc>().add(AuthSignOutEvent());
               },
-              icon: Icon(Icons.logout))
+              icon: const Icon(
+                Icons.logout,
+                color: AppPallete.gradient3,
+              ))
         ],
         backgroundColor: AppPallete.gradient2,
         title: const Text(
@@ -42,8 +45,8 @@ class _TileViewState extends State<TileView> {
           ? Column(
               children: [
                 Lottie.asset("assets/animations/monkey.json"),
-                Flex(direction: Axis.vertical),
-                Text(
+                const Flex(direction: Axis.vertical),
+                const Text(
                   textAlign: TextAlign.center,
                   "Oops I couldn't find any buses Sorry!",
                   style: TextStyle(

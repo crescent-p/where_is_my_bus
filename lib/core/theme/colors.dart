@@ -11,4 +11,5 @@ class AppPallete {
   static const Color greyColor = Colors.grey;
   static const Color errorColor = Color(0xFFFF5252);
   static const Color transparentColor = Colors.transparent;
+  static const Color success = Color.fromARGB(255, 72, 244, 121);
 }

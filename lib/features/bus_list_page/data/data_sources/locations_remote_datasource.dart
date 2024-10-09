@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
@@ -18,8 +19,8 @@ class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
   @override
   Future<Either<Failure, List<BusCoordinates>>> getCoordinatesTable() async {
     try {
-      final DateTime timePeriod =
-          DateTime.now().subtract(Duration(days: 1)); // Example: last 7 days
+      final DateTime timePeriod = DateTime.now()
+          .subtract(Duration(hours: QUERY_WINDOW)); // Example: last 7 days
       final String formattedTime = timePeriod.toIso8601String();
 
       final response = await client

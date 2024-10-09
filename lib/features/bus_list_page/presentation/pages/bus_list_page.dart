@@ -7,15 +7,17 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as my_user;
+import 'package:where_is_my_bus/core/theme/colors.dart';
+import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_list.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 const notificationChannelId = 'my_foreground';
-const notificationId = 888;
-late final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
@@ -45,29 +47,12 @@ class _BusListPageState extends State<BusListPage> {
   @override
   void initState() {
     super.initState();
-    try {
-      initBackground();
-    } on Exception catch (e) {
-      print(e.toString());
-    }
-
-    try {
-      flutterBackgroundService = FlutterBackgroundService();
-
-      flutterBackgroundService.on("set_location").listen((data) {
-        if (data != null) {
-          serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
-        }
-      });
-    } on Exception catch (e) {
-      print(e.toString());
-    }
   }
 
   @override
   void dispose() {
     try {
-      flutterLocalNotificationsPlugin.cancel(notificationId);
+      flutterLocalNotificationsPlugin.cancel(NOTIFICATION_ID);
     } on Exception catch (e) {
       print(e.toString());
     }
@@ -88,18 +73,28 @@ class _BusListPageState extends State<BusListPage> {
                   Loginpage.route(),
                   (route) => false,
                 );
+              } else if (state is AuthSuccess) {
+                initBackground();
               }
             },
           ),
           BlocListener<LocationsBloc, LocationsState>(
             listener: (context, state) {
               if (state is LocationEventFailed) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
+                showSnack(
+                  context,
+                  "Location Event Failed",
+                  "Failed to update Location! Please check internet",
+                  ContentType.failure,
+                  AppPallete.errorColor,
                 );
               } else if (state is UpdateLocationSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message)),
+                showSnack(
+                  context,
+                  "Update Location Success",
+                  "Cool!",
+                  ContentType.failure,
+                  AppPallete.success,
                 );
               } else if (state is AuthSignOutEvent) {
                 Navigator.pushAndRemoveUntil(
@@ -119,9 +114,9 @@ class _BusListPageState extends State<BusListPage> {
             } else if (state is GetCurrentBusLocationsSuccess) {
               return BusList(busStream: state.buses);
             } else if (state is GetCurrentBusLocationsFailed) {
-              return const Center(child: Text("Failed to fetch data"));
+              return BusList(busStream: []);
             } else {
-              return const SizedBox(); // Default state handling
+              return BusList(busStream: []); // Default state handling
             }
           },
         ),
@@ -140,11 +135,7 @@ Future<void> initBackground() async {
     importance: Importance.low,
   );
 
-  try {
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  } catch (e) {
-    debugPrint(e.toString());
-  }
+
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
@@ -158,10 +149,9 @@ Future<void> initBackground() async {
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
       initialNotificationTitle: 'Background Service for Where is my Bus?',
-      initialNotificationContent: 'Initializing GPS',
-      foregroundServiceNotificationId: notificationId,
+      initialNotificationContent: 'Searching for Buses near you!',
+      foregroundServiceNotificationId: NOTIFICATION_ID,
     ),
     iosConfiguration: IosConfiguration(),
   );
-  service.startService();
 }

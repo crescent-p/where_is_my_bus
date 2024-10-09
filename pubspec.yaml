@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  awesome_snackbar_content: ^0.1.4
   cupertino_icons: ^1.0.6
   flutter:
     sdk: flutter
@@ -36,6 +37,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.1
   flutter_local_notifications: ^17.2.3
   flutter_map: ^7.0.2
+  flutter_native_splash: ^2.4.1
   flutter_signin_button: ^2.0.0
   flutter_svg: ^2.0.10+1
   fpdart: ^1.1.0
@@ -45,21 +47,26 @@ dependencies:
   latlong2: ^0.9.1
   loading_indicator: ^3.1.1
   lottie: ^3.1.2
+  maps_launcher: ^2.2.1
   permission_handler: ^11.3.1
   salomon_bottom_bar: ^3.3.2
   shared_preferences: ^2.3.2
   supabase_flutter: ^2.6.0
   uuid: ^4.5.1
-  maps_launcher: ^2.2.1
 
 dev_dependencies:
   flutter_lints: ^3.0.0
   flutter_test:
     sdk: flutter
 
-flutter_launcher_icons:
-  android: true
-  image_path: "assets/icons/buslogo.jpg"
+flutter_native_splash:
+  color: "#8BD0DF" # Background color of the splash screen
+  image: assets/icons/splash_icon.png # Path to the splash image
+  android: true # Enable splash screen for Android
+  ios: true # Enable splash screen for iOS
+  android_gravity: center # Positioning for Android (center, bottom, etc.)
+  ios_content_mode: scaleAspectFit # Positioning for iOS (scaleAspectFit, scaleAspectFill, etc.)
+  fullscreen: true # Whether to use a full-screen splash
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -79,7 +86,9 @@ flutter:
     - assets/animations/success.json
     - assets/animations/loading.json
     - assets/animations/monkey.json
-    - assets/icons/buslogo.jpg
+    - assets/icons/login.svg
+    - assets/icons/playstore.png
+    - assets/icons/splash_icon.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

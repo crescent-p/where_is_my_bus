@@ -14,5 +14,5 @@ Map<Coordinates, String> mapFromCoordinateToString = {
   Coordinates(x: 11.319507, y: 75.937225): "C Gate",
   Coordinates(x: 11.319773, y: 75.934481): "NITC Library",
   Coordinates(x: 11.319804, y: 75.932136): "Main Canteen (Swadishtam)",
-  Coordinates(x: 11.318174, y: 75.931571): "Ladies Hostel NITC",
+  Coordinates(x: 11.316699, y: 75.93063): "Ladies Hostel NITC",
 };

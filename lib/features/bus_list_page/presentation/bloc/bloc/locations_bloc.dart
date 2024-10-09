@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/usecases/usecases.dart';
+import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/get_bus_locations_usecase.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/update_current_location_usecase.dart';
+import 'package:where_is_my_bus/init_dependencies.dart';
 
 part 'locations_event.dart';
 part 'locations_state.dart';
@@ -19,9 +21,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   })  : _getBusLocationsUsecase = getBusLocationsUsecase,
         _updateCurrentLocationUsecase = updateCurrentLocationUsecase,
         super(LocationsInitial()) {
-        Timer.periodic(Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
-      add(GetBusLocationsEvent());
-    });
+
     on<LocationsEvent>((event, emit) {});
     on<GetBusLocationsEvent>(_getBusLocationsEvent);
     on<UpdateCurrentLocationEvent>(_updateCurrentLocation);
@@ -36,6 +36,6 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
 
   Future<void> _updateCurrentLocation(
       UpdateCurrentLocationEvent event, Emitter<LocationsState> emit) async {
-      await _updateCurrentLocationUsecase(NoParams());
+    await _updateCurrentLocationUsecase(NoParams());
   }
 }

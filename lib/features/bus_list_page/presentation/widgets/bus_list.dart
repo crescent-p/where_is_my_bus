@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
-import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/map_view.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/tile_view.dart';
 
 class BusList extends StatefulWidget {
