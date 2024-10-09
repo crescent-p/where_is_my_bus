@@ -68,7 +68,8 @@ List<Bus> processCoordinates(List<BusCoordinates> coordinates) {
     DateTime lowest = DateTime(1960);
     for (int j = 0; j < coordinates.length; j++) {
       if (selectedIndex.contains(j)) continue;
-      if (calculateDistance(coordinates[i], coordinates[j]) < 10) {
+      if (calculateDistance(coordinates[i], coordinates[j]) <
+          DISTANCE_BETWEEN_TWO_BUS_USERS) {
         currSelecion.add(j);
         currCoordinates.add(coordinates[j]);
         lowest = (coordinates[j].lastSeen.difference(lowest).inSeconds > 0)
