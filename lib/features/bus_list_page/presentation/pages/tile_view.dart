@@ -7,8 +7,8 @@ import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart'
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 class TileView extends StatefulWidget {
-  List<Bus> busStream;
-  TileView({super.key, required this.busStream});
+  final List<Bus> busStream;
+  const TileView({super.key, required this.busStream});
 
   @override
   State<TileView> createState() => _TileViewState();

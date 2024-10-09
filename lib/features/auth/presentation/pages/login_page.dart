@@ -1,7 +1,9 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -9,6 +11,7 @@ import 'package:where_is_my_bus/core/secrets/secrets.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/core/utils/login_error_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/login_success_dialog_box.dart';
+import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_list_page.dart';
@@ -36,6 +39,25 @@ class _LoginpageState extends State<Loginpage> {
 
   @override
   Widget build(BuildContext context) {
+    var permission = Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        showSnack(
+            context,
+            "Location Permission Denied",
+            "Please enable Locations Permission in settings",
+            ContentType.failure,
+            AppPallete.errorColor);
+      }
+    } else if (permission == LocationPermission.deniedForever) {
+      showSnack(
+          context,
+          "Location Permission Denied",
+          "Please enable Locations Permission in settings",
+          ContentType.failure,
+          AppPallete.errorColor);
+    }
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       if (state is AuthFailure) {
         showErrorDialog(context);

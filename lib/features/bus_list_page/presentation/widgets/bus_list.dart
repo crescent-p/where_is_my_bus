@@ -5,15 +5,13 @@ import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/tile_v
 class BusList extends StatefulWidget {
   final List<Bus> busStream;
 
-  BusList({required this.busStream});
+  const BusList({super.key, required this.busStream});
 
   @override
   State<BusList> createState() => _BusListState();
 }
 
 class _BusListState extends State<BusList> {
-  int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

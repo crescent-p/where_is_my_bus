@@ -1,8 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
-
-import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -47,9 +43,6 @@ Future<void> initDependencies() async {
   initAuth();
   initLocations();
 }
-
-
-
 
 void initLocations() {
   serviceLocator.registerFactory<LocationsRemoteDatasource>(
