@@ -9,6 +9,8 @@ import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/repository/locations_repository.dart';
 
+bool wasMoving = false;
+
 class LocationsRepositoryImpl implements LocationsRepository {
   final LocationsRemoteDatasource repository;
 
@@ -46,10 +48,15 @@ class LocationsRepositoryImpl implements LocationsRepository {
       );
       double speed = position.speed;
       bool deviceIsMoving = false;
+
+      //only update location if two subsequent speed values give true.
       if ((speed >= THRESHOLD_SPEED_TO_BE_CALLED_MOVING) &&
-          (position.speedAccuracy < THRESHOLD_SPEED_ACCURACY)) {
+          (wasMoving == true)) {
         deviceIsMoving = true;
+      } else if ((speed >= THRESHOLD_SPEED_TO_BE_CALLED_MOVING)) {
+        wasMoving = true;
       } else {
+        wasMoving = false;
         deviceIsMoving = false;
       }
       if (deviceIsMoving &&
@@ -58,7 +65,7 @@ class LocationsRepositoryImpl implements LocationsRepository {
                       coordinates: NITCcoordinate, lastSeen: DateTime.now()),
                   BusCoordinates(
                       coordinates: coordinates, lastSeen: DateTime.now())) <=
-              1000)) {
+              2000)) {
         final res =
             await repository.updateCurrentLocation(coordinates: coordinates);
         return res.fold((l) => Left(l), (r) => Right(r));
