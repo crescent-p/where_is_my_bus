@@ -11,24 +11,19 @@ import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_list.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 const notificationChannelId = 'my_foreground';
-bool backgroundStarted = false;
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
 
   Timer.periodic(const Duration(seconds: 1), (timer) async {
-    if ((DateTime.now().millisecondsSinceEpoch / 1000) %
-            UPDATE_LOCATION_INTERVAL ==
-        0) {
+    if (DateTime.now().second % UPDATE_LOCATION_INTERVAL == 0) {
       service.invoke("set_location", {'value': 'myvalue'});
     }
   });
@@ -36,8 +31,8 @@ Future<void> onStart(ServiceInstance service) async {
 
 class BusListPage extends StatefulWidget {
   final my_user.User user;
-  List<Bus> busStreamCache = [];
-  BusListPage({Key? key, required this.user}) : super(key: key);
+
+  const BusListPage({Key? key, required this.user}) : super(key: key);
 
   static Route<dynamic> route(my_user.User user) =>
       MaterialPageRoute(builder: (context) => BusListPage(user: user));
@@ -52,7 +47,6 @@ class _BusListPageState extends State<BusListPage> {
   @override
   void initState() {
     super.initState();
-    initBackground();
   }
 
   @override
@@ -63,35 +57,6 @@ class _BusListPageState extends State<BusListPage> {
       print(e.toString());
     }
     super.dispose();
-  }
-
-  Future<void> initBackground() async {
-    final service = FlutterBackgroundService();
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      notificationChannelId,
-      'MY FOREGROUND SERVICE',
-      description: 'This channel is used for important notifications.',
-      importance: Importance.high,
-    );
-
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-
-    await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        onStart: onStart,
-        autoStart: true, // Auto-start service upon initialization
-        isForegroundMode: true,
-        notificationChannelId: notificationChannelId,
-        initialNotificationTitle: 'Background Service for Where is my Bus?',
-        initialNotificationContent: 'Searching for Buses near you!',
-        foregroundServiceNotificationId: NOTIFICATION_ID,
-      ),
-      iosConfiguration: IosConfiguration(),
-    );
   }
 
   @override
@@ -108,11 +73,13 @@ class _BusListPageState extends State<BusListPage> {
                   Loginpage.route(),
                   (route) => false,
                 );
+              } else if (state is AuthSuccess) {
+                initBackground();
               }
             },
           ),
           BlocListener<LocationsBloc, LocationsState>(
-            listener: (context, state) async {
+            listener: (context, state) {
               if (state is LocationEventFailed) {
                 showSnack(
                   context,
@@ -145,17 +112,46 @@ class _BusListPageState extends State<BusListPage> {
               serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
               return const LoadingScreen();
             } else if (state is GetCurrentBusLocationsSuccess) {
-              widget.busStreamCache = state.buses;
               return BusList(busStream: state.buses);
             } else if (state is GetCurrentBusLocationsFailed) {
-              return BusList(busStream: widget.busStreamCache);
+              return BusList(busStream: []);
             } else {
-              return BusList(
-                  busStream: widget.busStreamCache); // Default state handling
+              return BusList(busStream: []); // Default state handling
             }
           },
         ),
       ),
     );
   }
+}
+
+Future<void> initBackground() async {
+  final service = FlutterBackgroundService();
+
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    notificationChannelId,
+    'MY FOREGROUND SERVICE',
+    description: 'This channel is used for important notifications.',
+    importance: Importance.low,
+  );
+
+
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  await service.configure(
+    androidConfiguration: AndroidConfiguration(
+      onStart: onStart,
+      autoStart: true, // Auto-start service upon initialization
+      isForegroundMode: true,
+      notificationChannelId: notificationChannelId,
+      initialNotificationTitle: 'Background Service for Where is my Bus?',
+      initialNotificationContent: 'Searching for Buses near you!',
+      foregroundServiceNotificationId: NOTIFICATION_ID,
+    ),
+    iosConfiguration: IosConfiguration(),
+  );
 }

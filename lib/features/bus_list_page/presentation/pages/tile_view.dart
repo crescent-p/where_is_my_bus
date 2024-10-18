@@ -45,11 +45,9 @@ class _TileViewState extends State<TileView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Center(
-                  child: Lottie.asset(
-                    "assets/animations/monkey.json",
-                    height: 400,
-                  ),
+                Lottie.asset(
+                  "assets/animations/monkey.json",
+                  height: 150,
                 ),
                 const SizedBox(height: 20),
                 const Text(
