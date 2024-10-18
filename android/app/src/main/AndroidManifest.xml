@@ -1,4 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.where_is_my_bus">>
+
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -34,10 +37,15 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
         <service
-            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:permission="android.permission.FOREGROUND_SERVICE"
             android:foregroundServiceType="location"
-            android:exported="false" />
+            android:exported="false"
+            tools:replace="android:exported"/>
+<!--        <service-->
+<!--            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"-->
+<!--            android:foregroundServiceType="location"-->
+<!--            android:exported="false" />-->
     </application>
 </manifest>
