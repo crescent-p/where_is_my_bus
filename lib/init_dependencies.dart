@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
-import 'package:where_is_my_bus/core/secrets/secrets.dart';
 import 'package:where_is_my_bus/features/auth/data/datasource/auth_remote_datasource.dart';
 import 'package:where_is_my_bus/features/auth/data/repository/auth_repository.dart';
 import 'package:where_is_my_bus/features/auth/domain/repository/auth_repository.dart';
@@ -22,15 +20,9 @@ import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/lo
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-  final supabase = await Supabase.initialize(
-      url: supabaseDatabaseUrl, anonKey: supabaseAnon);
-  serviceLocator.registerLazySingleton<GoogleSignIn>(
-      () => GoogleSignIn(clientId: webClientId, scopes: [
-            "email",
-            "profile",
-            "openid",
-          ]));
-  serviceLocator.registerLazySingleton(() => supabase.client);
+
+  final sharedPreferences = await SharedPreferences.getInstance();
+  serviceLocator.registerLazySingleton(() => sharedPreferences);
 
   var permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
@@ -47,7 +39,7 @@ Future<void> initDependencies() async {
 void initLocations() {
   serviceLocator.registerFactory<LocationsRemoteDatasource>(
       () => LocationsRemoteDatasourceImpl(
-            client: serviceLocator(),
+            prefs: serviceLocator(),
           ));
   serviceLocator
       .registerFactory<LocationsRepository>(() => LocationsRepositoryImpl(
@@ -71,7 +63,7 @@ void initAuth() {
   //Repository registrations
   serviceLocator
       .registerFactory<AuthRemoteDataSouce>(() => AuthRemoteDatasourceImpl(
-            client: serviceLocator(),
+            prefs: serviceLocator(),
             googleSignIn: serviceLocator(),
           ));
 

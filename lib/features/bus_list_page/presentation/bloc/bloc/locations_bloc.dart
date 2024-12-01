@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/usecases/usecases.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
+import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/get_bus_locations_usecase.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/update_current_location_usecase.dart';
 

@@ -1,7 +1,21 @@
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
-
 class BusCoordinates {
-  Coordinates coordinates;
-  final DateTime lastSeen;
-  BusCoordinates({required this.coordinates, required this.lastSeen});
+  final double latitude;
+  final double longitude;
+  final double speed;
+  final DateTime lastUpdated;
+  final DateTime createdAt;
+  final int noOfContributors;
+  final String name;
+  final double confidence;
+  final String location;
+  BusCoordinates(
+      {required this.latitude,
+      required this.location,
+      required this.longitude,
+      required this.speed,
+      required this.lastUpdated,
+      required this.createdAt,
+      required this.noOfContributors,
+      required this.name,
+      required this.confidence});
 }

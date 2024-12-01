@@ -11,7 +11,7 @@ import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
+import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_list.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
@@ -36,7 +36,7 @@ Future<void> onStart(ServiceInstance service) async {
 
 class BusListPage extends StatefulWidget {
   final my_user.User user;
-  List<Bus> busStreamCache = [];
+  List<BusCoordinates> busStreamCache = [];
   BusListPage({Key? key, required this.user}) : super(key: key);
 
   static Route<dynamic> route(my_user.User user) =>

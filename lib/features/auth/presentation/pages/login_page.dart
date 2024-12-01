@@ -19,7 +19,7 @@ import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_li
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
 
-  static route() => MaterialPageRoute(builder: (context) => Loginpage());
+  static route() => MaterialPageRoute(builder: (context) => const Loginpage());
 
   @override
   State<Loginpage> createState() => _LoginpageState();

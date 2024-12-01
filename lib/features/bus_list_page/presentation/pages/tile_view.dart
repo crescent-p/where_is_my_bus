@@ -3,11 +3,11 @@ import 'package:lottie/lottie.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus.dart';
+import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 class TileView extends StatefulWidget {
-  final List<Bus> busStream;
+  final List<BusCoordinates> busStream;
   const TileView({super.key, required this.busStream});
 
   @override
@@ -41,27 +41,30 @@ class _TileViewState extends State<TileView> {
       ),
       backgroundColor: AppPallete.backgroundColor,
       body: widget.busStream.isEmpty
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Center(
-                  child: Lottie.asset(
-                    "assets/animations/monkey.json",
-                    height: 400,
+          ? SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Lottie.asset(
+                      "assets/animations/monkey.json",
+                      height: 400,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  "Oops! Couldn't find any buses. Sorry!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppPallete.textColor,
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Oops! Couldn't find any buses. Sorry!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppPallete.textColor,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           : ListView.builder(
               itemCount: widget.busStream.length,
@@ -77,9 +80,9 @@ class _TileViewState extends State<TileView> {
                   child: ListTile(
                     onTap: () {
                       MapsLauncher.launchCoordinates(
-                        widget.busStream[index].coordinates.x,
-                        widget.busStream[index].coordinates.y,
-                        "Bus Number ${index + 1}",
+                        widget.busStream[index].latitude,
+                        widget.busStream[index].longitude,
+                        bus.location,
                       );
                     },
                     shape: RoundedRectangleBorder(
@@ -87,7 +90,7 @@ class _TileViewState extends State<TileView> {
                     ),
                     tileColor: AppPallete.gradient1,
                     title: Text(
-                      'Bus ${index + 1}',
+                      "${bus.name} Bus",
                       style: const TextStyle(
                         color: AppPallete.whiteColor,
                         fontSize: 22,
@@ -108,11 +111,28 @@ class _TileViewState extends State<TileView> {
                         ),
                         const SizedBox(height: 4),
                         Text(
+                          "Confidence: ${bus.confidence}",
+                          style: const TextStyle(
+                              color: AppPallete.textColor,
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
                           'Last Updated at: ${(bus.lastUpdated.hour % 12).toString().padLeft(2, '0')}:${bus.lastUpdated.minute.toString().padLeft(2, '0')}:${bus.lastUpdated.second.toString().padLeft(2, '0')} ${bus.lastUpdated.hour > 12 ? 'PM' : 'AM'}',
                           style: const TextStyle(
                               color: AppPallete.textColor,
                               fontSize: 12,
                               fontStyle: FontStyle.italic),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "Number of Contributors: ${bus.noOfContributors}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ],
                     ),

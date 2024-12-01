@@ -48,14 +48,13 @@ class _MyAppState extends State<MyApp> {
 
     return BlocBuilder<UserCubit, UserState>(builder: (context, state) {
       if (state is UserInitial) {
-        return LoadingScreen();
+        return const LoadingScreen();
       } else if (state is UserLoggedIn) {
         return BusListPage(user: state.getUser);
       } else if (state is UserLoggedOut) {
         return const Loginpage();
       } else {
-        // TODO: change to LoginPage in production.
-        return Text("Some Unknown Error\n");
+        return const Loginpage();
       }
     });
   }

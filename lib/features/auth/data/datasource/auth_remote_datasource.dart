@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as myUser;
 
@@ -11,22 +11,25 @@ abstract interface class AuthRemoteDataSouce {
 }
 
 class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
-  final SupabaseClient client;
   final GoogleSignIn googleSignIn;
-  AuthRemoteDatasourceImpl({required this.client, required this.googleSignIn});
+  final SharedPreferences prefs;
+  AuthRemoteDatasourceImpl({required this.prefs, required this.googleSignIn});
   @override
   Future<Either<Failure, myUser.User>> getCurrentUser() async {
     try {
-      final currentSession = client.auth.currentSession;
       await googleSignIn.signInSilently();
       final googleUser = googleSignIn.currentUser;
-      if (currentSession == null || googleUser == null) {
+      if (googleUser != null) {
+        final authenticate = await googleUser.authentication;
+        String? idTok = authenticate.idToken;
+        prefs.setString("idToken", idTok!);
+      }
+      if (googleUser == null) {
         return Left(Failure(message: "No User Logged In !"));
       }
-      final user = client.auth.currentUser;
       return Right(
         myUser.User(
-            id: user!.id,
+            id: googleUser.id,
             email: googleUser.email,
             name: googleUser.displayName ?? "No Name Found"),
       );
@@ -40,7 +43,14 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
   @override
   Future<Either<Failure, myUser.User>> signInWithGoogle() async {
     try {
+      await googleSignIn.signOut();
       final googleUser = await googleSignIn.signIn();
+
+      if (googleUser != null) {
+        final authenticate = await googleUser.authentication;
+        String? idTok = authenticate.idToken;
+        prefs.setString("idToken", idTok!);
+      }
       if (googleUser == null) {
         return Left(Failure(message: "Sign In Failed!"));
       }
@@ -52,17 +62,18 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
         return Left(Failure(message: "No access token found"));
       }
       if (idToken == null) {
-        return left(Failure(message: "No idToken found"));
+        return Left(Failure(message: "No idToken found"));
       }
-      final response = await client.auth.signInWithIdToken(
-        provider: OAuthProvider.google,
-        idToken: idToken,
-      );
+
+      // final response = await client.auth.signInWithIdToken(
+      //   provider: OAuthProvider.google,
+      //   idToken: idToken,
+      // );
 
       return Right(
         myUser.User(
           email: googleUser.email,
-          id: response.user!.id,
+          id: googleUser.id,
           name: googleUser.displayName ?? "No Name Found",
         ),
       );
@@ -74,7 +85,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
   @override
   Future<Either<Failure, String>> signOut() async {
     try {
-      await client.auth.signOut();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove("idToken");
       return const Right("Succefully Signed Out");
     } catch (e) {
       return Left(Failure(message: e.toString()));

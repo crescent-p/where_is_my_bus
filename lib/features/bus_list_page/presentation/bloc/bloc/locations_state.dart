@@ -12,11 +12,11 @@ final class UpdateLocationSuccess extends LocationsState {
 }
 
 final class GetCurrentBusLocationsSuccess extends LocationsState {
-  final List<Bus> buses;
+  final List<BusCoordinates> buses;
   GetCurrentBusLocationsSuccess({required this.buses});
 }
 
-final class GetCurrentBusLocationsFailed extends LocationsState{}
+final class GetCurrentBusLocationsFailed extends LocationsState {}
 
 final class LocationLoading extends LocationsState {}
 
