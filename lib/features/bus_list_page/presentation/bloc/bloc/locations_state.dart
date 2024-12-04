@@ -26,3 +26,5 @@ class LocationEventFailed extends LocationsState {
 }
 
 class LocationPermissionDenied extends LocationsState {}
+
+class PermissionDialogShown extends LocationsState {}

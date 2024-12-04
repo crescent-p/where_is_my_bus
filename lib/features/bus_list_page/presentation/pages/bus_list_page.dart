@@ -13,6 +13,7 @@ import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
+import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/request_permission.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/widgets/bus_list.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
@@ -59,9 +60,7 @@ class _BusListPageState extends State<BusListPage> {
   void dispose() {
     try {
       flutterLocalNotificationsPlugin.cancel(NOTIFICATION_ID);
-    } on Exception catch (e) {
-      print(e.toString());
-    }
+    } on Exception catch (e) {}
     super.dispose();
   }
 
@@ -122,13 +121,13 @@ class _BusListPageState extends State<BusListPage> {
                   AppPallete.errorColor,
                 );
               } else if (state is UpdateLocationSuccess) {
-                showSnack(
-                  context,
-                  "Update Location Success",
-                  "Cool!",
-                  ContentType.failure,
-                  AppPallete.success,
-                );
+                // showSnack(
+                //   context,
+                //   "Update Location Success",
+                //   "Cool!",
+                //   ContentType.failure,
+                //   AppPallete.success,
+                // );
               } else if (state is AuthSignOutEvent) {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -146,12 +145,22 @@ class _BusListPageState extends State<BusListPage> {
               return const LoadingScreen();
             } else if (state is GetCurrentBusLocationsSuccess) {
               widget.busStreamCache = state.buses;
-              return BusList(busStream: state.buses);
+              return BusList(
+                busStream: state.buses,
+                permission: true,
+              );
             } else if (state is GetCurrentBusLocationsFailed) {
-              return BusList(busStream: widget.busStreamCache);
+              return BusList(
+                busStream: widget.busStreamCache,
+                permission: true,
+              );
+            } else if (state is LocationPermissionDenied) {
+              return RequestPermissionPopup(context: context);
             } else {
               return BusList(
-                  busStream: widget.busStreamCache); // Default state handling
+                busStream: widget.busStreamCache,
+                permission: true,
+              ); // Default state handling
             }
           },
         ),

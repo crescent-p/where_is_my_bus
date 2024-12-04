@@ -47,8 +47,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     _locationUpdateTimer?.cancel();
 
     _listUpdateTimer =
-        Timer.periodic(Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
-      serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
+        Timer.periodic(const Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
+      if (serviceLocator<LocationsBloc>().state is! LocationPermissionDenied &&
+          serviceLocator<LocationsBloc>().state is! LocationsInitial) {
+        serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
+      }
     });
 
     _locationUpdateTimer =

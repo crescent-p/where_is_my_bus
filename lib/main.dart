@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
 import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
@@ -11,22 +12,26 @@ import 'package:where_is_my_bus/init_dependencies.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
-  runApp(MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => serviceLocator<UserCubit>(),
-        ),
-        BlocProvider(
-          create: (_) => serviceLocator<AuthBloc>(),
-        ),
-        BlocProvider(
-          create: (_) => serviceLocator<LocationsBloc>(),
-        ),
-      ],
-      child: const MaterialApp(
-        home: MyApp(),
-        debugShowCheckedModeBanner: false,
-      )));
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Locks portrait mode
+  ]).then((_) {
+    runApp(MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => serviceLocator<UserCubit>(),
+          ),
+          BlocProvider(
+            create: (_) => serviceLocator<AuthBloc>(),
+          ),
+          BlocProvider(
+            create: (_) => serviceLocator<LocationsBloc>(),
+          ),
+        ],
+        child: const MaterialApp(
+          home: MyApp(),
+          debugShowCheckedModeBanner: false,
+        )));
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -45,7 +50,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<UserCubit, UserState>(builder: (context, state) {
       if (state is UserInitial) {
         return const LoadingScreen();

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
+import 'package:where_is_my_bus/core/secrets/secrets.dart';
 import 'package:where_is_my_bus/features/auth/data/datasource/auth_remote_datasource.dart';
 import 'package:where_is_my_bus/features/auth/data/repository/auth_repository.dart';
 import 'package:where_is_my_bus/features/auth/domain/repository/auth_repository.dart';
@@ -20,17 +22,21 @@ import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/lo
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-
   final sharedPreferences = await SharedPreferences.getInstance();
   serviceLocator.registerLazySingleton(() => sharedPreferences);
-
-  var permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      var _locationMessage = "Location permission denied.";
-    }
-  }
+  serviceLocator.registerLazySingleton<GoogleSignIn>(
+      () => GoogleSignIn(clientId: webClientId, scopes: [
+            "email",
+            "profile",
+            "openid",
+          ]));
+  // var permission = await Geolocator.checkPermission();
+  // if (permission == LocationPermission.denied) {
+  //   permission = await Geolocator.requestPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     var _locationMessage = "Location permission denied.";
+  //   }
+  // }
 
   initAuth();
   initLocations();

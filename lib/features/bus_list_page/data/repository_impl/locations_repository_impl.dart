@@ -18,7 +18,6 @@ class LocationsRepositoryImpl implements LocationsRepository {
   @override
   Future<Either<Failure, List<BusCoordinates>>> getBusLocations() async {
     try {
-      print("getBusLocation called\n");
       final res = await repository.getCoordinatesTable();
       return res.fold(
         (onLeft) => Left(onLeft),
@@ -35,7 +34,6 @@ class LocationsRepositoryImpl implements LocationsRepository {
   @override
   Future<Either<Failure, String>> updateCurrentLocation() async {
     try {
-      print("Update Location Called\n");
       Position position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.bestForNavigation),

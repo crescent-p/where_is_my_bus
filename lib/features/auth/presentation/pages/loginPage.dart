@@ -13,7 +13,6 @@ import 'package:where_is_my_bus/core/utils/login_error_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/login_success_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_list_page.dart';
 
 class Loginpage extends StatefulWidget {
@@ -58,7 +57,7 @@ class _LoginpageState extends State<Loginpage> {
       if (state is AuthSuccess) {
         showSuccessDialog(context);
         Future.delayed(Durations.extralong4);
-        context.read<LocationsBloc>().add(GetBusLocationsEvent());
+        // context.read<LocationsBloc>().add(GetBusLocationsEvent());
         Navigator.pushAndRemoveUntil(
           context,
           BusListPage.route(state.user),
@@ -118,14 +117,15 @@ Future<int> _handlePermission(BuildContext context) async {
 
   if (foregroundStatus == PermissionStatus.granted) {
     // Step 2: Request background location permission after foreground permission is granted
-    PermissionStatus backgroundStatus =
-        await Permission.locationAlways.request();
+    // PermissionStatus backgroundStatus =
+    //     await Permission.locationAlways.request();
 
-    if (backgroundStatus == PermissionStatus.granted) {
-      return 1;
-    } else {
-      return 0;
-    }
+    // if (backgroundStatus == PermissionStatus.granted) {
+    //   return 1;
+    // } else {
+    //   return 0;
+    // }
+    return 1;
   } else {
     return 0;
   }

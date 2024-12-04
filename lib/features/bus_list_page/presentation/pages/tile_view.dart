@@ -55,10 +55,20 @@ class _TileViewState extends State<TileView> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    "Oops! Couldn't find any buses. Sorry!",
+                    "No buses found",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22,
+                      fontWeight: FontWeight.w400,
+                      color: AppPallete.textColor,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Sorry!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 40,
                       fontWeight: FontWeight.bold,
                       color: AppPallete.textColor,
                     ),

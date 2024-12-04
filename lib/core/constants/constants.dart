@@ -2,7 +2,7 @@
 import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
 
 const UPDATE_LOCATION_INTERVAL = 2;
-const UPDATE_LIST_INTERVAL = 15;
+const UPDATE_LIST_INTERVAL = 6;
 //humans walk at a speed of avg 1.2m/s. and run at around 5m/s
 const THRESHOLD_SPEED_TO_BE_CALLED_MOVING = 0;
 const THRESHOLD_SPEED_ACCURACY = 1;

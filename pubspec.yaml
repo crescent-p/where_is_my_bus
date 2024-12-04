@@ -85,6 +85,7 @@ flutter:
     - assets/animations/login_error.json
     - assets/animations/success.json
     - assets/animations/loading.json
+    - assets/animations/loading_circular.lottie
     - assets/animations/monkey.json
     - assets/icons/login.svg
     - assets/icons/playstore.png
