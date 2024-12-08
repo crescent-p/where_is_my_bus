@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 
-BorderSide a = BorderSide(color: Colors.red, width: 2.0); // Starting border
-BorderSide b = BorderSide(color: Colors.blue, width: 6.0); // Ending border
+BorderSide a = const BorderSide(color: Colors.red, width: 2.0); // Starting border
+BorderSide b = const BorderSide(color: Colors.blue, width: 6.0); // Ending border
 double t = 0.5; // Interpolation factor (0.0 to 1.0)
 
 void showSuccessDialog(BuildContext context) {

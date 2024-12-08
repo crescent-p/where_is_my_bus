@@ -18,7 +18,7 @@ import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_li
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
 
-  static route() => MaterialPageRoute(builder: (context) => Loginpage());
+  static route() => MaterialPageRoute(builder: (context) => const Loginpage());
 
   @override
   State<Loginpage> createState() => _LoginpageState();
@@ -90,7 +90,7 @@ class _LoginpageState extends State<Loginpage> {
                 ),
                 const Spacer(flex: 2),
                 SignInButton(
-                  padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                   Buttons.Google,
                   onPressed: () {
                     context.read<AuthBloc>().add(AuthSignInEvent());

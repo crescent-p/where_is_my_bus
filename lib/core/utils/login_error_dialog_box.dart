@@ -9,7 +9,7 @@ BorderSide b =
 double t = 0.2; // Interpolation factor (0.0 to 1.0)
 
 void showErrorDialog(BuildContext context,
-    {bool callFunction = false, String message = "Let me try again!"}) {
+    {bool callFunction = false, String message = "Try again!"}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -20,17 +20,10 @@ void showErrorDialog(BuildContext context,
             // Lottie Animation
             Lottie.asset(
               'assets/animations/login_error.json',
-              width: 250, // Set desired width
-              height: 250, // Set desired height
-              fit: BoxFit.cover,
+              // width: 250, // Set desired width
+              // height: 250, // Set desired height
+              fit: BoxFit.fitHeight,
               repeat: false,
-            ),
-            const Text(
-              "Login Failed!",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppPallete.errorColor),
             ),
           ],
         ),
@@ -38,9 +31,9 @@ void showErrorDialog(BuildContext context,
           Center(
             child: TextButton(
               child: Container(
-                padding: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppPallete.errorColor,
+                  color: const Color(0xFFFF0000),
                   borderRadius: BorderRadius.circular(20),
                   border: Border(
                     top: BorderSide.lerp(a, b, t),

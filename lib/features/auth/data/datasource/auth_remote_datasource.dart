@@ -86,6 +86,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
   Future<Either<Failure, String>> signOut() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await googleSignIn.signOut();
       prefs.remove("idToken");
       return const Right("Succefully Signed Out");
     } catch (e) {

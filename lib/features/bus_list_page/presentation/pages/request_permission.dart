@@ -15,7 +15,7 @@ class RequestPermissionPopup extends StatelessWidget {
         Icons.location_on,
         size: 150,
       ),
-      title: Text('Enable Location Access'),
+      title: const Text('Enable Location Access'),
       content: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [
