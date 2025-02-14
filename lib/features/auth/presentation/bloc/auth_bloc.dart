@@ -22,50 +22,50 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthSignOutUsecase _authSignOutUsecase;
   final AuthCurrentUserUsecase _authGetCurrentUserUsecase;
   final UserCubit _userCubit;
-  Timer? _listUpdateTimer;
-  Timer? _locationUpdateTimer;
+  // Timer? _listUpdateTimer;
+  // Timer? _locationUpdateTimer;
 
-  @override
-  void onTransition(Transition<AuthEvent, AuthState> transition) {
-    super.onTransition(transition);
-    // Check if we have transitioned to AuthAuthenticated
-    if (transition.nextState is AuthSuccess) {
-      _startPeriodicTimers();
-    } else {
-      if (_listUpdateTimer != null) {
-        _listUpdateTimer!.cancel();
-        _locationUpdateTimer!.cancel();
-        FlutterLocalNotificationsPlugin plugin =
-            FlutterLocalNotificationsPlugin();
-        plugin.cancel(NOTIFICATION_ID);
-      }
-    }
-  }
+  // @override
+  // void onTransition(Transition<AuthEvent, AuthState> transition) {
+  //   super.onTransition(transition);
+  //   // Check if we have transitioned to AuthAuthenticated
+  //   if (transition.nextState is AuthSuccess) {
+  //     // _startPeriodicTimers();
+  //   } else {
+  //     if (_listUpdateTimer != null) {
+  //       _listUpdateTimer!.cancel();
+  //       _locationUpdateTimer!.cancel();
+  //       FlutterLocalNotificationsPlugin plugin =
+  //           FlutterLocalNotificationsPlugin();
+  //       plugin.cancel(NOTIFICATION_ID);
+  //     }
+  //   }
+  // }
 
-  void _startPeriodicTimers() {
-    _listUpdateTimer?.cancel();
-    _locationUpdateTimer?.cancel();
+  // void _startPeriodicTimers() {
+  //   _listUpdateTimer?.cancel();
+  //   _locationUpdateTimer?.cancel();
 
-    _listUpdateTimer =
-        Timer.periodic(const Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
-      if (serviceLocator<LocationsBloc>().state is! LocationPermissionDenied &&
-          serviceLocator<LocationsBloc>().state is! LocationsInitial) {
-        serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
-      }
-    });
+  //   _listUpdateTimer =
+  //       Timer.periodic(const Duration(seconds: UPDATE_LIST_INTERVAL), (timer) {
+  //     if (serviceLocator<LocationsBloc>().state is! LocationPermissionDenied &&
+  //         serviceLocator<LocationsBloc>().state is! LocationsInitial) {
+  //       serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
+  //     }
+  //   });
 
-    _locationUpdateTimer =
-        Timer.periodic(Duration(seconds: UPDATE_LOCATION_INTERVAL), (timer) {
-      serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
-    });
-  }
+  //   _locationUpdateTimer =
+  //       Timer.periodic(Duration(seconds: UPDATE_LOCATION_INTERVAL), (timer) {
+  //     serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
+  //   });
+  // }
 
-  @override
-  Future<void> close() {
-    _listUpdateTimer?.cancel();
-    _locationUpdateTimer?.cancel();
-    return super.close();
-  }
+  // @override
+  // Future<void> close() {
+  //   _listUpdateTimer?.cancel();
+  //   _locationUpdateTimer?.cancel();
+  //   return super.close();
+  // }
 
   AuthBloc(
       {required AuthSignUpWithGoogleUsecase authSignUpWithGoogleUsecas,

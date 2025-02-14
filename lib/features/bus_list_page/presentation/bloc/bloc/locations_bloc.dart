@@ -12,16 +12,16 @@ part 'locations_state.dart';
 
 class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   final GetBusLocationsUsecase _getBusLocationsUsecase;
-  final UpdateCurrentLocationUsecase _updateCurrentLocationUsecase;
+  // final UpdateCurrentLocationUsecase _updateCurrentLocationUsecase;
   LocationsBloc({
     required GetBusLocationsUsecase getBusLocationsUsecase,
-    required UpdateCurrentLocationUsecase updateCurrentLocationUsecase,
+    // required UpdateCurrentLocationUsecase updateCurrentLocationUsecase,
   })  : _getBusLocationsUsecase = getBusLocationsUsecase,
-        _updateCurrentLocationUsecase = updateCurrentLocationUsecase,
+        // _updateCurrentLocationUsecase = updateCurrentLocationUsecase,
         super(LocationsInitial()) {
     on<LocationsEvent>((event, emit) {});
     on<GetBusLocationsEvent>(_getBusLocationsEvent);
-    on<UpdateCurrentLocationEvent>(_updateCurrentLocation);
+    // on<UpdateCurrentLocationEvent>(_updateCurrentLocation);
     on<PermissionDialogShownEvent>(_permissionDialogShownEvent);
   }
 
@@ -41,12 +41,12 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
         (r) => emit(GetCurrentBusLocationsSuccess(buses: r)));
   }
 
-  Future<void> _updateCurrentLocation(
-      UpdateCurrentLocationEvent event, Emitter<LocationsState> emit) async {
-    final res = await _updateCurrentLocationUsecase(NoParams());
-    res.fold(
-        (onLeft) => emit(LocationPermissionDenied()),
-        (onRight) => emit(
-            UpdateLocationSuccess(message: "Updated Location Successfully!")));
-  }
+  // Future<void> _updateCurrentLocation(
+  //     UpdateCurrentLocationEvent event, Emitter<LocationsState> emit) async {
+  //   final res = await _updateCurrentLocationUsecase(NoParams());
+  //   res.fold(
+  //       (onLeft) => emit(LocationPermissionDenied()),
+  //       (onRight) => emit(
+  //           UpdateLocationSuccess(message: "Updated Location Successfully!")));
+  // }
 }

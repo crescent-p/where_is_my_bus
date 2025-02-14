@@ -55,13 +55,13 @@ void initLocations() {
       .registerFactory<GetBusLocationsUsecase>(() => GetBusLocationsUsecase(
             repository: serviceLocator(),
           ));
-  serviceLocator.registerFactory<UpdateCurrentLocationUsecase>(
-      () => UpdateCurrentLocationUsecase(
-            repository: serviceLocator(),
-          ));
+  // serviceLocator.registerFactory<UpdateCurrentLocationUsecase>(
+  //     () => UpdateCurrentLocationUsecase(
+  //           repository: serviceLocator(),
+  //         ));
   serviceLocator.registerLazySingleton<LocationsBloc>(() => LocationsBloc(
         getBusLocationsUsecase: serviceLocator(),
-        updateCurrentLocationUsecase: serviceLocator(),
+        // updateCurrentLocationUsecase: serviceLocator(),
       ));
 }
 

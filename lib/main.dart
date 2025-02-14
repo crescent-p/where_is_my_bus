@@ -24,23 +24,23 @@ void main() async {
   await initDependencies();
 
   // Register MethodChannel
-  const MethodChannel platformChannel = MethodChannel('com.example.channel');
+  // const MethodChannel platformChannel = MethodChannel('com.example.channel');
 
   // Listen for calls from the background service
-  platformChannel.setMethodCallHandler((MethodCall call) async {
-    switch (call.method) {
-      case 'updateUI':
-        // Perform specific actions in the main isolate
-        final arguments = call.arguments;
-        print("Received updateUI with arguments: $arguments");
-        break;
-      default:
-        throw PlatformException(
-          code: 'Unimplemented',
-          details: "The method ${call.method} is not implemented.",
-        );
-    }
-  });
+  // platformChannel.setMethodCallHandler((MethodCall call) async {
+  //   switch (call.method) {
+  //     case 'updateUI':
+  //       // Perform specific actions in the main isolate
+  //       final arguments = call.arguments;
+  //       print("Received updateUI with arguments: $arguments");
+  //       break;
+  //     default:
+  //       throw PlatformException(
+  //         code: 'Unimplemented',
+  //         details: "The method ${call.method} is not implemented.",
+  //       );
+  //   }
+  // });
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Locks portrait mode
@@ -75,39 +75,39 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initBackground();
+    // initBackground();
     context.read<AuthBloc>().add(AuthCurrentUserEvent());
   }
 
-  Future<void> initBackground() async {
-    final service = FlutterBackgroundService();
+  // Future<void> initBackground() async {
+  //   final service = FlutterBackgroundService();
 
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      notificationChannelId,
-      'Background services for where is my bus.',
-      description: 'This notification is used for finding buses near you.',
-      importance: Importance.low,
-    );
+  //   const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  //     notificationChannelId,
+  //     'Background services for where is my bus.',
+  //     description: 'This notification is used for finding buses near you.',
+  //     importance: Importance.low,
+  //   );
 
-    // Create notification channel for Android
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+  //   // Create notification channel for Android
+  //   await flutterLocalNotificationsPlugin
+  //       .resolvePlatformSpecificImplementation<
+  //           AndroidFlutterLocalNotificationsPlugin>()
+  //       ?.createNotificationChannel(channel);
 
-    await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        onStart: onStart,
-        autoStart: true,
-        isForegroundMode: true,
-        notificationChannelId: notificationChannelId,
-        initialNotificationTitle: 'Background Service for Where is my Bus?',
-        initialNotificationContent: 'Searching for Buses near you!',
-        foregroundServiceNotificationId: NOTIFICATION_ID,
-      ),
-      iosConfiguration: IosConfiguration(),
-    );
-  }
+  //   await service.configure(
+  //     androidConfiguration: AndroidConfiguration(
+  //       onStart: onStart,
+  //       autoStart: true,
+  //       isForegroundMode: true,
+  //       notificationChannelId: notificationChannelId,
+  //       initialNotificationTitle: 'Background Service for Where is my Bus?',
+  //       initialNotificationContent: 'Searching for Buses near you!',
+  //       foregroundServiceNotificationId: NOTIFICATION_ID,
+  //     ),
+  //     iosConfiguration: IosConfiguration(),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -125,17 +125,17 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-void onStart(ServiceInstance service) {
-  // Handle background service logic
-  service.on('data').listen((data) {
-    if (data != null) {
-      final message = data['message'] ?? 'No Message';
-      print("Background Service Received: $message");
+// void onStart(ServiceInstance service) {
+//   // Handle background service logic
+//   service.on('data').listen((data) {
+//     if (data != null) {
+//       final message = data['message'] ?? 'No Message';
+//       print("Background Service Received: $message");
 
-      // Send data to the main isolate
-      const MethodChannel platformChannel =
-          MethodChannel('com.example.channel');
-      platformChannel.invokeMethod('updateUI', {'message': message});
-    }
-  });
-}
+//       // Send data to the main isolate
+//       const MethodChannel platformChannel =
+//           MethodChannel('com.example.channel');
+//       platformChannel.invokeMethod('updateUI', {'message': message});
+//     }
+//   });
+// }

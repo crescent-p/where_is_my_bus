@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 
 abstract interface class LocationsRemoteDatasource {
   Future<Either<Failure, List<BusCoordinates>>> getCoordinatesTable();
-  Future<Either<Failure, String>> updateCurrentLocation(
-      {required Position position});
+  // Future<Either<Failure, String>> updateCurrentLocation(
+  //     {required Position position});
 }
 
 class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
@@ -71,53 +71,53 @@ class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
     }
   }
 
-  @override
-  Future<Either<Failure, String>> updateCurrentLocation(
-      {required Position position}) async {
-    try {
-      final idToken = prefs.getString("idToken"); // Safely access idToken
-      final headers = {
-        "Content-Type": "application/json",
-        "Authorization":
-            "Bearer $idToken", // Pass idToken in the Authorization header
-      };
-      final requestBody = {
-        "token": idToken, // If required in the body as well
-        "uuid": "UUUGHWhy did i put this here",
-        "latitude": position.latitude.toString(),
-        "longitude": position.longitude.toString(),
-        "speed": position.speed.toString(), // Handle null speeds
-        "location_accuracy":
-            position.accuracy.toString(), // Correct accuracy field
-        "satelite_count": "0"
-      };
+  // @override
+  // Future<Either<Failure, String>> updateCurrentLocation(
+  //     {required Position position}) async {
+  //   try {
+  //     final idToken = prefs.getString("idToken"); // Safely access idToken
+  //     final headers = {
+  //       "Content-Type": "application/json",
+  //       "Authorization":
+  //           "Bearer $idToken", // Pass idToken in the Authorization header
+  //     };
+  //     final requestBody = {
+  //       "token": idToken, // If required in the body as well
+  //       "uuid": "UUUGHWhy did i put this here",
+  //       "latitude": position.latitude.toString(),
+  //       "longitude": position.longitude.toString(),
+  //       "speed": position.speed.toString(), // Handle null speeds
+  //       "location_accuracy":
+  //           position.accuracy.toString(), // Correct accuracy field
+  //       "satelite_count": "0"
+  //     };
 
-      try {
-        final res = await http.post(
-          Uri.parse("http://68.233.101.85:8000/locations/"),
-          headers: headers,
-          body: jsonEncode(requestBody), // Properly encode the body
-        );
+  //     try {
+  //       final res = await http.post(
+  //         Uri.parse("http://68.233.101.85:8000/locations/"),
+  //         headers: headers,
+  //         body: jsonEncode(requestBody), // Properly encode the body
+  //       );
 
-        if (res.statusCode == 200) {
-          return const Right("Coordinates updated successfully");
-        } else {
-          return Left(Failure(message: "Server Error!"));
-        }
-      } catch (e) {
-        return Left(Failure(message: e.toString()));
-      }
+  //       if (res.statusCode == 200) {
+  //         return const Right("Coordinates updated successfully");
+  //       } else {
+  //         return Left(Failure(message: "Server Error!"));
+  //       }
+  //     } catch (e) {
+  //       return Left(Failure(message: e.toString()));
+  //     }
 
-      // final response = await client.from("coordinates").upsert({
-      //   'x-coordinate': pos.x,
-      //   'y-coordinate': coordinates.y,
-      //   'time-added': DateTime.now().toIso8601String(),
-      // }, onConflict: 'id');
-      // if (response == null) {
-      //   return Left(Failure(message: "Failed to insert coordinates"));
-      // }
-    } catch (e) {
-      return Left(Failure(message: e.toString()));
-    }
-  }
+  //     // final response = await client.from("coordinates").upsert({
+  //     //   'x-coordinate': pos.x,
+  //     //   'y-coordinate': coordinates.y,
+  //     //   'time-added': DateTime.now().toIso8601String(),
+  //     // }, onConflict: 'id');
+  //     // if (response == null) {
+  //     //   return Left(Failure(message: "Failed to insert coordinates"));
+  //     // }
+  //   } catch (e) {
+  //     return Left(Failure(message: e.toString()));
+  //   }
+  // }
 }

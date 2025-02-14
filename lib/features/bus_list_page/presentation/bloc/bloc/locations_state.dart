@@ -5,11 +5,11 @@ sealed class LocationsState {}
 
 final class LocationsInitial extends LocationsState {}
 
-final class UpdateLocationSuccess extends LocationsState {
-  final String message;
+// final class UpdateLocationSuccess extends LocationsState {
+//   final String message;
 
-  UpdateLocationSuccess({required this.message});
-}
+//   UpdateLocationSuccess({required this.message});
+// }
 
 final class GetCurrentBusLocationsSuccess extends LocationsState {
   final List<BusCoordinates> buses;

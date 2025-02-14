@@ -23,17 +23,17 @@ bool backgroundStarted = false;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-Future<void> onStart(ServiceInstance service) async {
-  DartPluginRegistrant.ensureInitialized();
+// Future<void> onStart(ServiceInstance service) async {
+//   DartPluginRegistrant.ensureInitialized();
 
-  Timer.periodic(const Duration(seconds: 1), (timer) async {
-    if ((DateTime.now().millisecondsSinceEpoch / 1000) %
-            UPDATE_LOCATION_INTERVAL ==
-        0) {
-      service.invoke("set_location", {'value': 'myvalue'});
-    }
-  });
-}
+//   Timer.periodic(const Duration(seconds: 1), (timer) async {
+//     if ((DateTime.now().millisecondsSinceEpoch / 1000) %
+//             UPDATE_LOCATION_INTERVAL ==
+//         0) {
+//       service.invoke("set_location", {'value': 'myvalue'});
+//     }
+//   });
+// }
 
 class BusListPage extends StatefulWidget {
   final my_user.User user;
@@ -48,7 +48,7 @@ class BusListPage extends StatefulWidget {
 }
 
 class _BusListPageState extends State<BusListPage> {
-  late final FlutterBackgroundService flutterBackgroundService;
+  // late final FlutterBackgroundService flutterBackgroundService;
 
   @override
   void initState() {
@@ -92,79 +92,74 @@ class _BusListPageState extends State<BusListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 230, 238, 241),
-        body: MultiBlocListener(
-          listeners: [
-            BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthSignOutSuccess) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    Loginpage.route(),
-                    (route) => false,
-                  );
-                }
-              },
-            ),
-            BlocListener<LocationsBloc, LocationsState>(
-              listener: (context, state) async {
-                if (state is LocationEventFailed) {
-                  showSnack(
-                    context,
-                    "Location Event Failed",
-                    "Failed to update Location! Please check internet",
-                    ContentType.failure,
-                    AppPallete.errorColor,
-                  );
-                } else if (state is UpdateLocationSuccess) {
-                  // showSnack(
-                  //   context,
-                  //   "Update Location Success",
-                  //   "Cool!",
-                  //   ContentType.failure,
-                  //   AppPallete.success,
-                  // );
-                } else if (state is AuthSignOutEvent) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    Loginpage.route(),
-                    (route) => false,
-                  );
-                }
-              },
-            ),
-          ],
-          child: BlocBuilder<LocationsBloc, LocationsState>(
-            builder: (context, state) {
-              if (state is LocationsInitial || state is LocationLoading) {
-                serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
-                return const LoadingScreen();
-              } else if (state is GetCurrentBusLocationsSuccess) {
-                widget.busStreamCache = state.buses;
-                return BusList(
-                  busStream: state.buses,
-                  permission: true,
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 230, 238, 241),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthSignOutSuccess) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  Loginpage.route(),
+                  (route) => false,
                 );
-              } else if (state is GetCurrentBusLocationsFailed) {
-                return BusList(
-                  busStream: widget.busStreamCache,
-                  permission: true,
-                );
-              } else if (state is LocationPermissionDenied) {
-                return RequestPermissionPopup(context: context);
-              } else {
-                return BusList(
-                  busStream: widget.busStreamCache,
-                  permission: true,
-                ); // Default state handling
               }
             },
           ),
+          BlocListener<LocationsBloc, LocationsState>(
+            listener: (context, state) async {
+              if (state is LocationEventFailed) {
+                showSnack(
+                  context,
+                  "Location Event Failed",
+                  "Failed to update Location! Please check internet",
+                  ContentType.failure,
+                  AppPallete.errorColor,
+                );
+                // } else if (state is UpdateLocationSuccess) {
+                // showSnack(
+                //   context,
+                //   "Update Location Success",
+                //   "Cool!",
+                //   ContentType.failure,
+                //   AppPallete.success,
+                // );
+              } else if (state is AuthSignOutEvent) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  Loginpage.route(),
+                  (route) => false,
+                );
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<LocationsBloc, LocationsState>(
+          builder: (context, state) {
+            if (state is LocationsInitial || state is LocationLoading) {
+              serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());
+              return const LoadingScreen();
+            } else if (state is GetCurrentBusLocationsSuccess) {
+              widget.busStreamCache = state.buses;
+              return BusList(
+                busStream: state.buses,
+                permission: true,
+              );
+            } else if (state is GetCurrentBusLocationsFailed) {
+              return BusList(
+                busStream: widget.busStreamCache,
+                permission: true,
+              );
+            } else if (state is LocationPermissionDenied) {
+              return RequestPermissionPopup(context: context);
+            } else {
+              return BusList(
+                busStream: widget.busStreamCache,
+                permission: true,
+              ); // Default state handling
+            }
+          },
         ),
       ),
     );

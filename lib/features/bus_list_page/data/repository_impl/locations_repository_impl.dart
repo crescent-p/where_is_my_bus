@@ -31,31 +31,31 @@ class LocationsRepositoryImpl implements LocationsRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, String>> updateCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.bestForNavigation),
-      );
+  // @override
+  // Future<Either<Failure, String>> updateCurrentLocation() async {
+  //   try {
+  //     Position position = await Geolocator.getCurrentPosition(
+  //       locationSettings: const LocationSettings(
+  //           accuracy: LocationAccuracy.bestForNavigation),
+  //     );
 
-      double speed = position.speed;
-      bool deviceIsMoving = false;
+  //     double speed = position.speed;
+  //     bool deviceIsMoving = false;
 
-      //only update location if two subsequent speed values give true.
-      if (speed >= THRESHOLD_SPEED_TO_BE_CALLED_MOVING) {
-        deviceIsMoving = true;
-      } else {
-        deviceIsMoving = false;
-      }
-      if (deviceIsMoving ) {
-        final res = await repository.updateCurrentLocation(position: position);
-        return res.fold((l) => Left(l), (r) => Right(r));
-      } else {
-        return const Right("User is not in a Bus. (i think)");
-      }
-    } catch (e) {
-      return Left(Failure(message: e.toString()));
-    }
-  }
+  //     //only update location if two subsequent speed values give true.
+  //     if (speed >= THRESHOLD_SPEED_TO_BE_CALLED_MOVING) {
+  //       deviceIsMoving = true;
+  //     } else {
+  //       deviceIsMoving = false;
+  //     }
+  //     if (deviceIsMoving ) {
+  //       final res = await repository.updateCurrentLocation(position: position);
+  //       return res.fold((l) => Left(l), (r) => Right(r));
+  //     } else {
+  //       return const Right("User is not in a Bus. (i think)");
+  //     }
+  //   } catch (e) {
+  //     return Left(Failure(message: e.toString()));
+  //   }
+  // }
 }
