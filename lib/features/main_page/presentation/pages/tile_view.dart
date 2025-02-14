@@ -3,7 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
+import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 class TileView extends StatefulWidget {
@@ -18,27 +18,6 @@ class _TileViewState extends State<TileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                serviceLocator<AuthBloc>().add(AuthSignOutEvent());
-              },
-              icon: const Icon(
-                Icons.logout,
-                color: AppPallete.whiteColor,
-              ))
-        ],
-        backgroundColor: AppPallete.gradient2,
-        title: const Text(
-          'Bus List',
-          style: TextStyle(
-            color: AppPallete.whiteColor,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
       backgroundColor: AppPallete.backgroundColor,
       body: widget.busStream.isEmpty
           ? SingleChildScrollView(

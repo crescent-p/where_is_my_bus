@@ -22,22 +22,8 @@
     - spent a ton of time figuring out how to set up loacation permissions for andriod 14
   
 ### Known issues 
-- The location data is not accurate. 
-    - The location data is not accurate. Gps may give positive speed even when the user is stationary. This causes the location data to be updated even when the user is stationary.
-     == Solved == 
-        Set location.speedAccuracy != 1.5. 1.5 is the default value if a speedAccuracy can't be determined. The logic here is that if it good enough to find the speedAccuracy then the speed must be fairly accurate.
-- Sync issue in Database
-    - Due to network issues the data may be older. This usually occurs in multiples of UPDATE_INTERVAL. ie. 2 seconds(currently).
-    == SOLUTION ==
-        ~ Need not implement, as we are migrating to own server from supabase. ~ 
-        while grouping take time into consideration as well
-            IF diff in time between two points is less than K sec 
-                THEN while grouping the points be more lenient. 
-                    for example if the MIN_DISTANCE_POINTS should be less than 10 normally. But 
-                    if there are points that 2s apart check for 10 + 2 * AVG_SPEED. 
-- The network might upload out of order for the same user.
-    - So only update if newer data's datetime is newer than present one.
-
+- logout doenst rebuile the bloc in main.dart
+- 
 
 ### Things to improve  
 - Implement semaphore based location tracking.

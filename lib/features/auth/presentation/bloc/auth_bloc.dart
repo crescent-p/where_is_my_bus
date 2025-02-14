@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as myUser;
@@ -11,7 +12,7 @@ import 'package:where_is_my_bus/core/usecases/usecases.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_current_user_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_in_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_out_usecase.dart';
-import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
+import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 part 'auth_event.dart';
@@ -93,8 +94,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _authSignOutEvent(
       AuthSignOutEvent authSignOutEvent, Emitter<AuthState> emit) async {
     final res = await _authSignOutUsecase(NoParams());
-    res.fold((onLeft) => emit(AuthFailure(message: onLeft.message)),
-        (onRight) => emit(AuthSignOutSuccess()));
+    _emitSignOut(res, emit);
   }
 
   void _authCurrentUserEvent(AuthCurrentUserEvent authCurrentUserEvent,
@@ -112,5 +112,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _emitAuthFailure(Failure left, Emitter<AuthState> emit) {
     _userCubit.noUserFound();
     emit(AuthFailure(message: left.message));
+  }
+
+  void _emitSignOut(Either<Failure, String> res, Emitter<AuthState> emit) {
+    _userCubit.updateUser(null);
+    res.fold((onLeft) => emit(AuthFailure(message: onLeft.message)),
+        (onRight) => emit(AuthSignOutSuccess()));
   }
 }

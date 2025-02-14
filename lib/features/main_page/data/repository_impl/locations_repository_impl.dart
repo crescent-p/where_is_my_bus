@@ -2,11 +2,11 @@ import 'package:fpdart/fpdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
-import 'package:where_is_my_bus/features/bus_list_page/data/data_sources/locations_remote_datasource.dart';
+import 'package:where_is_my_bus/features/main_page/data/data_sources/locations_remote_datasource.dart';
 
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
+import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coordinates.dart';
 
-import 'package:where_is_my_bus/features/bus_list_page/domain/repository/locations_repository.dart';
+import 'package:where_is_my_bus/features/main_page/domain/repository/locations_repository.dart';
 
 bool wasMoving = false;
 

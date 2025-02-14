@@ -1,4 +1,4 @@
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
+import 'package:where_is_my_bus/features/main_page/domain/entities/coordinates.dart';
 
 Map<Coordinates, String> mapFromCoordinateToString = {
   Coordinates(x: 11.321489, y: 75.934114): "Center Circle NITC",

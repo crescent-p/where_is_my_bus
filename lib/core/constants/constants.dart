@@ -1,5 +1,5 @@
 // ignore_for_file: constant_identifier_names
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/coordinates.dart';
+import 'package:where_is_my_bus/features/main_page/domain/entities/coordinates.dart';
 
 const UPDATE_LOCATION_INTERVAL = 2;
 const UPDATE_LIST_INTERVAL = 6;

@@ -6,8 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
 import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
-import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_list_page.dart';
+import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
+import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav_cubit.dart';
+import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 import 'dart:async';
 
@@ -56,6 +57,9 @@ void main() async {
           BlocProvider(
             create: (_) => serviceLocator<LocationsBloc>(),
           ),
+          BlocProvider(
+            create: (_) => serviceLocator<BottomNavCubit>(),
+          )
         ],
         child: const MaterialApp(
           home: MyApp(),
@@ -111,17 +115,30 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserCubit, UserState>(builder: (context, state) {
-      if (state is UserInitial) {
-        return const LoadingScreen();
-      } else if (state is UserLoggedIn) {
-        return BusListPage(user: state.getUser);
-      } else if (state is UserLoggedOut) {
-        return const Loginpage();
-      } else {
-        return const Loginpage();
-      }
-    });
+    return BlocListener<UserCubit, UserState>(
+      listener: (context, state) {
+        if (state is UserLoggedIn) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (context) => MainPage(user: state.getUser)),
+          );
+        } else if (state is UserLoggedOut) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const Loginpage()),
+          );
+        }
+      },
+      child: BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) {
+          if (state is UserInitial) {
+            return const LoadingScreen();
+          } else {
+            return const SizedBox
+                .shrink(); // Return an empty widget as the actual navigation is handled in the listener
+          }
+        },
+      ),
+    );
   }
 }
 

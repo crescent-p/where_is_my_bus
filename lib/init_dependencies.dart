@@ -12,12 +12,13 @@ import 'package:where_is_my_bus/features/auth/domain/usecases/auth_current_user_
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_in_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_out_usecase.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:where_is_my_bus/features/bus_list_page/data/data_sources/locations_remote_datasource.dart';
-import 'package:where_is_my_bus/features/bus_list_page/data/repository_impl/locations_repository_impl.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/repository/locations_repository.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/get_bus_locations_usecase.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/usecases/update_current_location_usecase.dart';
-import 'package:where_is_my_bus/features/bus_list_page/presentation/bloc/bloc/locations_bloc.dart';
+import 'package:where_is_my_bus/features/main_page/data/data_sources/locations_remote_datasource.dart';
+import 'package:where_is_my_bus/features/main_page/data/repository_impl/locations_repository_impl.dart';
+import 'package:where_is_my_bus/features/main_page/domain/repository/locations_repository.dart';
+import 'package:where_is_my_bus/features/main_page/domain/usecases/get_bus_locations_usecase.dart';
+import 'package:where_is_my_bus/features/main_page/domain/usecases/update_current_location_usecase.dart';
+import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
+import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav_cubit.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -63,6 +64,7 @@ void initLocations() {
         getBusLocationsUsecase: serviceLocator(),
         // updateCurrentLocationUsecase: serviceLocator(),
       ));
+  serviceLocator.registerLazySingleton<BottomNavCubit>(() => BottomNavCubit());
 }
 
 void initAuth() {

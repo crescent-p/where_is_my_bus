@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
-import 'package:where_is_my_bus/features/bus_list_page/domain/entities/bus_user_coordinates.dart';
+import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coordinates.dart';
 import 'package:http/http.dart' as http;
 
 abstract interface class LocationsRemoteDatasource {

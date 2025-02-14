@@ -13,7 +13,7 @@ import 'package:where_is_my_bus/core/utils/login_error_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/login_success_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:where_is_my_bus/features/bus_list_page/presentation/pages/bus_list_page.dart';
+import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
 
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
@@ -60,13 +60,13 @@ class _LoginpageState extends State<Loginpage> {
         // context.read<LocationsBloc>().add(GetBusLocationsEvent());
         Navigator.pushAndRemoveUntil(
           context,
-          BusListPage.route(state.user),
+          MainPage.route(state.user),
           (route) => false,
         );
       }
     }, builder: (BuildContext context, AuthState state) {
       if (state is AuthSuccess) {
-        return BusListPage(user: state.user);
+        return MainPage(user: state.user);
       } else {
         return MaterialApp(
           color:
