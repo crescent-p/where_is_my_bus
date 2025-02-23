@@ -11,7 +11,7 @@ abstract interface class LocationsRemoteDatasource {
   Future<Either<Failure, List<BusCoordinates>>> getCoordinatesTable();
   // Future<Either<Failure, String>> updateCurrentLocation(
   //     {required Position position});
-}
+} 
 
 class LocationsRemoteDatasourceImpl implements LocationsRemoteDatasource {
   final SharedPreferences prefs;

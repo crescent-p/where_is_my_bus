@@ -8,7 +8,7 @@ import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coor
 
 import 'package:where_is_my_bus/features/main_page/domain/repository/locations_repository.dart';
 
-bool wasMoving = false;
+bool wasMoving = false; 
 
 class LocationsRepositoryImpl implements LocationsRepository {
   final LocationsRemoteDatasource repository;

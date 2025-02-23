@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/pages/request_permission.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/pages/tile_view.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/tile_view.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 class BusList extends StatefulWidget {

@@ -14,11 +14,11 @@ import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart'
 import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav_cubit.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/pages/bus_list_page.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/pages/profile.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/bus_list_page.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/profile.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/pages/request_permission.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/pages/social_page.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/widgets/bus_list.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/social_page.dart';
+import 'package:where_is_my_bus/features/social/presentation/widgets/bus_list.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
@@ -54,7 +54,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   // late final FlutterBackgroundService flutterBackgroundService;
   final List<Widget> pages = [
-    SocialPage(),
+    SocailPageWidget(items: {}),
     ProfilePage(),
     BusListPage(),
   ];
@@ -115,7 +115,7 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: AppPallete.gradient2,
         title: Text(
           _getGreeting(),
-          style: TextStyle(
+          style: const TextStyle(
             color: AppPallete.whiteColor,
             fontSize: 28,
             fontWeight: FontWeight.bold,
