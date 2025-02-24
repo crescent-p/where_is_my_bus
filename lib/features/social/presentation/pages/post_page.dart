@@ -6,6 +6,7 @@ import 'package:where_is_my_bus/features/social/domain/usecases/get_comments_use
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
+import 'package:where_is_my_bus/features/social/data/data_source/social_remote_datasource.dart';
 
 class PostPageWidget extends StatefulWidget {
   const PostPageWidget({Key? key, required this.postID}) : super(key: key);
@@ -16,17 +17,15 @@ class PostPageWidget extends StatefulWidget {
 
 class _PostPageWidgetState extends State<PostPageWidget> {
   final TextEditingController commentController = TextEditingController();
-
   List<Comments> postComments = [];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    serviceLocator<CommentsBloc>.call().add(
-      FetchCommentsEvent(postID: widget.postID),
-    );
-    serviceLocator<SocialBloc>.call().add(
+    serviceLocator<SocialBloc>().add(
       FetchPostEvent(postID: widget.postID),
+    );
+    serviceLocator<CommentsBloc>().add(
+      FetchCommentsEvent(postID: widget.postID),
     );
   }
 
@@ -43,32 +42,34 @@ class _PostPageWidgetState extends State<PostPageWidget> {
         appBar: AppBar(
           title: const Text('Post'),
         ),
-        body: Column(
-          children: [
-            BlocBuilder<SocialBloc, SocialState>(
-              builder: (context, state) {
-                if (state is SocialStateInitial) {
-                  return CircularProgressIndicator();
-                } else if (state is SocialPostFetchedState) {
-                  return postWidget(context, widget, state.post);
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
-            BlocBuilder<CommentsBloc, CommentsState>(
-              builder: (context, state) {
-                if (state is CommentsInitial) {
-                  return CircularProgressIndicator();
-                } else if (state is CommentsFetchedState) {
-                  postComments = state.comments;
-                  return commentsList(postComments);
-                } else {
-                  return commentsList(postComments);
-                }
-              },
-            )
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              BlocBuilder<SocialBloc, SocialState>(
+                builder: (context, state) {
+                  if (state is SocialStateInitial) {
+                    return CircularProgressIndicator();
+                  } else if (state is SocialPostFetchedState) {
+                    return postWidget(context, widget, state.post);
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+              BlocBuilder<CommentsBloc, CommentsState>(
+                builder: (context, state) {
+                  if (state is CommentsInitial) {
+                    return commentsList(context, postComments);
+                  } else if (state is CommentsFetchedState) {
+                    postComments = state.comments;
+                    return commentsList(context, postComments);
+                  } else {
+                    return commentsList(context, postComments);
+                  }
+                },
+              )
+            ],
+          ),
         ),
         bottomNavigationBar: Padding(
           padding: MediaQuery.of(context).viewInsets,
@@ -116,7 +117,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
 
 Widget postWidget(context, widget, Post post) {
   return Container(
-    height: 500,
+    height: 400,
     width: MediaQuery.of(context).size.width,
     child: GestureDetector(
       // When user taps outside, unfocus to dismiss keyboard
@@ -170,18 +171,24 @@ Widget postWidget(context, widget, Post post) {
   );
 }
 
-Widget commentsList(postComments) {
+Widget commentsList(context, List<Comments> postComments) {
   if (postComments.isEmpty) {
     return Text("NO COMMENTS");
   }
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: postComments.map((entry) {
-      return ListTile(
-        leading: CircleAvatar(child: Text(entry.userEmail[0])),
-        title: Text(entry.userEmail),
-        subtitle: Text(entry.text),
-      );
-    }).toList(),
+  return SizedBox(
+    height: 500,
+    width: MediaQuery.of(context).size.width,
+    child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: postComments.map((entry) {
+          return ListTile(
+            leading: CircleAvatar(child: Text(entry.userEmail[0])),
+            title: Text(entry.userEmail.trim()),
+            subtitle: Text(entry.text),
+          );
+        }).toList(),
+      ),
+    ),
   );
 }

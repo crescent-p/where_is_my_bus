@@ -11,6 +11,7 @@ import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locati
 import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav_cubit.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 import 'dart:async';
@@ -67,6 +68,9 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => serviceLocator<CommentsBloc>(),
+          ),
+          BlocProvider(
+            create: (_) => serviceLocator<MiniPostsBloc>(),
           )
         ],
         child: const MaterialApp(

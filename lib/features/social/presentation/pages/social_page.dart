@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/features/social/data/data_source/social_remote_datasource.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/mini_post.dart';
-import 'package:where_is_my_bus/features/social/domain/usecases/get_mini_posts_usecase.dart';
-import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/post_page.dart';
+import 'package:where_is_my_bus/init_dependencies.dart';
 
 class SocailPageWidget extends StatefulWidget {
   final Map<String, List<MiniPost>> items;
@@ -22,7 +23,7 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
   @override
   void initState() {
     super.initState();
-    context.read<SocialBloc>().add(GetMiniPostsEvent(limit: 10));
+    context.read<MiniPostsBloc>().add(GetMiniPostsEvent());
   }
 
   @override
@@ -37,26 +38,26 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: BlocListener<SocialBloc, SocialState>(
+            child: BlocListener<MiniPostsBloc, MiniPostsState>(
               listener: (context, state) {
-                if (state is SocialStateInitial) {
-                  const CircularProgressIndicator();
-                } else if (state is SocialStateLoaded) {
-                  Map<String, List<MiniPost>> posts = state.posts;
-                  Column(
-                    children: posts.entries.map((entry) {
-                      return _buildSection(
-                        context,
-                        title: entry.key,
-                        items: entry.value,
-                      );
-                    }).toList(),
-                  );
-                }
+                // if (state is SocialStateInitial) {
+                //   const CircularProgressIndicator();
+                // } else if (state is SocialStateLoaded) {
+                //   Map<String, List<MiniPost>> posts = state.posts;
+                //   Column(
+                //     children: posts.entries.map((entry) {
+                //       return _buildSection(
+                //         context,
+                //         title: entry.key,
+                //         items: entry.value,
+                //       );
+                //     }).toList(),
+                //   );
+                // }
               },
-              child: BlocBuilder<SocialBloc, SocialState>(
+              child: BlocBuilder<MiniPostsBloc, MiniPostsState>(
                   builder: (context, state) {
-                if (state is SocialStateLoaded) {
+                if (state is MiniPostsLoadedState) {
                   Map<String, List<MiniPost>> posts = state.posts;
                   return SingleChildScrollView(
                     child: Column(
@@ -66,24 +67,10 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                             const SizedBox(
                               height: 20,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                SocialRemoteDataSource source =
-                                    SocialRemoteDataSourceImple();
-                                source.getComments("hi");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        PostPageWidget(postID: "df"),
-                                  ),
-                                );
-                              },
-                              child: _buildSection(
-                                context,
-                                title: entry.key,
-                                items: entry.value,
-                              ),
+                            _buildSection(
+                              context,
+                              title: entry.key,
+                              items: entry.value,
                             ),
                           ],
                         );
@@ -91,7 +78,7 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                     ),
                   );
                 }
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }),
             ),
           ),
@@ -123,8 +110,6 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
               final item = items[index];
               return GestureDetector(
                 onTap: () {
-                  SocialRemoteDataSource source = SocialRemoteDataSourceImple();
-                  source.getComments("hi");
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -12,6 +12,11 @@ import 'package:http/http.dart' as http;
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 const String url = "68.233.101.85";
+Map<String, String> cursors = {};
+
+// void freeCursor(String postID){
+//   cursors[postID].
+// }
 
 abstract interface class SocialRemoteDataSource {
   Future<Either<Failure, Map<String, List<MiniPost>>>> getMiniPosts(
@@ -24,7 +29,6 @@ abstract interface class SocialRemoteDataSource {
 }
 
 class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
-  Map<String, String> cursors = {};
   @override
   Future<Either<Failure, Map<String, List<MiniPost>>>> getMiniPosts(
       int curr, int limit) async {
@@ -72,7 +76,7 @@ class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
   Future<Either<Failure, List<Comments>>> getComments(String postId) async {
     try {
       final res;
-      if (!cursors.containsKey(postId)) {
+      if (!cursors.containsKey(postId) || true) {
         res = await http.get(
           Uri.parse(
               "http://68.233.101.85/social/comment?post_id=$postId&limit=20"),

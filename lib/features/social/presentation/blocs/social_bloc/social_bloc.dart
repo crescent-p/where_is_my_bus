@@ -12,20 +12,18 @@ part 'social_event.dart';
 part 'social_state.dart';
 
 class SocialBloc extends Bloc<SocialEvent, SocialState> {
-  final GetMiniPostsUsecase _getMiniPostsUsecase;
   final GetCommentsUsecase _getCommentsUsecase;
   final GetSpecificPostUseCase _getSpecificPostUseCase;
   
   SocialBloc({
-    required GetMiniPostsUsecase getMiniPostsUsecase,
+    
     required GetCommentsUsecase getCommentsUsecase,
     required GetSpecificPostUseCase getSpecificPostUseCase,
-  })  : _getMiniPostsUsecase = getMiniPostsUsecase,
+  })  : 
         _getCommentsUsecase = getCommentsUsecase,
         _getSpecificPostUseCase = getSpecificPostUseCase,
         super(SocialStateInitial()) {
     on<SocialEvent>((event, emit) {});
-    on<GetMiniPostsEvent>(_getMiniPostsEvent);
     on<FetchCommentEvent>(_getCommentsEvent);
     on<FetchPostEvent>(_getSpecifiPostEvent);
   }
@@ -44,11 +42,4 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         (r) => emit(SocialCommentsFetchedState(comments: r)));
   }
 
-  Future<void> _getMiniPostsEvent(
-      GetMiniPostsEvent event, Emitter<SocialState> emit) async {
-    final res =
-        await _getMiniPostsUsecase(MiniPostParams(startindex: 0, count: 10));
-    res.fold((l) => emit(SocialStateFailed(message: l.message)),
-        (r) => emit(SocialStateLoaded(posts: r)));
-  }
 }

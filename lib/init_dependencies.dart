@@ -30,6 +30,7 @@ import 'package:where_is_my_bus/features/social/domain/repository/social_reposit
 import 'package:where_is_my_bus/features/social/domain/usecases/get_mini_posts_usecase.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/get_specific_post_usecase.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
 
 import 'features/social/domain/usecases/get_comments_usecase.dart';
@@ -65,7 +66,13 @@ Future<void> initDependencies() async {
   initLocations();
   initSocial();
   initComments();
+  initMiniPosts();
   await initDatabase();
+}
+
+void initMiniPosts() {
+  serviceLocator.registerLazySingleton<MiniPostsBloc>(
+      () => MiniPostsBloc(getMiniPostsUsecase: serviceLocator()));
 }
 
 Future<void> initComments() async {
@@ -107,7 +114,6 @@ void initSocial() {
       () => SocialLocalDataSourceImple(storage: serviceLocator()));
   serviceLocator.registerLazySingleton<SocialBloc>(() => SocialBloc(
         getSpecificPostUseCase: serviceLocator(),
-        getMiniPostsUsecase: serviceLocator(),
         getCommentsUsecase: serviceLocator(),
       ));
   serviceLocator.registerLazySingleton<GetSpecificPostUseCase>(

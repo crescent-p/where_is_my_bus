@@ -5,11 +5,6 @@ sealed class SocialState {}
 
 final class SocialStateInitial extends SocialState {}
 
-final class SocialStateLoaded extends SocialState {
-  final Map<String, List<MiniPost>> posts;
-
-  SocialStateLoaded({required this.posts});
-}
 
 final class SocialStateFailed extends SocialState {
   final String message;
