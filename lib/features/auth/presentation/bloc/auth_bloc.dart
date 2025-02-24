@@ -12,6 +12,7 @@ import 'package:where_is_my_bus/core/usecases/usecases.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_current_user_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_in_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_out_usecase.dart';
+import 'package:where_is_my_bus/features/auth/domain/usecases/register_with_fastapi_usecase.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
@@ -21,6 +22,7 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthSignUpWithGoogleUsecase _authSignUpWithGoogleUsecase;
   final AuthSignOutUsecase _authSignOutUsecase;
+  final RegisterWithFastAPIUsecase _registerWithFastAPIUsecase;
   final AuthCurrentUserUsecase _authGetCurrentUserUsecase;
   final UserCubit _userCubit;
   // Timer? _listUpdateTimer;
@@ -72,8 +74,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       {required AuthSignUpWithGoogleUsecase authSignUpWithGoogleUsecas,
       required AuthSignOutUsecase authSignOutUseCase,
       required AuthCurrentUserUsecase authCurrentUserUsecase,
+      required RegisterWithFastAPIUsecase registerWithFastAPIUsecase,
       required UserCubit userCubit})
       : _authSignOutUsecase = authSignOutUseCase,
+        _registerWithFastAPIUsecase = registerWithFastAPIUsecase,
         _authSignUpWithGoogleUsecase = authSignUpWithGoogleUsecas,
         _authGetCurrentUserUsecase = authCurrentUserUsecase,
         _userCubit = userCubit,
@@ -106,6 +110,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _emitAuthSucces(myUser.User user, Emitter<AuthState> emit) {
     _userCubit.updateUser(user);
+    _registerWithFastAPIUsecase.call;
     emit(AuthSuccess(user: user));
   }
 

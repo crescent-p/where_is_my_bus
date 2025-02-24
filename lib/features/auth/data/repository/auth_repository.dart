@@ -21,4 +21,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, User>> signUpWithGoogle() {
     return authRemoteDataSouce.signInWithGoogle();
   }
+
+  @override
+  Future<Either<Failure, String>> registerWithFastAPIUsecase() {
+    return authRemoteDataSouce.registerWithFastAPI();
+  }
 }

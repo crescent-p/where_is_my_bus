@@ -3,11 +3,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as myUser;
+import 'package:http/http.dart' as http;
 
 abstract interface class AuthRemoteDataSouce {
   Future<Either<Failure, myUser.User>> signInWithGoogle();
   Future<Either<Failure, String>> signOut();
   Future<Either<Failure, myUser.User>> getCurrentUser();
+  Future<Either<Failure, String>> registerWithFastAPI();
 }
 
 class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
@@ -91,6 +93,26 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
       return const Right("Succefully Signed Out");
     } catch (e) {
       return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> registerWithFastAPI() async {
+    try {
+      if (prefs.containsKey("idToken")) {
+        final res = await http.get(Uri.parse(
+            "http://68.233.101.85/signin?token=${prefs.getString("idToken")}"));
+        if (res.statusCode != 200) {
+          return Left(Failure(message: "Login ERROR"));
+        }
+        return const Right("STORED");
+      } else {
+        return Left(Failure(message: "Login ERROR"));
+      }
+    } catch (e) {
+      return Left(
+        Failure(message: e.toString()),
+      );
     }
   }
 }
