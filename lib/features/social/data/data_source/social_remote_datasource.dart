@@ -88,7 +88,7 @@ class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
       } else {
         // cursors[postId] = res
         final body = jsonDecode(res.body) as Map<String, dynamic>;
-        cursors[postId] = body["cursor"];
+        cursors[postId] = body["cursor"] ?? 'None';
         if ((body["body"]).isEmpty) {
           return Right([]);
         }

@@ -12,7 +12,7 @@ class Comments {
   });
   factory Comments.fromJson(Map<String, dynamic> json) {
     return Comments(
-      postId: json['id'].toString(),
+      postId: json['post_uuid'].toString(),
       userEmail: json['user_email'],
       text: json['text'],
       timestamp: DateTime.parse(json['datetime']),

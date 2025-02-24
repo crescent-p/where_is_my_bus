@@ -22,11 +22,11 @@ class _PostPageWidgetState extends State<PostPageWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    serviceLocator<SocialBloc>.call().add(
-      FetchCommentEvent(postID: widget.postID),
-    );
     serviceLocator<CommentsBloc>.call().add(
       FetchCommentsEvent(postID: widget.postID),
+    );
+    serviceLocator<SocialBloc>.call().add(
+      FetchPostEvent(postID: widget.postID),
     );
   }
 
@@ -38,48 +38,45 @@ class _PostPageWidgetState extends State<PostPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // App bar displaying the post heading
-      appBar: AppBar(
-        title: const Text('Post'),
-      ),
-      body: Column(children: [
-        BlocBuilder<SocialBloc, SocialState>(
-          builder: (context, state) {
-            if (state is SocialStateInitial) {
-              return CircularProgressIndicator();
-            } else if (state is SocialPostFetchedState) {
-              return SafeArea(
-                child: postWidget(context, widget, state.post),
-              );
-              // return CircularProgressIndicator();
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Post'),
         ),
-        BlocBuilder<CommentsBloc, CommentsState>(builder: (context, state) {
-          if (state is CommentsInitial) {
-            return CircularProgressIndicator();
-          } else if (state is CommentsFetchedState) {
-            postComments.addAll(state.comments);
-            return commentsList(widget);
-          } else {
-            return CircularProgressIndicator();
-          }
-        })
-      ]),
-      // The text field is pinned to the bottom using bottomNavigationBar.
-      // Padding based on viewInsets ensures it moves above the keyboard when visible.
-      bottomNavigationBar: Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: SafeArea(
+        body: Column(
+          children: [
+            BlocBuilder<SocialBloc, SocialState>(
+              builder: (context, state) {
+                if (state is SocialStateInitial) {
+                  return CircularProgressIndicator();
+                } else if (state is SocialPostFetchedState) {
+                  return postWidget(context, widget, state.post);
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
+            BlocBuilder<CommentsBloc, CommentsState>(
+              builder: (context, state) {
+                if (state is CommentsInitial) {
+                  return CircularProgressIndicator();
+                } else if (state is CommentsFetchedState) {
+                  postComments = state.comments;
+                  return commentsList(postComments);
+                } else {
+                  return commentsList(postComments);
+                }
+              },
+            )
+          ],
+        ),
+        bottomNavigationBar: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
-                // Expanded text field for entering a comment
                 Expanded(
                   child: TextField(
                     controller: commentController,
@@ -94,16 +91,14 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Send icon button to process the comment submission
                 IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
                     final comment = commentController.text.trim();
                     if (comment.isNotEmpty) {
-                      // Here you would typically call your comment submission logic.
-                      serviceLocator<SocialBloc>.call().add(PostCommentEvent(
+                      serviceLocator<SocialBloc>().add(PostCommentEvent(
                         uuid: widget.postID,
-                        email: "widget.post.userEmail",
+                        email: "currentUserEmail", // Replace with actual email
                       ));
                       print('Comment submitted: $comment');
                       commentController.clear();
@@ -120,7 +115,9 @@ class _PostPageWidgetState extends State<PostPageWidget> {
 }
 
 Widget postWidget(context, widget, Post post) {
-  return SafeArea(
+  return Container(
+    height: 500,
+    width: MediaQuery.of(context).size.width,
     child: GestureDetector(
       // When user taps outside, unfocus to dismiss keyboard
       onTap: () => FocusScope.of(context).unfocus(),
@@ -135,7 +132,7 @@ Widget postWidget(context, widget, Post post) {
                 children: [
                   // Post Heading
                   Text(
-                   post.type ?? "Post Heading",
+                    post.type ?? "Post Heading",
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 16),
@@ -173,13 +170,13 @@ Widget postWidget(context, widget, Post post) {
   );
 }
 
-Widget commentsList(widget) {
-  if (widget.postComments.isEmpty) {
+Widget commentsList(postComments) {
+  if (postComments.isEmpty) {
     return Text("NO COMMENTS");
   }
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: widget.postComments.map((entry) {
+    children: postComments.map((entry) {
       return ListTile(
         leading: CircleAvatar(child: Text(entry.userEmail[0])),
         title: Text(entry.userEmail),
