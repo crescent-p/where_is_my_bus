@@ -54,8 +54,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    _locationUpdateTimer =
-        Timer.periodic(Duration(seconds: UPDATE_LOCATION_INTERVAL), (timer) {
+    _locationUpdateTimer = Timer.periodic(
+        const Duration(seconds: UPDATE_LOCATION_INTERVAL), (timer) {
       serviceLocator<LocationsBloc>().add(UpdateCurrentLocationEvent());
     });
   }

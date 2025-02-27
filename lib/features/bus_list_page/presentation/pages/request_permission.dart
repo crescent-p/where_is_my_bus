@@ -5,7 +5,7 @@ import 'package:where_is_my_bus/core/theme/colors.dart';
 class RequestPermissionPopup extends StatelessWidget {
   final BuildContext context;
 
-  RequestPermissionPopup({required this.context});
+  const RequestPermissionPopup({super.key, required this.context});
 
   @override
   Widget build(BuildContext context) {
