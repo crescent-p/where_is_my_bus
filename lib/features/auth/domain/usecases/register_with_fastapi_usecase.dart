@@ -11,7 +11,7 @@ class RegisterWithFastAPIUsecase implements UseCases {
   @override
   Future<Either<Failure, String>> call(params) async {
     try {
-      return repository.signOut();
+      return repository.registerWithFastAPIUsecase();
     } catch (e) {
       return Left(Failure(message: e.toString()));
     }

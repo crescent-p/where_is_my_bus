@@ -13,6 +13,7 @@ import 'package:where_is_my_bus/core/utils/login_error_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/login_success_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:where_is_my_bus/features/auth/presentation/pages/signInWidget.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
 
 class Loginpage extends StatefulWidget {
@@ -68,42 +69,7 @@ class _LoginpageState extends State<Loginpage> {
       if (state is AuthSuccess) {
         return MainPage(user: state.user);
       } else {
-        return MaterialApp(
-          color:
-              AppPallete.backgroundColor, // This is the overall app theme color
-          debugShowCheckedModeBanner: false,
-          home: Container(
-            color: AppPallete
-                .backgroundColor, // Set the background color of the Container
-            child: Column(
-              children: [
-                const Spacer(flex: 1),
-                Row(
-                  children: [
-                    const Spacer(flex: 1),
-                    Expanded(
-                      flex: 8,
-                      child: Lottie.asset("assets/animations/hi.json"),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-                const Spacer(flex: 2),
-                SignInButton(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                  Buttons.Google,
-                  onPressed: () {
-                    context.read<AuthBloc>().add(AuthSignInEvent());
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                const Spacer(flex: 1),
-              ],
-            ),
-          ),
-        );
+        return const LoginPageWidget();
       }
     });
   }

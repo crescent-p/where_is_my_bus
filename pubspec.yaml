@@ -43,6 +43,7 @@ dependencies:
   flutter_signin_button: ^2.0.0
   flutter_svg: ^2.0.10+1
   fpdart: ^1.1.0
+  frosted_glass_effect: ^0.0.2
   geolocator: ^13.0.1
   get_it: ^8.0.0
   glass_kit: ^4.0.1
@@ -56,6 +57,7 @@ dependencies:
   maps_launcher: ^2.2.1
   path_provider: ^2.1.5
   permission_handler: ^11.3.1
+  rive: ^0.13.20
   salomon_bottom_bar: ^3.3.2
   shared_preferences: ^2.3.2
   uuid: ^4.5.1
@@ -85,7 +87,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icons/login.svg
-    - assets/images/login_background.jpg
+    - assets/images/login_background.png
     - assets/animations/hi.json
     - assets/animations/login_error.json
     - assets/animations/success.json

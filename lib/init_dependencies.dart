@@ -14,6 +14,7 @@ import 'package:where_is_my_bus/features/auth/domain/repository/auth_repository.
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_current_user_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_in_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_out_usecase.dart';
+import 'package:where_is_my_bus/features/auth/domain/usecases/register_with_fastapi_usecase.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/main_page/data/data_sources/locations_remote_datasource.dart';
 import 'package:where_is_my_bus/features/main_page/data/repository_impl/locations_repository_impl.dart';
@@ -27,6 +28,7 @@ import 'package:where_is_my_bus/features/social/data/database/hive_object.dart';
 import 'package:where_is_my_bus/features/social/data/database/hive_storage.dart';
 import 'package:where_is_my_bus/features/social/data/repository_impl/social_repository_impl.dart';
 import 'package:where_is_my_bus/features/social/domain/repository/social_repository.dart';
+import 'package:where_is_my_bus/features/social/domain/usecases/add_comment_usecase.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/get_mini_posts_usecase.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/get_specific_post_usecase.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
@@ -76,8 +78,11 @@ void initMiniPosts() {
 }
 
 Future<void> initComments() async {
-  serviceLocator.registerLazySingleton<CommentsBloc>(
-      () => CommentsBloc(getCommentsUsecase: serviceLocator()));
+  serviceLocator.registerLazySingleton<CommentsBloc>(() => CommentsBloc(
+      getCommentsUsecase: serviceLocator(),
+      addCommentUsecase: serviceLocator()));
+  serviceLocator.registerLazySingleton<AddCommentUsecase>(
+      () => AddCommentUsecase(repository: serviceLocator()));
   serviceLocator.registerLazySingleton<GetCommentsUsecase>(
       () => GetCommentsUsecase(repository: serviceLocator()));
 }
@@ -163,8 +168,11 @@ void initAuth() {
       .registerFactory(() => AuthSignOutUsecase(repository: serviceLocator()));
 
   //BLoc Registrations
+  serviceLocator.registerLazySingleton<RegisterWithFastAPIUsecase>(
+      () => RegisterWithFastAPIUsecase(repository: serviceLocator()));
   serviceLocator.registerLazySingleton<UserCubit>(() => UserCubit());
   serviceLocator.registerLazySingleton<AuthBloc>(() => AuthBloc(
+      registerWithFastAPIUsecase: serviceLocator(),
       authSignUpWithGoogleUsecas: serviceLocator(),
       authSignOutUseCase: serviceLocator(),
       authCurrentUserUsecase: serviceLocator(),

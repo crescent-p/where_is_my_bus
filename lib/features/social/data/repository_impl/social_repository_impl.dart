@@ -58,4 +58,13 @@ class SocialRepositoryImpl implements SocialRepository {
     // TODO: implement getPostsByType
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<Failure, String>> postComments(Comments comment) async {
+    if (await isConnected()) {
+      return socialRemoteDataSource.setComment(comment);
+    } else {
+      return Left(Failure(message: "No internet connection bruh!"));
+    }
+  }
 }

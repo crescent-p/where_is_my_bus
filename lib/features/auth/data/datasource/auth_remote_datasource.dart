@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as myUser;
 import 'package:http/http.dart' as http;
@@ -24,7 +27,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
       if (googleUser != null) {
         final authenticate = await googleUser.authentication;
         String? idTok = authenticate.idToken;
-        prefs.setString("idToken", idTok!);
+        prefs.setString(IDTOKEN, idTok!);
+        prefs.setString(USEREMAIL, googleUser.email);
       }
       if (googleUser == null) {
         return Left(Failure(message: "No User Logged In !"));
@@ -51,7 +55,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
       if (googleUser != null) {
         final authenticate = await googleUser.authentication;
         String? idTok = authenticate.idToken;
-        prefs.setString("idToken", idTok!);
+        prefs.setString(IDTOKEN, idTok!);
+        prefs.setString(USEREMAIL, googleUser.email);
       }
       if (googleUser == null) {
         return Left(Failure(message: "Sign In Failed!"));
@@ -89,7 +94,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await googleSignIn.signOut();
-      prefs.remove("idToken");
+      prefs.remove(IDTOKEN);
+      prefs.remove(USEREMAIL);
       return const Right("Succefully Signed Out");
     } catch (e) {
       return Left(Failure(message: e.toString()));
@@ -99,9 +105,19 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDataSouce {
   @override
   Future<Either<Failure, String>> registerWithFastAPI() async {
     try {
-      if (prefs.containsKey("idToken")) {
-        final res = await http.get(Uri.parse(
-            "http://68.233.101.85/signin?token=${prefs.getString("idToken")}"));
+      await googleSignIn.signInSilently();
+      final googleUser = googleSignIn.currentUser;
+      if (googleUser != null) {
+        final authenticate = await googleUser.authentication;
+        String? idTok = authenticate.idToken;
+        final headers = {"Authorization": "Bearer $idTok"};
+        final res = await http.post(
+          Uri.parse(
+            "http://68.233.101.85/signin",
+          ),
+          headers: headers,
+          body: jsonEncode({"message": "string"}),
+        );
         if (res.statusCode != 200) {
           return Left(Failure(message: "Login ERROR"));
         }

@@ -11,4 +11,5 @@ abstract interface class SocialRepository {
   Future<Either<Failure, Post>> getPostSpecific(String uuid);
   Future<Either<Failure, List<Post>>> getPostsByType(String type);
   Future<Either<Failure, List<Comments>>> getComments(String postID);
+  Future<Either<Failure, String>> postComments(Comments comment);
 }

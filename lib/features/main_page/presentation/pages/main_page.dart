@@ -55,7 +55,7 @@ class _MainPageState extends State<MainPage> {
   // late final FlutterBackgroundService flutterBackgroundService;
   final List<Widget> pages = [
     SocailPageWidget(items: {}),
-    ProfilePage(),
+    // ProfilePage(),
     BusListPage(),
   ];
   @override
@@ -149,9 +149,10 @@ class _MainPageState extends State<MainPage> {
             onTap: (index) => context.read<BottomNavCubit>().changeTab(index),
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              // BottomNavigationBarItem(
+              //     icon: Icon(Icons.person), label: 'Profile'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.person), label: 'Profile'),
-              BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Bus'),
+                  icon: Icon(Icons.bus_alert), label: 'Bus'),
             ],
           );
         },

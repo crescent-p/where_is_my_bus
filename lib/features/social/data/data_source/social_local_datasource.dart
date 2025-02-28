@@ -16,8 +16,8 @@ abstract interface class SocialLocalDataSource {
       String heading, int startIndex, int count);
   Future<Either<Failure, void>> setMiniPost(List<HiveMiniPost> post);
   Future<Either<Failure, List<Comments>>> getComments(String postsId);
-  Future<Either<Failure, void>> setComments(
-      String postId, List<Comments> comments);
+  // Future<Either<Failure, Syring>> setComments(
+  //     String postId, Comments comments);
 }
 
 class SocialLocalDataSourceImple implements SocialLocalDataSource {
@@ -80,10 +80,4 @@ class SocialLocalDataSourceImple implements SocialLocalDataSource {
     throw UnimplementedError();
   }
 
-  @override
-  Future<Either<Failure, void>> setComments(
-      String postId, List<Comments> comments) {
-    // TODO: implement setComments
-    throw UnimplementedError();
-  }
 }

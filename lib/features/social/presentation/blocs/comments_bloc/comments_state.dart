@@ -16,3 +16,10 @@ final class CommentsFailedState extends CommentsState {
 
   CommentsFailedState({required this.message});
 }
+
+final class CommentPostedState extends CommentsState {
+  final String message;
+
+  CommentPostedState({required this.message});
+
+}

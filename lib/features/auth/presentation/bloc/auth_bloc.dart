@@ -110,7 +110,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _emitAuthSucces(myUser.User user, Emitter<AuthState> emit) {
     _userCubit.updateUser(user);
-    _registerWithFastAPIUsecase.call;
+    _registerWithFastAPIUsecase(NoParams());
     emit(AuthSuccess(user: user));
   }
 

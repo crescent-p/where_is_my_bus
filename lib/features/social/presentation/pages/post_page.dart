@@ -97,9 +97,10 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                   onPressed: () {
                     final comment = commentController.text.trim();
                     if (comment.isNotEmpty) {
-                      serviceLocator<SocialBloc>().add(PostCommentEvent(
-                        uuid: widget.postID,
-                        email: "currentUserEmail", // Replace with actual email
+                      serviceLocator<CommentsBloc>().add(PostCommentEvent(
+                        postID: widget.postID,
+                        text: comment,
+                        email: "cp@gmail.com  ", // Replace with actual email
                       ));
                       print('Comment submitted: $comment');
                       commentController.clear();

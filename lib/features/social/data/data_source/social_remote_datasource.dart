@@ -24,7 +24,7 @@ abstract interface class SocialRemoteDataSource {
   Future<Either<Failure, Post>> getSpecificPosts(String uuid);
   Future<Either<Failure, List<Post>>> getPostsByType(String type);
   Future<Either<Failure, List<Comments>>> getComments(String postId);
-  Future<Either<Failure, void>> setComment(Comments comment);
+  Future<Either<Failure, String>> setComment(Comments comment);
   Future<Either<Failure, Post>> getSpecificPost(String uuid);
 }
 
@@ -107,16 +107,38 @@ class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
   }
 
   @override
-  Future<Either<Failure, void>> setComment(Comments comment) {
-    // TODO: implement setComment
-    throw UnimplementedError();
+  Future<Either<Failure, String>> setComment(Comments comment) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String body = jsonEncode({
+        "post_uuid": comment.postId,
+        "user_email": prefs.getString(USEREMAIL) ?? "unknown@gmail.com",
+        "text": comment.text
+      });
+      final res = await http.post(
+        Uri.parse("http://68.233.101.85/social/comment"),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+        },
+        body: body,
+      );
+      if (res.statusCode == 200) {
+        return const Right("Success");
+      } else {
+        return Left(
+            Failure(message: "Failed to post comments, please try again"));
+      }
+    } on Exception {
+      return Left(
+          Failure(message: "Failed to post comments, please try again"));
+    }
   }
 
   @override
   Future<Either<Failure, List<Post>>> getPostsByType(String type) async {
     try {
       final res = await http.get(Uri.parse(
-          "http://127.0.0.1:8000/social/posts_by_type?post_type=$type&limit=$PRELOAD_LIMIT"));
+          "http://68.233.101.85/social/posts_by_type?post_type=$type&limit=$PRELOAD_LIMIT"));
       if (res.statusCode != 200) {
         return Left(Failure(message: "Couldn't Fetch posts!"));
       }

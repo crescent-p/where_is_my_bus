@@ -32,3 +32,5 @@ const SECTION_MAP = {
 };
 const TOTAL_POST_COUNT = 1000000;
 const PRELOAD_LIMIT = 10;
+const IDTOKEN = "idToken";
+const USEREMAIL = "userEmail";
