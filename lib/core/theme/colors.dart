@@ -13,3 +13,9 @@ class AppPallete {
   static const Color transparentColor = Colors.transparent;
   static const Color success = Color.fromARGB(255, 55, 255, 5);
 }
+
+class OGS_THEME {
+  static const Color yellow = Color.fromRGBO(255, 204, 0, 100);
+  static const Color blue = Color.fromRGBO(26, 37, 93, 100);
+  static const Color white = Color.fromRGBO(255, 255, 255, 100);
+}

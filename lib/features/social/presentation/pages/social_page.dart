@@ -36,10 +36,9 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: const Color.fromARGB(255, 149, 255, 0),
+        backgroundColor: Colors.transparent,
         body: SafeArea(
           child: Stack(children: [
-            Rive.RiveAnimation.asset(""),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: BlocListener<MiniPostsBloc, MiniPostsState>(
@@ -100,17 +99,22 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
-              ),
+        GlassContainer(
+          radius: 10,
+          widget: Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blueAccent,
+                ),
+          ),
         ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 180,
+          height: 300,
           child: ListView.separated(
+            physics: const ClampingScrollPhysics(),
+            // shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: items.length,
             separatorBuilder: (context, index) => const SizedBox(width: 16),
@@ -129,12 +133,14 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                   elevation: 2,
                   borderRadius: BorderRadius.circular(12),
                   child: Container(
-                    width: 200,
+                    width: 300,
+                    height: 200,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: GlassContainer(
+                      radius: 10,
                       widget: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 12),
@@ -146,7 +152,7 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                               child: Image.network(
                                 item.lowResImageUrl!,
                                 width: double.infinity,
-                                height: 120,
+                                height: 220,
                                 fit: BoxFit.cover,
                               ),
                             ),
