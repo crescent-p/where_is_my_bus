@@ -99,27 +99,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                serviceLocator<AuthBloc>().add(AuthSignOutEvent());
-              },
-              icon: const Icon(
-                Icons.logout,
-                color: AppPallete.whiteColor,
-              ))
-        ],
-        backgroundColor: AppPallete.whiteColor,
-        title: Text(
-          _getGreeting(),
-          style: const TextStyle(
-            color: AppPallete.textColor,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Container(
           child: Stack(
@@ -153,7 +132,7 @@ class _MainPageState extends State<MainPage> {
         height: 70,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            color: const Color.fromARGB(156, 0, 0, 0),
+            color: OGS_THEME.black,
             borderRadius: BorderRadius.all(Radius.circular(20))),
         padding: EdgeInsets.all(0),
         child: Row(
@@ -270,16 +249,7 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-String _getGreeting() {
-  final hour = DateTime.now().hour;
-  if (hour < 12) {
-    return 'Good Morning';
-  } else if (hour < 17) {
-    return 'Good Afternoon';
-  } else {
-    return 'Good Evening';
-  }
-}
+
 
 
       // BlocBuilder<BottomNavCubit, int>(builder: (context, state) {
