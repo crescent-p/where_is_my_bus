@@ -110,11 +110,11 @@ class _MainPageState extends State<MainPage> {
                 color: AppPallete.whiteColor,
               ))
         ],
-        backgroundColor: AppPallete.gradient2,
+        backgroundColor: AppPallete.whiteColor,
         title: Text(
           _getGreeting(),
           style: const TextStyle(
-            color: AppPallete.whiteColor,
+            color: AppPallete.textColor,
             fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
@@ -125,16 +125,6 @@ class _MainPageState extends State<MainPage> {
           child: Stack(
             children: [
               // Rotating 90 degrees
-              Rive.RiveAnimation.asset(
-                "assets/bottom_nav_icons/background.riv",
-                fit: BoxFit.fill,
-              ),
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                child: Container(
-                  color: Colors.black.withOpacity(0),
-                ),
-              ),
               MultiBlocListener(
                 listeners: [
                   BlocListener<AuthBloc, AuthState>(
@@ -159,124 +149,121 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          height: 70,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              color: const Color.fromARGB(156, 0, 0, 0),
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          padding: EdgeInsets.all(12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  {
-                    locationClick.change(false);
-                    profileClick.change(false);
-                    busClick.change(false);
-                    homeClick.change(true);
-                    context.read<BottomNavCubit>().changeTab(0);
-                  }
-                },
-                child: SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: Rive.RiveAnimation.asset(
-                    "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
-                    artboard: "HOME",
-                    onInit: (artboard) {
-                      Rive.StateMachineController controller =
-                          RiveUtils.getStateMachineController(
-                        artboard,
-                        stateMachineName: "HOME_interactivity",
-                      );
-                      homeClick = controller.findSMI("active") as Rive.SMIBool;
-                      homeClick.change(true);
-                      // context.read<BottomNavCubit>().changeTab(1);
-                    },
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  {
-                    homeClick.change(false);
-                    busClick.change(false);
-                    locationClick.change(false);
-                    profileClick.change(true);
-                    context.read<BottomNavCubit>().changeTab(1);
-                  }
-                },
-                child: SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: Rive.RiveAnimation.asset(
-                    "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
-                    artboard: "SEARCH",
-                    onInit: (artboard) {
-                      Rive.StateMachineController controller =
-                          RiveUtils.getStateMachineController(artboard,
-                              stateMachineName: "SEARCH_Interactivity");
-                      // defaul = controller.findSMI("homeDefault");
-                      profileClick =
-                          controller.findSMI("active") as Rive.SMIBool;
-                    },
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  profileClick.change(false);
-                  homeClick.change(false);
+      bottomNavigationBar: Container(
+        height: 70,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            color: const Color.fromARGB(156, 0, 0, 0),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        padding: EdgeInsets.all(0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                {
                   locationClick.change(false);
-                  busClick.change(true);
-
-                  context.read<BottomNavCubit>().changeTab(1);
-                },
-                child: SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: Rive.RiveAnimation.asset(
-                    artboard: "USER",
-                    "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
-                    onInit: (artboard) {
-                      Rive.StateMachineController controller =
-                          RiveUtils.getStateMachineController(artboard,
-                              stateMachineName: "USER_Interactivity");
-                      busClick = controller.findSMI("active") as Rive.SMIBool;
-                    },
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  busClick.change(false);
                   profileClick.change(false);
-                  homeClick.change(false);
-                  locationClick.change(true);
-
-                  context.read<BottomNavCubit>().changeTab(1);
-                },
-                child: SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: Rive.RiveAnimation.asset(
-                    "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
-                    artboard: "LIKE/STAR",
-                    onInit: (artboard) {
-                      Rive.StateMachineController controller =
-                          RiveUtils.getStateMachineController(artboard,
-                              stateMachineName: "STAR_Interactivity");
-                      locationClick =
-                          controller.findSMI("active") as Rive.SMIBool;
-                    },
-                  ),
+                  busClick.change(false);
+                  homeClick.change(true);
+                  context.read<BottomNavCubit>().changeTab(0);
+                }
+              },
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: Rive.RiveAnimation.asset(
+                  "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
+                  artboard: "HOME",
+                  onInit: (artboard) {
+                    Rive.StateMachineController controller =
+                        RiveUtils.getStateMachineController(
+                      artboard,
+                      stateMachineName: "HOME_interactivity",
+                    );
+                    homeClick = controller.findSMI("active") as Rive.SMIBool;
+                    homeClick.change(true);
+                    // context.read<BottomNavCubit>().changeTab(1);
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                {
+                  homeClick.change(false);
+                  busClick.change(false);
+                  locationClick.change(false);
+                  profileClick.change(true);
+                  context.read<BottomNavCubit>().changeTab(1);
+                }
+              },
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: Rive.RiveAnimation.asset(
+                  "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
+                  artboard: "SEARCH",
+                  onInit: (artboard) {
+                    Rive.StateMachineController controller =
+                        RiveUtils.getStateMachineController(artboard,
+                            stateMachineName: "SEARCH_Interactivity");
+                    // defaul = controller.findSMI("homeDefault");
+                    profileClick = controller.findSMI("active") as Rive.SMIBool;
+                  },
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                profileClick.change(false);
+                homeClick.change(false);
+                locationClick.change(false);
+                busClick.change(true);
+
+                context.read<BottomNavCubit>().changeTab(1);
+              },
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: Rive.RiveAnimation.asset(
+                  artboard: "USER",
+                  "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
+                  onInit: (artboard) {
+                    Rive.StateMachineController controller =
+                        RiveUtils.getStateMachineController(artboard,
+                            stateMachineName: "USER_Interactivity");
+                    busClick = controller.findSMI("active") as Rive.SMIBool;
+                  },
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () async {
+                busClick.change(false);
+                profileClick.change(false);
+                homeClick.change(false);
+                locationClick.change(true);
+
+                context.read<BottomNavCubit>().changeTab(1);
+              },
+              child: SizedBox(
+                height: 50,
+                width: 50,
+                child: Rive.RiveAnimation.asset(
+                  "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
+                  artboard: "LIKE/STAR",
+                  onInit: (artboard) {
+                    Rive.StateMachineController controller =
+                        RiveUtils.getStateMachineController(artboard,
+                            stateMachineName: "STAR_Interactivity");
+                    locationClick =
+                        controller.findSMI("active") as Rive.SMIBool;
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

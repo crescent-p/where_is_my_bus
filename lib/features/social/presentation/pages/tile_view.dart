@@ -56,6 +56,7 @@ class _TileViewState extends State<TileView> {
               ),
             )
           : ListView.builder(
+              physics: ClampingScrollPhysics(),
               itemCount: widget.busStream.length,
               itemBuilder: (context, index) {
                 final bus = widget.busStream[index];

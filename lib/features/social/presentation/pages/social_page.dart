@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frosted_glass_effect/frosted_glass_effect.dart';
@@ -67,6 +69,58 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                         children: posts.entries.map((entry) {
                           return Column(
                             children: [
+                              //profile -> Hello, name , notification
+                              //Goodmorning
+                              //search bar
+                              //facilities near you
+                              // Profile section
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Hello, User!',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                      Text(
+                                        'Good morning',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                    ],
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.notifications),
+                                    onPressed: () {
+                                      // Handle notification tap
+                                    },
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              // Search bar
+                              TextField(
+                                decoration: InputDecoration(
+                                  hintText: 'Search...',
+                                  prefixIcon: Icon(Icons.search),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              // Facilities near you
+                              Text(
+                                'Facilities near you',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
                               const SizedBox(
                                 height: 10,
                               ),
@@ -113,7 +167,7 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
         SizedBox(
           height: 300,
           child: ListView.separated(
-            physics: const ClampingScrollPhysics(),
+            physics: ClampingScrollPhysics(),
             // shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemCount: items.length,
@@ -139,9 +193,15 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: GlassContainer(
-                      radius: 10,
-                      widget: Padding(
+                    child: Stack(children: [
+                      Container(),
+                      ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          color: Colors.transparent,
+                        ),
+                      ),
+                      Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 12),
                         child: Column(
@@ -171,7 +231,7 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                           ],
                         ),
                       ),
-                    ),
+                    ]),
                   ),
                 ),
               );
