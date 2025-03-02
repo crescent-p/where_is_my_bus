@@ -13,8 +13,11 @@ import 'package:where_is_my_bus/features/social/data/data_source/social_remote_d
 import 'package:where_is_my_bus/features/social/domain/entities/mini_post.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/coming_soon.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/post_page.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
+
+String youknow = "hi";
 
 class SocailPageWidget extends StatefulWidget {
   final Map<String, List<MiniPost>> items;
@@ -97,232 +100,247 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                       );
                     }).toList();
                     return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: const NetworkImage(
-                                          "https://scontent.fccj2-2.fna.fbcdn.net/v/t1.6435-9/32294281_226822181400639_4070971510129426432_n.png?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EfYA6wu9uVsQ7kNvgHoPMcr&_nc_oc=AdhQ4sBFKjBJBHQEu-FsYdlI0G3pHrzKRMa8jP-z6isEGVbFtUC-XcPMv04Nb3m3TkbyuecaOMqEKzVGINomZaex&_nc_zt=23&_nc_ht=scontent.fccj2-2.fna&_nc_gid=A5tkRPnUPd_0t95iIRjYhvS&oh=00_AYA4ITfXGO3hiPmnGObSkE03sWTEVYllVvV33A7S8rc8IQ&oe=67EA7F61",
-                                        ),
-                                        radius: 30,
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Hello, John!',
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w400,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black,
-                                                offset: Offset(5.0, 0.0),
-                                                blurRadius: 100.0,
-                                              ),
-                                            ]),
-                                      ),
-                                      SizedBox(
-                                        width: 100,
-                                      ),
-                                      Stack(
-                                        alignment: Alignment.topRight,
-                                        children: [
-                                          Container(
-                                            width: 50,
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.white,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.yellow
-                                                      .withOpacity(
-                                                          0.4), // Glow color
-                                                  blurRadius:
-                                                      100, // How much it glows
-                                                  spreadRadius:
-                                                      30, // Spread of the glow
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Positioned(
-                                            right: 5,
-                                            top: 5,
-                                            height: 40,
-                                            width: 40,
-                                            child: Rive.RiveAnimation.asset(
-                                              "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
-                                              artboard: "BELL",
-                                              onInit: (artboard) {
-                                                Rive.StateMachineController
-                                                    controller = RiveUtils
-                                                        .getStateMachineController(
-                                                  artboard,
-                                                  stateMachineName:
-                                                      "BELL_Interactivity",
-                                                );
-                                                notificationIcon =
-                                                    controller.findSMI("active")
-                                                        as Rive.SMIBool;
-                                                notificationIcon.change(true);
-                                                // context.read<BottomNavCubit>().changeTab(1);
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        _getGreeting(),
-                                        style: GoogleFonts.outfit(
-                                            fontSize: 32,
-                                            color: OGS_THEME.yellow),
-                                      ),
-                                      const SizedBox(
-                                        height: 80,
-                                        width: 150,
-                                        child: Rive.RiveAnimation.asset(
-                                          "assets/animations/cloud_and_sun.riv",
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                      child: GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ComingSoon(),
                           ),
-                          // const SizedBox(height: 5),
-                          // Search bar
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: Row(
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Container(
-                                  height: 50,
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.35,
-                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  decoration: BoxDecoration(
-                                      color: OGS_THEME.offWhite,
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
-                                  child: TextField(
-                                    scrollPadding: EdgeInsets.all(10),
-                                    decoration: InputDecoration(
-                                      hintText: 'Explore Events and more...',
-                                      hintStyle: GoogleFonts.roboto(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.grey,
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      contentPadding:
-                                          EdgeInsets.only(right: 10),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                        borderRadius: BorderRadius.circular(12),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: const NetworkImage(
+                                            "https://scontent.fccj2-2.fna.fbcdn.net/v/t1.6435-9/32294281_226822181400639_4070971510129426432_n.png?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EfYA6wu9uVsQ7kNvgHoPMcr&_nc_oc=AdhQ4sBFKjBJBHQEu-FsYdlI0G3pHrzKRMa8jP-z6isEGVbFtUC-XcPMv04Nb3m3TkbyuecaOMqEKzVGINomZaex&_nc_zt=23&_nc_ht=scontent.fccj2-2.fna&_nc_gid=A5tkRPnUPd_0t95iIRjYhvS&oh=00_AYA4ITfXGO3hiPmnGObSkE03sWTEVYllVvV33A7S8rc8IQ&oe=67EA7F61",
+                                          ),
+                                          radius: 30,
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          'Hello, John!',
+                                          style: GoogleFonts.roboto(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w400,
+                                              shadows: [
+                                                Shadow(
+                                                  color: Colors.black,
+                                                  offset: Offset(5.0, 0.0),
+                                                  blurRadius: 100.0,
+                                                ),
+                                              ]),
+                                        ),
+                                        SizedBox(
+                                          width: 100,
+                                        ),
+                                        Stack(
+                                          alignment: Alignment.topRight,
+                                          children: [
+                                            Container(
+                                              width: 50,
+                                              height: 50,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.yellow
+                                                        .withOpacity(
+                                                            0.4), // Glow color
+                                                    blurRadius:
+                                                        100, // How much it glows
+                                                    spreadRadius:
+                                                        30, // Spread of the glow
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Positioned(
+                                              right: 5,
+                                              top: 5,
+                                              height: 40,
+                                              width: 40,
+                                              child: Rive.RiveAnimation.asset(
+                                                "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
+                                                artboard: "BELL",
+                                                onInit: (artboard) {
+                                                  Rive.StateMachineController
+                                                      controller = RiveUtils
+                                                          .getStateMachineController(
+                                                    artboard,
+                                                    stateMachineName:
+                                                        "BELL_Interactivity",
+                                                  );
+                                                  notificationIcon = controller
+                                                          .findSMI("active")
+                                                      as Rive.SMIBool;
+                                                  notificationIcon.change(true);
+                                                  // context.read<BottomNavCubit>().changeTab(1);
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          _getGreeting(),
+                                          style: GoogleFonts.outfit(
+                                              fontSize: 32,
+                                              color: OGS_THEME.yellow),
+                                        ),
+                                        const SizedBox(
+                                          height: 80,
+                                          width: 150,
+                                          child: Rive.RiveAnimation.asset(
+                                            "assets/animations/cloud_and_sun.riv",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            // const SizedBox(height: 5),
+                            // Search bar
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: MediaQuery.of(context).size.width /
+                                        1.35,
+                                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                    decoration: BoxDecoration(
+                                        color: OGS_THEME.offWhite,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    child: TextField(
+                                      scrollPadding: EdgeInsets.all(10),
+                                      decoration: InputDecoration(
+                                        hintText: 'Explore Events and more...',
+                                        hintStyle: GoogleFonts.roboto(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.grey,
+                                        ),
+                                        suffixIcon: Icon(Icons.search),
+                                        contentPadding:
+                                            EdgeInsets.only(right: 10),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide.none,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                  height: 20,
-                                ),
-                                Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Colors.yellowAccent,
-                                          OGS_THEME.yellow
-                                        ],
-                                        begin: Alignment.bottomLeft,
-                                        end: Alignment.topRight,
-                                      ),
-                                      color: OGS_THEME.yellow,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              OGS_THEME.yellow.withOpacity(0.6),
-                                          spreadRadius: 5,
-                                          blurRadius: 20,
-                                          offset: Offset(0, 0),
+                                  SizedBox(
+                                    width: 15,
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Colors.yellowAccent,
+                                            OGS_THEME.yellow
+                                          ],
+                                          begin: Alignment.bottomLeft,
+                                          end: Alignment.topRight,
                                         ),
-                                      ]),
-                                  child: Icon(Icons.tune_sharp),
-                                )
+                                        color: OGS_THEME.yellow,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: OGS_THEME.yellow
+                                                .withOpacity(0.6),
+                                            spreadRadius: 5,
+                                            blurRadius: 20,
+                                            offset: Offset(0, 0),
+                                          ),
+                                        ]),
+                                    child: Icon(Icons.tune_sharp),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            // Facilities near you
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Facilities near you',
+                                  textAlign: TextAlign.start,
+                                  style: GoogleFonts.outfit(fontSize: 24),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      "View All",
+                                      style: GoogleFonts.outfit(
+                                          fontSize: 12, color: OGS_THEME.white),
+                                    ),
+                                    style: ButtonStyle(
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                        ),
+                                        backgroundColor: WidgetStatePropertyAll(
+                                            OGS_THEME.blue))),
                               ],
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          // Facilities near you
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Facilities near you',
-                                textAlign: TextAlign.start,
-                                style: GoogleFonts.outfit(fontSize: 24),
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    "View All",
-                                    style: GoogleFonts.outfit(
-                                        fontSize: 12, color: OGS_THEME.white),
-                                  ),
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                      backgroundColor: WidgetStatePropertyAll(
-                                          OGS_THEME.blue))),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Card(
-                            color: OGS_THEME.blue,
-                            margin: EdgeInsets.all(5),
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              height: 100,
-                              width: 500,
-                              child: Image.asset(
-                                  "assets/pngs/facilities_near_you.png"),
+                            SizedBox(
+                              height: 10,
                             ),
-                          ),
-                          ...widgets
-                        ],
+                            Card(
+                              color: OGS_THEME.blue,
+                              margin: EdgeInsets.all(5),
+                              child: Container(
+                                padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                height: 100,
+                                width: 500,
+                                child: Image.asset(
+                                    "assets/pngs/facilities_near_you.png"),
+                              ),
+                            ),
+                            ...widgets
+                          ],
+                        ),
                       ),
                     );
                   }
-                  return const CircularProgressIndicator();
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.height,
+                    child: Lottie.asset(
+                        'assets/animations/list_loading_animation.json',
+                        fit: BoxFit.fitWidth),
+                  );
                 }),
               ),
             ),
@@ -365,11 +383,11 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                     width: 299.62,
                     height: 254.04,
                     decoration: ShapeDecoration(
-                      color: Color(0xFFF5F5F5),
+                      color: Color.fromARGB(255, 240, 234, 234),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(26),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      shadows: [
+                      shadows: const [
                         BoxShadow(
                           color: Color(0x0A000000),
                           blurRadius: 26,
@@ -384,13 +402,16 @@ class _SocailPageWidgetState extends State<SocailPageWidget> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                item.lowResImageUrl!,
-                                width: double.infinity,
-                                height: 220,
-                                fit: BoxFit.cover,
+                            Hero(
+                              tag: item.uuid,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  item.lowResImageUrl!,
+                                  width: double.infinity,
+                                  height: 220,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 8),

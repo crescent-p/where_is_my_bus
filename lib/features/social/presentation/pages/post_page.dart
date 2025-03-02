@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/comments.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/post.dart';
-import 'package:where_is_my_bus/features/social/domain/usecases/get_comments_usecase.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/social_page.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
-import 'package:where_is_my_bus/features/social/data/data_source/social_remote_datasource.dart';
 
 class PostPageWidget extends StatefulWidget {
   const PostPageWidget({Key? key, required this.postID}) : super(key: key);
@@ -18,6 +20,7 @@ class PostPageWidget extends StatefulWidget {
 class _PostPageWidgetState extends State<PostPageWidget> {
   final TextEditingController commentController = TextEditingController();
   List<Comments> postComments = [];
+
   @override
   void initState() {
     super.initState();
@@ -39,20 +42,18 @@ class _PostPageWidgetState extends State<PostPageWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Post'),
-        ),
+        backgroundColor: OGS_THEME.black,
         body: SingleChildScrollView(
           child: Column(
             children: [
               BlocBuilder<SocialBloc, SocialState>(
                 builder: (context, state) {
                   if (state is SocialStateInitial) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   } else if (state is SocialPostFetchedState) {
-                    return postWidget(context, widget, state.post);
+                    return postWidget(context, state.post);
                   } else {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                 },
               ),
@@ -67,129 +68,331 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                     return commentsList(context, postComments);
                   }
                 },
-              )
+              ),
             ],
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: commentController,
-                    decoration: InputDecoration(
-                      hintText: 'Add a comment...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16),
+        bottomNavigationBar: bottomCommentBar(),
+      ),
+    );
+  }
+
+  Widget bottomCommentBar() {
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+          color: Colors.black,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: TextField(
+                  cursorColor: OGS_THEME.blue,
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    fillColor: OGS_THEME.yellow,
+                    filled: true,
+                    focusColor: OGS_THEME.yellow,
+                    hintText: 'Add a comment...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: OGS_THEME.yellow),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: OGS_THEME.yellow),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
                 ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    final comment = commentController.text.trim();
-                    if (comment.isNotEmpty) {
-                      serviceLocator<CommentsBloc>().add(PostCommentEvent(
-                        postID: widget.postID,
-                        text: comment,
-                        email: "cp@gmail.com  ", // Replace with actual email
-                      ));
-                      print('Comment submitted: $comment');
-                      commentController.clear();
-                    }
-                  },
-                ),
-              ],
+              ),
             ),
-          ),
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: () {
+                final comment = commentController.text.trim();
+                if (comment.isNotEmpty) {
+                  serviceLocator<CommentsBloc>().add(PostCommentEvent(
+                    postID: widget.postID,
+                    text: comment,
+                    email: "cp@gmail.com", // Replace with actual email
+                  ));
+                  commentController.clear();
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
   }
-}
 
-Widget postWidget(context, widget, Post post) {
-  return Container(
-    height: 400,
-    width: MediaQuery.of(context).size.width,
-    child: GestureDetector(
-      // When user taps outside, unfocus to dismiss keyboard
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Column(
-        children: [
-          // Main post content wrapped in an Expanded scrollable area
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Post Heading
-                  Text(
-                    post.type ?? "Post Heading",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 16),
-                  // Display a photo
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
+  Widget postWidget(BuildContext context, Post post) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Hero(
+                  tag: post.uuid,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
                     child: Image.network(
                       post.highResImageUrl!,
                       fit: BoxFit.cover,
-                      height: 200,
+                      height: 432,
                       width: double.infinity,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // Post description
-                  Text(
-                    post.description,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Container(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                  // Comments header
+                  child: Row(
+                    children: [
+                      Padding(padding: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          size: 30,
+                          color: OGS_THEME.white,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        post.heading ?? "Event",
+                        style: GoogleFonts.outfit(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: OGS_THEME.white,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    post.heading ?? "Event",
+                    style: GoogleFonts.outfit(
+                      color: OGS_THEME.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Event Timings",
+                            style: GoogleFonts.outfit(
+                              color: OGS_THEME.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.calendar_today,
+                                size: 20,
+                                color: OGS_THEME.white,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                "19th October",
+                                style: GoogleFonts.outfit(
+                                  color: OGS_THEME.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 15),
+                      const SizedBox(
+                        height: 60,
+                        child: VerticalDivider(
+                          color: Colors.white,
+                          thickness: 2.0,
+                          width: 10,
+                          indent: 5,
+                          endIndent: 5,
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Venue",
+                            style: GoogleFonts.outfit(
+                              color: OGS_THEME.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.location_pin,
+                                size: 20,
+                                color: OGS_THEME.white,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                "Main Campus",
+                                style: GoogleFonts.outfit(
+                                  color: OGS_THEME.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Text(
+                    "Description",
+                    style: GoogleFonts.outfit(
+                      color: OGS_THEME.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "hello and welcome to my youtube channel",
+                    style: GoogleFonts.outfit(
+                      color: OGS_THEME.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   Text(
                     'Comments',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: GoogleFonts.outfit(
+                      color: OGS_THEME.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  // List of sample comments
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
-Widget commentsList(context, List<Comments> postComments) {
-  if (postComments.isEmpty) {
-    return Text("NO COMMENTS");
+    );
   }
-  return SizedBox(
-    height: 500,
-    width: MediaQuery.of(context).size.width,
-    child: SingleChildScrollView(
+
+  Widget commentsList(BuildContext context, List<Comments> postComments) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 1.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: postComments.map((entry) {
-          return ListTile(
-            leading: CircleAvatar(child: Text(entry.userEmail[0])),
-            title: Text(entry.userEmail.trim()),
-            subtitle: Text(entry.text),
-          );
-        }).toList(),
+        children: [
+          if (postComments.isEmpty)
+            Text(
+              "     Add a comment to start the conversation...",
+              style: GoogleFonts.outfit(
+                color: OGS_THEME.white,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
+            )
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              physics:
+                  const NeverScrollableScrollPhysics(), // Disable scrolling within the ListView
+              itemCount: postComments.length,
+              itemBuilder: (context, index) {
+                final entry = postComments[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: OGS_THEME.yellow,
+                    radius: 30,
+                    child: Text(
+                      entry.userEmail[0].toUpperCase(),
+                      style: GoogleFonts.outfit(
+                        color: OGS_THEME.white,
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    entry.userEmail.trim(),
+                    style: GoogleFonts.outfit(
+                      color: OGS_THEME.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  subtitle: Text(
+                    entry.text,
+                    style: GoogleFonts.outfit(
+                      color: OGS_THEME.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
-    ),
-  );
+    );
+  }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:where_is_my_bus/core/theme/colors.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,40 +15,180 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(
-                    'https://m.media-amazon.com/images/S/amzn-author-media-prod/m4q8d17hjmh7opeapn4ju037k4._SY450_CR0%2C0%2C450%2C450_.jpg'),
+            SizedBox(height: 50),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    child: Image.asset(
+                      "assets/pngs/profile_icon.png",
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Niara",
+                          style: GoogleFonts.roboto(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                offset: Offset(5.0, 0.0),
+                                blurRadius: 100.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          "Since 5 January 2003",
+                          style: GoogleFonts.roboto(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w200,
+                            shadows: [
+                              Shadow(
+                                color: Colors.white,
+                                offset: Offset(5.0, 0.0),
+                                blurRadius: 100.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(7, 7, 7, 7),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [OGS_THEME.blue, OGS_THEME.black],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
+                          child: Text(
+                            "Student NIT Calicut",
+                            style: GoogleFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: OGS_THEME.white,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black,
+                                    offset: Offset(5.0, 0.0),
+                                    blurRadius: 100.0,
+                                  ),
+                                ]),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Center(
+                        child: Icon(
+                          Icons.settings,
+                          size: 40,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
-            SizedBox(height: 16),
-            Text(
-              'Name: John Doe',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            SizedBox(
+              height: 10,
             ),
-            SizedBox(height: 8),
-            Text(
-              'Email: john.doe@example.com',
-              style: TextStyle(fontSize: 16),
+            Image.asset("assets/pngs/profile_assets.png"),
+            SizedBox(
+              height: 10,
             ),
-            SizedBox(height: 8),
-            Text(
-              'Phone: +1234567890',
-              style: TextStyle(fontSize: 16),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Text(
+                "About me",
+                style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w400,
+                    color: OGS_THEME.black,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        offset: Offset(5.0, 0.0),
+                        blurRadius: 100.0,
+                      ),
+                    ]),
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
-              'Address: 123 Main Street, City, Country',
-              style: TextStyle(fontSize: 16),
+            Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 20,
+              endIndent: 20,
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Text(
+                "I'm a highly motivated and results-oriented professional with a strong background in flutter, passionate about coding.",
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  color: OGS_THEME.black,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Text(
+                "Help & Support",
+                style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w400,
+                    color: OGS_THEME.black,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        offset: Offset(5.0, 0.0),
+                        blurRadius: 100.0,
+                      ),
+                    ]),
+              ),
+            ),
+            Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 20,
+              endIndent: 20,
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Text(
+                "If you have any questions or need assistance, please feel free to reach out to our support team at support@whereismybus.com.",
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  color: OGS_THEME.black,
+                ),
+              ),
             ),
           ],
         ),

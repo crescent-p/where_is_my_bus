@@ -18,7 +18,7 @@ class _TileViewState extends State<TileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppPallete.backgroundColor,
+      backgroundColor: OGS_THEME.white,
       body: widget.busStream.isEmpty
           ? SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),

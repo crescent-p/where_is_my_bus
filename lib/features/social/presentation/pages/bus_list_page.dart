@@ -25,13 +25,14 @@ class BusListPage extends StatefulWidget {
   List<BusCoordinates> busStreamCache = [];
   BusListPage({super.key});
   @override
-  State<BusListPage> createState() =>    _BusListPageState();
+  State<BusListPage> createState() => _BusListPageState();
 }
 
 class _BusListPageState extends State<BusListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: OGS_THEME.white,
       body: MultiBlocListener(
         listeners: [
           BlocListener<LocationsBloc, LocationsState>(

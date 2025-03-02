@@ -4,12 +4,14 @@
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:label="Where is my Bus?"
@@ -47,5 +49,8 @@
 <!--            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"-->
 <!--            android:foregroundServiceType="location"-->
 <!--            android:exported="false" />-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="2893742u3hjkf_fsjdhf3_gsdjklf_" />
     </application>
 </manifest>

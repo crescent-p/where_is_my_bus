@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/pages/request_permission.dart';
@@ -38,6 +39,7 @@ class _BusListState extends State<BusList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: OGS_THEME.white,
       body: RefreshIndicator(
         onRefresh: () async {
           serviceLocator<LocationsBloc>().add(GetBusLocationsEvent());

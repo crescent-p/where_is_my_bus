@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart'
 import 'package:where_is_my_bus/features/main_page/domain/entities/bus_user_coordinates.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav_cubit.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/bus_list_page.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/map_view.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/profile.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/social_page.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
@@ -48,8 +51,9 @@ class _MainPageState extends State<MainPage> {
   // late final FlutterBackgroundService flutterBackgroundService;
   final List<Widget> pages = [
     SocailPageWidget(items: {}),
-    // ProfilePage(),
+    ProfilePage(),
     BusListPage(),
+    MapScreen(),
   ];
   @override
   void initState() {
@@ -62,39 +66,13 @@ class _MainPageState extends State<MainPage> {
     super.dispose();
   }
 
-  // Future<void> initBackground() async {
-  //   final service = FlutterBackgroundService();
-
-  //   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  //     notificationChannelId,
-  //     'Background services for where is my bus app!',
-  //     description: 'This notification is used for finding buses near you.',
-  //     importance: Importance.low,
-  //   );
-
-  //   await flutterLocalNotificationsPlugin
-  //       .resolvePlatformSpecificImplementation<
-  //           AndroidFlutterLocalNotificationsPlugin>()
-  //       ?.createNotificationChannel(channel);
-
-  //   await service.configure(
-  //     androidConfiguration: AndroidConfiguration(
-  //       onStart: onStart,
-  //       autoStart: true, // Auto-start service upon initialization
-  //       isForegroundMode: false,
-  //       notificationChannelId: notificationChannelId,
-  //       initialNotificationTitle: 'Background service for where is my bus?',
-  //       initialNotificationContent: 'Finding buses near you!',
-  //       foregroundServiceNotificationId: NOTIFICATION_ID,
-  //     ),
-  //     iosConfiguration: IosConfiguration(),
-  //   );
-  // }
-
   late Rive.SMIBool homeClick;
   late Rive.SMIBool profileClick;
   late Rive.SMIBool locationClick;
   late Rive.SMIBool busClick;
+
+  final PageController _pageController =
+      PageController(); // Controller for PageView
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +98,14 @@ class _MainPageState extends State<MainPage> {
                 ],
                 child: BlocBuilder<BottomNavCubit, int>(
                   builder: (context, state) {
-                    return pages[state];
+                    // _pageController.jumpToPage(state); //No need to jump, animate instead
+                    return PageView(
+                      controller: _pageController,
+                      children: pages,
+                      onPageChanged: (index) {
+                        context.read<BottomNavCubit>().changeTab(index);
+                      },
+                    );
                   },
                 ),
               ),
@@ -129,6 +114,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       bottomNavigationBar: Container(
+        margin: EdgeInsets.all(10),
         height: 70,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
@@ -145,7 +131,10 @@ class _MainPageState extends State<MainPage> {
                   profileClick.change(false);
                   busClick.change(false);
                   homeClick.change(true);
-                  context.read<BottomNavCubit>().changeTab(0);
+                  // context.read<BottomNavCubit>().changeTab(0); //No need to change cubit directly
+                  _pageController.animateToPage(0,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease); //Animate page transition
                 }
               },
               child: SizedBox(
@@ -174,7 +163,10 @@ class _MainPageState extends State<MainPage> {
                   busClick.change(false);
                   locationClick.change(false);
                   profileClick.change(true);
-                  context.read<BottomNavCubit>().changeTab(1);
+                  // context.read<BottomNavCubit>().changeTab(1); //No need to change cubit directly
+                  _pageController.animateToPage(1,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease); //Animate page transition
                 }
               },
               child: SizedBox(
@@ -189,6 +181,7 @@ class _MainPageState extends State<MainPage> {
                             stateMachineName: "SEARCH_Interactivity");
                     // defaul = controller.findSMI("homeDefault");
                     profileClick = controller.findSMI("active") as Rive.SMIBool;
+                    profileClick.change(false);
                   },
                 ),
               ),
@@ -199,8 +192,10 @@ class _MainPageState extends State<MainPage> {
                 homeClick.change(false);
                 locationClick.change(false);
                 busClick.change(true);
-
-                context.read<BottomNavCubit>().changeTab(1);
+                // context.read<BottomNavCubit>().changeTab(1); //No need to change cubit directly
+                _pageController.animateToPage(2,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.ease); //Animate page transition
               },
               child: SizedBox(
                 height: 50,
@@ -224,7 +219,10 @@ class _MainPageState extends State<MainPage> {
                 homeClick.change(false);
                 locationClick.change(true);
 
-                context.read<BottomNavCubit>().changeTab(1);
+                // context.read<BottomNavCubit>().changeTab(1); //No need to change cubit directly
+                _pageController.animateToPage(3,
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.ease); //Animate page transition
               },
               child: SizedBox(
                 height: 50,
@@ -248,61 +246,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-
-
-
-
-      // BlocBuilder<BottomNavCubit, int>(builder: (context, state) {
-      //     return Container(
-      //       height: 100,
-      //       width: 300,
-      //       padding: EdgeInsets.all(2),
-      //       margin: EdgeInsets.symmetric(horizontal: 24),
-      //       decoration: BoxDecoration(
-      //         // color: const Color.fromARGB(0, 27, 12, 237),
-      //         borderRadius: BorderRadius.all(Radius.circular(24)),
-      //       ),
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //         children: [
-      //           GestureDetector(
-      //             onTap: () => context.read<BottomNavCubit>().changeTab(0),
-      //             child: SizedBox(
-      //               height: 100,
-      //               width: 100,
-      //               child: Rive.RiveAnimation.asset(
-      //                 "assets/bottom_nav_icons/home_animated_icon.riv",
-      //                 fit: BoxFit.cover,
-      //               ),
-      //             ),
-      //           ),
-      //           GestureDetector(
-      //             onTap: () => context.read<BottomNavCubit>().changeTab(1),
-      //             child: SizedBox(
-      //               height: 100,
-      //               width: 100,
-      //               child: Rive.RiveAnimation.asset(
-      //                 "assets/bottom_nav_icons/profile_animated_icon.riv",
-      //                 fit: BoxFit.cover,
-      //               ),
-      //             ),
-      //           ),
-      //           // Uncomment and add more icons as needed
-      //           // GestureDetector(
-      //           //   onTap: () => context.read<BottomNavCubit>().changeTab(2),
-      //           //   child: Rive.RiveAnimation.asset(
-      //           //     "assets/bottom_nav_icons/location_animated_icon.riv",
-      //           //     fit: BoxFit.cover,
-      //           //   ),
-      //           // ),
-      //           // GestureDetector(
-      //           //   onTap: () => context.read<BottomNavCubit>().changeTab(3),
-      //           //   child: Rive.RiveAnimation.asset(
-      //           //     "assets/bottom_nav_icons/profile_animated_icon.riv",
-      //           //     fit: BoxFit.cover,
-      //           //   ),
-      //           // ),
-      //         ],
-      //       ),
-      //     );
-      //   }));
