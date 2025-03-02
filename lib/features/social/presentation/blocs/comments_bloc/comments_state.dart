@@ -18,8 +18,7 @@ final class CommentsFailedState extends CommentsState {
 }
 
 final class CommentPostedState extends CommentsState {
-  final String message;
+  final Comments comment;
 
-  CommentPostedState({required this.message});
-
+  CommentPostedState({required this.comment});
 }

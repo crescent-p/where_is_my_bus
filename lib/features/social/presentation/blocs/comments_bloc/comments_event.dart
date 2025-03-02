@@ -17,3 +17,9 @@ class PostCommentEvent extends CommentsEvent {
   PostCommentEvent(
       {required this.email, required this.postID, required this.text});
 }
+
+class EmitFetchEvent extends CommentsEvent {
+  final List<Comments> comments;
+
+  EmitFetchEvent({required this.comments});
+}

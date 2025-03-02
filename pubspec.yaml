@@ -110,6 +110,7 @@ flutter:
     - assets/animations/coming_soon.json
     - assets/pngs/profile_assets.png
     - assets/pngs/profile_icon.png
+    - assets/animations/custom_loading.riv
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

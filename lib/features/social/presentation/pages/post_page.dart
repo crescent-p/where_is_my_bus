@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
+import 'package:lottie/lottie.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/comments.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/post.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
-import 'package:where_is_my_bus/features/social/presentation/pages/social_page.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 
 class PostPageWidget extends StatefulWidget {
@@ -40,6 +39,9 @@ class _PostPageWidgetState extends State<PostPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: OGS_THEME.black,
@@ -49,25 +51,55 @@ class _PostPageWidgetState extends State<PostPageWidget> {
               BlocBuilder<SocialBloc, SocialState>(
                 builder: (context, state) {
                   if (state is SocialStateInitial) {
-                    return const CircularProgressIndicator();
+                    return SizedBox(
+                      height: screenHeight,
+                      width: screenWidth,
+                      child: Lottie.asset(
+                        'assets/animations/list_loading_animation.json',
+                        fit: BoxFit.fitWidth,
+                      ),
+                    );
                   } else if (state is SocialPostFetchedState) {
                     return postWidget(context, state.post);
                   } else {
-                    return const CircularProgressIndicator();
+                    return SizedBox(
+                      height: screenHeight,
+                      width: screenWidth,
+                      child: Lottie.asset(
+                        'assets/animations/list_loading_animation.json',
+                        fit: BoxFit.fitWidth,
+                      ),
+                    );
+                    ;
                   }
                 },
               ),
-              BlocBuilder<CommentsBloc, CommentsState>(
-                builder: (context, state) {
-                  if (state is CommentsInitial) {
-                    return commentsList(context, postComments);
-                  } else if (state is CommentsFetchedState) {
-                    postComments = state.comments;
-                    return commentsList(context, postComments);
-                  } else {
-                    return commentsList(context, postComments);
+              BlocListener<CommentsBloc, CommentsState>(
+                listener: (context, state) {
+                  if (state is CommentPostedState) {
+                    postComments.add(state.comment);
+                    serviceLocator<CommentsBloc>()
+                        .add(EmitFetchEvent(comments: postComments));
                   }
                 },
+                child: BlocBuilder<CommentsBloc, CommentsState>(
+                  builder: (context, state) {
+                    if (state is CommentsInitial) {
+                      return Lottie.asset(
+                        'assets/animations/list_loading_animation.json',
+                        fit: BoxFit.fitWidth,
+                      );
+                    } else if (state is CommentsFetchedState) {
+                      postComments = state.comments;
+                      return commentsList(context, postComments);
+                    } else {
+                      return Lottie.asset(
+                        'assets/animations/list_loading_animation.json',
+                        fit: BoxFit.fitWidth,
+                      );
+                    }
+                  },
+                ),
               ),
             ],
           ),
@@ -82,7 +114,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
           ),
@@ -92,7 +124,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
           children: [
             Expanded(
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: TextField(
                   cursorColor: OGS_THEME.blue,
@@ -107,11 +139,11 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: OGS_THEME.yellow),
+                      borderSide: const BorderSide(color: OGS_THEME.yellow),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: OGS_THEME.yellow),
+                      borderSide: const BorderSide(color: OGS_THEME.yellow),
                     ),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
@@ -150,7 +182,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
             Stack(
               children: [
                 Hero(
-                  tag: post.uuid,
+                  tag: post.uuid + "Dfsd",
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(20),
@@ -179,7 +211,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                   ),
                   child: Row(
                     children: [
-                      Padding(padding: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
+                      const Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: const Icon(

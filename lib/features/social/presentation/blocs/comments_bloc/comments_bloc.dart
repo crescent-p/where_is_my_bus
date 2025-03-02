@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/comments.dart';
+import 'package:where_is_my_bus/features/social/domain/entities/post.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/add_comment_usecase.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/get_comments_usecase.dart';
 // Removed unused import
@@ -20,6 +21,7 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     on<CommentsEvent>((event, emit) {});
     on<FetchCommentsEvent>(_getCommentsEvent);
     on<PostCommentEvent>(_postCommentEvent);
+    on<EmitFetchEvent>(_emitFetchEvent);
   }
   Future<void> _getCommentsEvent(
       FetchCommentsEvent event, Emitter<CommentsState> emit) async {
@@ -28,13 +30,23 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
         (r) => emit(CommentsFetchedState(comments: r)));
   }
 
+  Future<void> _emitFetchEvent(
+      EmitFetchEvent event, Emitter<CommentsState> emit) async {
+    emit(CommentsFetchedState(comments: event.comments));
+  }
+
   Future<void> _postCommentEvent(
       PostCommentEvent event, Emitter<CommentsState> emit) async {
     final res = await _addCommentUsecase(PostCommentParams(
         postID: event.postID, text: event.text, userEmail: event.email));
     res.fold(
       (l) => emit(CommentsFailedState(message: "Failed to post comments")),
-      (r) => emit(CommentPostedState(message: "Successfully posted comment")),
+      (r) => emit(CommentPostedState(
+          comment: Comments(
+              postId: event.postID,
+              userEmail: event.email,
+              text: event.text,
+              timestamp: DateTime.now()))),
     );
   }
 }
