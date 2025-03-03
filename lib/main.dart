@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
 import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
@@ -14,14 +11,6 @@ import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc
 import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
-import 'dart:async';
-
-import 'package:flutter_background_service/flutter_background_service.dart';
-
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'package:where_is_my_bus/core/constants/constants.dart';
-
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
 
 void main() async {
@@ -74,7 +63,6 @@ void main() async {
           )
         ],
         child: const MaterialApp(
-          
           home: MyApp(),
           debugShowCheckedModeBanner: false,
         )));

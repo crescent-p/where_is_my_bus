@@ -1,9 +1,7 @@
 import 'dart:collection';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rive/rive.dart' as Rive;
 import 'package:where_is_my_bus/core/entities/user.dart' as my_user;
 import 'package:where_is_my_bus/core/theme/colors.dart';
@@ -20,8 +18,7 @@ import 'package:where_is_my_bus/init_dependencies.dart';
 
 const notificationChannelId = 'my_foreground';
 bool backgroundStarted = false;
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+
 
 // Future<void> onStart(ServiceInstance service) async {
 //   DartPluginRegistrant.ensureInitialized();

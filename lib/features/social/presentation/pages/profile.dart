@@ -2,7 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
+import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:where_is_my_bus/init_dependencies.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -190,6 +193,51 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  height: 70,
+                  width: 200,
+                  margin: EdgeInsets.all(50),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [OGS_THEME.red, OGS_THEME.black],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () =>
+                            serviceLocator<AuthBloc>().add(AuthSignOutEvent()),
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                          child: Text(
+                            "Sign Out",
+                            style: GoogleFonts.poppins(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w400,
+                              color: OGS_THEME.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_right,
+                        size: 50,
+                        color: OGS_THEME.white,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

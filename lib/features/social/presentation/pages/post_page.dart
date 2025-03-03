@@ -51,12 +51,15 @@ class _PostPageWidgetState extends State<PostPageWidget> {
               BlocBuilder<SocialBloc, SocialState>(
                 builder: (context, state) {
                   if (state is SocialStateInitial) {
-                    return SizedBox(
-                      height: screenHeight,
-                      width: screenWidth,
-                      child: Lottie.asset(
-                        'assets/animations/list_loading_animation.json',
-                        fit: BoxFit.fitWidth,
+                    return Hero(
+                      tag: widget.postID,
+                      child: SizedBox(
+                        height: screenHeight,
+                        width: screenWidth,
+                        child: Lottie.asset(
+                          'assets/animations/list_loading_animation.json',
+                          fit: BoxFit.fitWidth,
+                        ),
                       ),
                     );
                   } else if (state is SocialPostFetchedState) {
@@ -181,19 +184,16 @@ class _PostPageWidgetState extends State<PostPageWidget> {
           children: [
             Stack(
               children: [
-                Hero(
-                  tag: post.uuid + "Dfsd",
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                    child: Image.network(
-                      post.highResImageUrl!,
-                      fit: BoxFit.cover,
-                      height: 432,
-                      width: double.infinity,
-                    ),
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                  child: Image.network(
+                    post.highResImageUrl!,
+                    fit: BoxFit.cover,
+                    height: 432,
+                    width: double.infinity,
                   ),
                 ),
                 Container(

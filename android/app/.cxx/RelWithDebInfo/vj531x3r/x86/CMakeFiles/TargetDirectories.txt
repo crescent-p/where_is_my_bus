@@ -1,0 +1,2 @@
+C:/Users/cresc/where_is_my_bus/android/app/.cxx/RelWithDebInfo/vj531x3r/x86/CMakeFiles/edit_cache.dir
+C:/Users/cresc/where_is_my_bus/android/app/.cxx/RelWithDebInfo/vj531x3r/x86/CMakeFiles/rebuild_cache.dir

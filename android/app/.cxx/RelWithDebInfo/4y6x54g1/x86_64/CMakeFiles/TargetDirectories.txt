@@ -1,0 +1,2 @@
+C:/Users/cresc/where_is_my_bus/android/app/.cxx/RelWithDebInfo/4y6x54g1/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/cresc/where_is_my_bus/android/app/.cxx/RelWithDebInfo/4y6x54g1/x86_64/CMakeFiles/rebuild_cache.dir
