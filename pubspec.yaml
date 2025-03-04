@@ -110,6 +110,11 @@ flutter:
     - assets/pngs/profile_assets.png
     - assets/pngs/profile_icon.png
     - assets/animations/custom_loading.riv
+    - assets/images/search_page_image_1.jpeg
+    - assets/images/search_page_image_2.jpeg
+    - assets/images/search_page_image_3.jpeg
+    - assets/images/search_page_image_4.jpeg
+    - assets/images/avatar.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

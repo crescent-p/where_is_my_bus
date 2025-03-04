@@ -5,12 +5,14 @@ import 'package:frosted_glass_effect/frosted_glass_effect.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rive/rive.dart' as Rive;
+import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/core/utils/rave_utils.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/mini_post.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/coming_soon.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/post_page.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/search_page.dart';
 
 class SocialPageWidget extends StatefulWidget {
   final Map<String, List<MiniPost>> items;
@@ -123,25 +125,45 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    "https://scontent.fccj2-2.fna.fbcdn.net/v/t1.6435-9/32294281_226822181400639_4070971510129426432_n.png?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EfYA6wu9uVsQ7kNvgHoPMcr&_nc_oc=AdhQ4sBFKjBJBHQEu-FsYdlI0G3pHrzKRMa8jP-z6isEGVbFtUC-XcPMv04Nb3m3TkbyuecaOMqEKzVGINomZaex&_nc_zt=23&_nc_ht=scontent.fccj2-2.fna&_nc_gid=A5tkRPnUPd_0t95iIRjYhvS&oh=00_AYA4ITfXGO3hiPmnGObSkE03sWTEVYllVvV33A7S8rc8IQ&oe=67EA7F61",
-                  ),
+                  backgroundImage: AssetImage("assets/images/avatar.png"),
+                  // foregroundImage: NetworkImage(
+                  //   "https://scontent.fccj2-2.fna.fbcdn.net/v/t1.6435-9/32294281_226822181400639_4070971510129426432_n.png?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EfYA6wu9uVsQ7kNvgHoPMcr&_nc_oc=AdhQ4sBFKjBJBHQEu-FsYdlI0G3pHrzKRMa8jP-z6isEGVbFtUC-XcPMv04Nb3m3TkbyuecaOMqEKzVGINomZaex&_nc_zt=23&_nc_ht=scontent.fccj2-2.fna&_nc_gid=A5tkRPnUPd_0t95iIRjYhvS&oh=00_AYA4ITfXGO3hiPmnGObSkE03sWTEVYllVvV33A7S8rc8IQ&oe=67EA7F61",
+                  // ),
                   radius: 30,
                 ),
                 SizedBox(width: screenWidth * 0.03),
-                Text(
-                  'Hello, John!',
-                  style: GoogleFonts.outfit(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
-                    shadows: const [
-                      Shadow(
-                        color: Colors.black,
-                        offset: Offset(5.0, 0.0),
-                        blurRadius: 100.0,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Hello,',
+                      style: GoogleFonts.outfit(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                        shadows: const [
+                          Shadow(
+                            color: Colors.black,
+                            offset: Offset(5.0, 0.0),
+                            blurRadius: 100.0,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      ' John!',
+                      style: GoogleFonts.outfit(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        shadows: const [
+                          Shadow(
+                            color: Colors.black,
+                            offset: Offset(5.0, 0.0),
+                            blurRadius: 100.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(width: screenWidth * 0.3),
                 Stack(
@@ -236,21 +258,55 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
               color: OGS_THEME.offWhite,
               borderRadius: BorderRadius.circular(10.0),
             ),
-            child: TextField(
-              scrollPadding: const EdgeInsets.all(10),
-              decoration: InputDecoration(
-                hintText: 'Explore Events and more...',
-                hintStyle: GoogleFonts.roboto(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey,
-                ),
-                suffixIcon: const Icon(Icons.search),
-                contentPadding: const EdgeInsets.only(right: 10),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(12),
-                ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SearchPage(),
+                  ),
+                );
+              },
+              child: Row(
+                children: [
+                  Hero(
+                    tag: SEARCHPAGETAG,
+                    child: Container(
+                      height: 50,
+                      width: screenWidth / 1.5,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      decoration: BoxDecoration(
+                        color: OGS_THEME.offWhite,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SearchPage(),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Explore Events and more...',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.search),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
