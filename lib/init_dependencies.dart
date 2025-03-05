@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive/hive.dart';
@@ -39,6 +41,11 @@ import 'features/social/domain/usecases/get_comments_usecase.dart';
 
 final serviceLocator = GetIt.instance;
 
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('Handling a background message: ${message.messageId}');
+  // Handle background message here
+}
+
 Future<void> initDependencies() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   if (sharedPreferences.getInt(POSTCOUNT) == null) {
@@ -56,6 +63,7 @@ Future<void> initDependencies() async {
             "profile",
             "openid",
           ]));
+
   // var permission = await Geolocator.checkPermission();
   // if (permission == LocationPermission.denied) {
   //   permission = await Geolocator.requestPermission();
@@ -69,7 +77,28 @@ Future<void> initDependencies() async {
   initSocial();
   initComments();
   initMiniPosts();
+  initNofitications();
   await initDatabase();
+}
+
+Future<void> initNofitications() async {
+  await Firebase.initializeApp();
+  if (await FirebaseMessaging.instance.getToken() != null) {
+    print(await FirebaseMessaging.instance.getToken());
+  }
+  // Foreground notifications
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Message received while app is in foreground!');
+    print('Message data: ${message.data}');
+    if (message.notification != null) {
+      print('Notification title: ${message.notification!.title}');
+      print('Notification body: ${message.notification!.body}');
+      // Display notification to user here
+    }
+  });
+
+  // Background notifications
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 }
 
 void initMiniPosts() {

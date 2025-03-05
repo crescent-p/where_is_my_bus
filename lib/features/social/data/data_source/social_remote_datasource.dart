@@ -81,17 +81,18 @@ class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
           Uri.parse(
               "http://68.233.101.85/social/comment?post_id=$postId&limit=20"),
         );
-      } else {
-        res = await http.get(
-          Uri.parse(
-              "http://68.233.101.85/social/comment?post_id=$postId&limit=20&cursor=${cursors[postId]}"),
-        );
       }
+      // else {
+      //   res = await http.get(
+      //     Uri.parse(
+      //         "http://68.233.101.85/social/comment?post_id=$postId&limit=20&cursor=${cursors[postId]}"),
+      //   );
+      // }
       if (res.statusCode != 200) {
         return Left(Failure(message: "Couldn't fetch comments"));
       } else {
-        // cursors[postId] = res
-        final body = jsonDecode(res.body) as Map<String, dynamic>;
+        final body =
+            jsonDecode(utf8.decode(res.bodyBytes)) as Map<String, dynamic>;
         cursors[postId] = body["cursor"] ?? 'None';
         if ((body["body"]).isEmpty) {
           return Right([]);

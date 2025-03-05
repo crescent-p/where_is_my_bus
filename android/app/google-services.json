@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140564853855",
+    "project_id": "ogs-app-175fe",
+    "storage_bucket": "ogs-app-175fe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140564853855:android:917f09f2d93fd20e4897ea",
+        "android_client_info": {
+          "package_name": "com.example.where_is_my_bus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4OOrLokiUN6eVVa_pNAKR5VR0nszT_SU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
