@@ -14,7 +14,7 @@ class UserCubit extends Cubit<UserState> {
       emit(UserLoggedOut());
     }
   }
-  
+
   void noUserFound() {
     emit(UserLoggedOut());
   }

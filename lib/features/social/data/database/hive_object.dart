@@ -77,10 +77,11 @@ class HiveMiniPost extends HiveObject {
   });
   MiniPost toMiniPost() {
     return MiniPost(
+        venue: type,
         uuid: uuid,
         type: type,
         userEmail: userEmail,
-        description: description,
+        heading: description,
         image: image);
   }
 }

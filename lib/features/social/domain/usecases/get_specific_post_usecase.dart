@@ -8,7 +8,7 @@ import 'package:where_is_my_bus/features/social/domain/repository/social_reposit
 
 class GetSpecificPostUseCase implements UseCases<Post, SpecificPostParams> {
   final SocialRepository repository;
-  GetSpecificPostUseCase({ required this.repository});
+  GetSpecificPostUseCase({required this.repository});
   @override
   Future<Either<Failure, Post>> call(SpecificPostParams params) async {
     try {

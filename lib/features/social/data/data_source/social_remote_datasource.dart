@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/comments.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/mini_post.dart';
+import 'package:where_is_my_bus/features/social/domain/entities/my_notification.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:where_is_my_bus/init_dependencies.dart';
@@ -26,6 +28,7 @@ abstract interface class SocialRemoteDataSource {
   Future<Either<Failure, List<Comments>>> getComments(String postId);
   Future<Either<Failure, String>> setComment(Comments comment);
   Future<Either<Failure, Post>> getSpecificPost(String uuid);
+  Future<Either<Failure, List<MyNotification>>> getNotification();
 }
 
 class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
@@ -65,6 +68,9 @@ class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
       uuid: jsonBody['uuid'],
       type: jsonBody['type'],
       likes: jsonBody['likes'],
+      heading: jsonBody['heading'],
+      eventTiming: jsonBody['event_timing'],
+      venue: jsonBody['venue'],
       userEmail: jsonBody['user_email'],
       description: jsonBody['description'],
       datetime: DateTime.parse(jsonBody['datetime']),
@@ -184,6 +190,28 @@ class SocialRemoteDataSourceImple implements SocialRemoteDataSource {
       return Right(post);
     } on Exception catch (e) {
       return Left(Failure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<MyNotification>>> getNotification() async {
+    try {
+      final res = await http
+          .get(Uri.parse("http://68.233.101.85/social/notification?limit=10"));
+      if (res.statusCode != 200) {
+        return Left(Failure(message: "Failed to fetch notifications"));
+      }
+      final jsonBody = jsonDecode(res.body) as Map<String, dynamic>;
+      final notifications = ((jsonBody["notifications"]) as List).map((entry) {
+        return MyNotification(
+          id: entry["id"],
+          message: entry["message"],
+          createdAt: DateTime.parse(entry["created_at"]),
+        );
+      }).toList();
+      return Right(notifications);
+    } catch (e) {
+      return Left(Failure(message: "Failed to fetch notifications"));
     }
   }
 }

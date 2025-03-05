@@ -1,10 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/src/widgets/notification_listener.dart';
 import 'package:fpdart/src/either.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
 import 'package:where_is_my_bus/features/social/data/data_source/social_local_datasource.dart';
 import 'package:where_is_my_bus/features/social/data/data_source/social_remote_datasource.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/comments.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/mini_post.dart';
+import 'package:where_is_my_bus/features/social/domain/entities/my_notification.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/post.dart';
 import 'package:where_is_my_bus/features/social/domain/repository/social_repository.dart';
 
@@ -63,6 +65,15 @@ class SocialRepositoryImpl implements SocialRepository {
   Future<Either<Failure, String>> postComments(Comments comment) async {
     if (await isConnected()) {
       return socialRemoteDataSource.setComment(comment);
+    } else {
+      return Left(Failure(message: "No internet connection bruh!"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<MyNotification>>> getNotification() async {
+    if (await isConnected()) {
+      return socialRemoteDataSource.getNotification();
     } else {
       return Left(Failure(message: "No internet connection bruh!"));
     }

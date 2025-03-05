@@ -34,12 +34,10 @@ class SocialLocalDataSourceImple implements SocialLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, List<Post>>> getSpecificPost(
-      String uuid) async {
+  Future<Either<Failure, List<Post>>> getSpecificPost(String uuid) async {
     try {
       final posts = storage.retrievePosts(uuid);
-      final filteredPosts =
-          posts.where((post) => post.uuid == uuid).toList();
+      final filteredPosts = posts.where((post) => post.uuid == uuid).toList();
       return Right(filteredPosts);
     } catch (e) {
       return Left(
@@ -79,5 +77,4 @@ class SocialLocalDataSourceImple implements SocialLocalDataSource {
     // TODO: implement getComments
     throw UnimplementedError();
   }
-
 }

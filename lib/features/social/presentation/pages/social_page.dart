@@ -10,9 +10,12 @@ import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/core/utils/rave_utils.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/mini_post.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/blocs/notification_bloc/notification_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/coming_soon.dart';
+import 'package:where_is_my_bus/features/social/presentation/pages/notifications_page.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/post_page.dart';
 import 'package:where_is_my_bus/features/social/presentation/pages/search_page.dart';
+import 'package:where_is_my_bus/init_dependencies.dart';
 
 class SocialPageWidget extends StatefulWidget {
   final Map<String, List<MiniPost>> items;
@@ -51,7 +54,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 2),
                 child: BlocBuilder<MiniPostsBloc, MiniPostsState>(
                   builder: (context, state) {
                     if (state is MiniPostsLoadedState) {
@@ -194,19 +197,34 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                       top: 5,
                       height: 40,
                       width: 40,
-                      child: Rive.RiveAnimation.asset(
-                        "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
-                        artboard: "BELL",
-                        onInit: (artboard) {
-                          Rive.StateMachineController controller =
-                              RiveUtils.getStateMachineController(
-                            artboard,
-                            stateMachineName: "BELL_Interactivity",
+                      child: GestureDetector(
+                        onTap: () {
+                          serviceLocator<NotificationBloc>()
+                              .add(GetNotificationEvent());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NotificationsPage(),
+                            ),
                           );
-                          notificationIcon =
-                              controller.findSMI("active") as Rive.SMIBool;
-                          notificationIcon.change(true);
                         },
+                        child: Hero(
+                          tag: NOTIFICATIONTAG,
+                          child: Rive.RiveAnimation.asset(
+                            "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
+                            artboard: "BELL",
+                            onInit: (artboard) {
+                              Rive.StateMachineController controller =
+                                  RiveUtils.getStateMachineController(
+                                artboard,
+                                stateMachineName: "BELL_Interactivity",
+                              );
+                              notificationIcon =
+                                  controller.findSMI("active") as Rive.SMIBool;
+                              notificationIcon.change(true);
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -454,7 +472,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            item.description,
+                            item.heading!,
                             style:
                                 Theme.of(context).textTheme.bodyLarge?.copyWith(
                                       fontWeight: FontWeight.bold,
@@ -463,7 +481,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            "NIT Calicut",
+                            item.venue,
                             style: GoogleFonts.outfit(),
                           )
                         ],

@@ -9,6 +9,7 @@ import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav
 import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/blocs/notification_bloc/notification_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
@@ -60,6 +61,9 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => serviceLocator<MiniPostsBloc>(),
+          ),
+          BlocProvider(
+            create: (_) => serviceLocator<NotificationBloc>(),
           )
         ],
         child: const MaterialApp(

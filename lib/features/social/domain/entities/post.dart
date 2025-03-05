@@ -3,6 +3,8 @@ import 'dart:typed_data';
 class Post {
   final String userEmail;
   final String? heading;
+  final String? venue;
+  final String? eventTiming;
   final String type;
   final String uuid;
   String? highResImageUrl;
@@ -12,6 +14,8 @@ class Post {
   DateTime datetime;
 
   Post({
+    this.venue,
+    this.eventTiming,
     this.heading,
     required this.uuid,
     required this.type,

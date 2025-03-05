@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lottie/lottie.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/features/social/domain/entities/comments.dart';
@@ -80,7 +81,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
               BlocListener<CommentsBloc, CommentsState>(
                 listener: (context, state) {
                   if (state is CommentPostedState) {
-                    postComments.add(state.comment);
+                    postComments.insert(0, state.comment);
                     serviceLocator<CommentsBloc>()
                         .add(EmitFetchEvent(comments: postComments));
                   }
@@ -162,7 +163,8 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                   serviceLocator<CommentsBloc>().add(PostCommentEvent(
                     postID: widget.postID,
                     text: comment,
-                    email: "cp@gmail.com", // Replace with actual email
+                    email: GoogleSignIn().currentUser?.email ??
+                        'unknown@gmail.com',
                   ));
                   commentController.clear();
                 }
@@ -274,7 +276,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                "19th October",
+                                post.eventTiming!,
                                 style: GoogleFonts.outfit(
                                   color: OGS_THEME.white,
                                   fontSize: 15,
@@ -318,7 +320,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                "Main Campus",
+                                post.venue!,
                                 style: GoogleFonts.outfit(
                                   color: OGS_THEME.white,
                                   fontSize: 15,
@@ -340,7 +342,7 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                     ),
                   ),
                   Text(
-                    "hello and welcome to my youtube channel",
+                    post.description,
                     style: GoogleFonts.outfit(
                       color: OGS_THEME.white,
                       fontSize: 20,

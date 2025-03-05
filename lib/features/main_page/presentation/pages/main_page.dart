@@ -19,7 +19,6 @@ import 'package:where_is_my_bus/init_dependencies.dart';
 const notificationChannelId = 'my_foreground';
 bool backgroundStarted = false;
 
-
 // Future<void> onStart(ServiceInstance service) async {
 //   DartPluginRegistrant.ensureInitialized();
 

@@ -35,3 +35,4 @@ const PRELOAD_LIMIT = 10;
 const IDTOKEN = "idToken";
 const USEREMAIL = "userEmail";
 const SEARCHPAGETAG = "searchpagetag";
+const NOTIFICATIONTAG = "notificationtag";

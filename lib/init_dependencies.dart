@@ -32,9 +32,11 @@ import 'package:where_is_my_bus/features/social/data/repository_impl/social_repo
 import 'package:where_is_my_bus/features/social/domain/repository/social_repository.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/add_comment_usecase.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/get_mini_posts_usecase.dart';
+import 'package:where_is_my_bus/features/social/domain/usecases/get_notification_usecase.dart';
 import 'package:where_is_my_bus/features/social/domain/usecases/get_specific_post_usecase.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
+import 'package:where_is_my_bus/features/social/presentation/blocs/notification_bloc/notification_bloc.dart';
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
 
 import 'features/social/domain/usecases/get_comments_usecase.dart';
@@ -99,6 +101,11 @@ Future<void> initNofitications() async {
 
   // Background notifications
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  serviceLocator.registerLazySingleton<NotificationBloc>(
+      () => NotificationBloc(getNotificationUsecase: serviceLocator()));
+  serviceLocator.registerLazySingleton<GetNotificationUsecase>(
+      () => GetNotificationUsecase(repository: serviceLocator()));
 }
 
 void initMiniPosts() {
