@@ -355,13 +355,14 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide.none,
                   ),
                 ),
-                backgroundColor: const WidgetStatePropertyAll(OGS_THEME.blue),
+                backgroundColor: const WidgetStatePropertyAll(OGS_THEME.white),
               ),
               child: Text(
                 "View All",
-                style: GoogleFonts.outfit(fontSize: 12, color: OGS_THEME.white),
+                style: GoogleFonts.outfit(fontSize: 12, color: OGS_THEME.black),
               ),
             ),
           ],

@@ -43,4 +43,9 @@
                             allocate a semaphore to that user.
                 - ELSE if no seat vacant:
                     discard request
-- When list is pulled down do reload of location data.
+- When list is pulled down do reload of location data. //DONE
+- Add notification support
+- Add full support for posts (add date, venue, heading, description in database)
+- change animations
+- set default images for non-loaded images
+- set splash screen

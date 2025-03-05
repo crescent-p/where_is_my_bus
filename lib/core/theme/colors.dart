@@ -18,7 +18,7 @@ class OGS_THEME {
   static const Color yellow = Color.fromRGBO(255, 204, 0, 0.865);
   static const Color translucentYellow = Color.fromRGBO(255, 204, 0, 50);
   static const Color grey = Color.fromRGBO(89, 89, 89, 100);
-  static const Color blue = Color.fromRGBO(9, 38, 181, 0.612);
+  static const Color blue = Color.fromRGBO(26, 37, 93, 1);
   static const Color white = Color.fromRGBO(255, 255, 255, 1);
   static const Color offWhite = Color.fromRGBO(245, 245, 245, 1);
   static const Color black = Color.fromRGBO(0, 0, 0, 1);
