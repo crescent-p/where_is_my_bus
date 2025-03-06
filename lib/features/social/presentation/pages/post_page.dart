@@ -186,16 +186,19 @@ class _PostPageWidgetState extends State<PostPageWidget> {
           children: [
             Stack(
               children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
-                  ),
-                  child: Image.network(
-                    post.highResImageUrl!,
-                    fit: BoxFit.cover,
-                    height: 432,
-                    width: double.infinity,
+                Hero(
+                  tag: widget.postID,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                    child: Image.network(
+                      post.highResImageUrl!,
+                      fit: BoxFit.cover,
+                      height: 432,
+                      width: double.infinity,
+                    ),
                   ),
                 ),
                 Container(
