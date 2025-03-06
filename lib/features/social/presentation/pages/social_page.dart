@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frosted_glass_effect/frosted_glass_effect.dart';
@@ -19,7 +20,10 @@ import 'package:where_is_my_bus/init_dependencies.dart';
 
 class SocialPageWidget extends StatefulWidget {
   final Map<String, List<MiniPost>> items;
-  const SocialPageWidget({Key? key, required this.items}) : super(key: key);
+  final String user_name;
+  const SocialPageWidget(
+      {Key? key, required this.items, required this.user_name})
+      : super(key: key);
 
   static String routeName = 'socail_page';
   static String routePath = '/socailPage';
@@ -49,7 +53,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Stack(
             children: [
@@ -118,157 +122,166 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
   }
 
   Widget _buildProfileHeader(BuildContext context, double screenWidth) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/avatar.png"),
-                  foregroundImage: NetworkImage(
-                    "https://scontent.fccj2-2.fna.fbcdn.net/v/t1.6435-9/32294281_226822181400639_4070971510129426432_n.png?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EfYA6wu9uVsQ7kNvgHoPMcr&_nc_oc=AdhQ4sBFKjBJBHQEu-FsYdlI0G3pHrzKRMa8jP-z6isEGVbFtUC-XcPMv04Nb3m3TkbyuecaOMqEKzVGINomZaex&_nc_zt=23&_nc_ht=scontent.fccj2-2.fna&_nc_gid=A5tkRPnUPd_0t95iIRjYhvS&oh=00_AYA4ITfXGO3hiPmnGObSkE03sWTEVYllVvV33A7S8rc8IQ&oe=67EA7F61",
-                  ),
-                  radius: 30,
-                ),
-                SizedBox(width: screenWidth * 0.03),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Hello,',
-                      style: GoogleFonts.outfit(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        shadows: const [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(5.0, 0.0),
-                            blurRadius: 100.0,
-                          ),
-                        ],
+                    const CircleAvatar(
+                      backgroundImage: AssetImage("assets/images/avatar.png"),
+                      foregroundImage: NetworkImage(
+                        "https://scontent.fccj2-2.fna.fbcdn.net/v/t1.6435-9/32294281_226822181400639_4070971510129426432_n.png?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EfYA6wu9uVsQ7kNvgHoPMcr&_nc_oc=AdhQ4sBFKjBJBHQEu-FsYdlI0G3pHrzKRMa8jP-z6isEGVbFtUC-XcPMv04Nb3m3TkbyuecaOMqEKzVGINomZaex&_nc_zt=23&_nc_ht=scontent.fccj2-2.fna&_nc_gid=A5tkRPnUPd_0t95iIRjYhvS&oh=00_AYA4ITfXGO3hiPmnGObSkE03sWTEVYllVvV33A7S8rc8IQ&oe=67EA7F61",
                       ),
+                      radius: 25,
                     ),
-                    Text(
-                      ' John!',
-                      style: GoogleFonts.outfit(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400,
-                        shadows: const [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(5.0, 0.0),
-                            blurRadius: 100.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: screenWidth * 0.3),
-                Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: OGS_THEME.yellow,
-                            blurRadius: 10,
-                            spreadRadius: 10,
-                          ),
-                          BoxShadow(
-                            color: Colors.yellow.withOpacity(0.4),
-                            blurRadius: 100,
-                            spreadRadius: 30,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      right: 5,
-                      top: 5,
-                      height: 40,
-                      width: 40,
-                      child: GestureDetector(
-                        onTap: () {
-                          serviceLocator<NotificationBloc>()
-                              .add(GetNotificationEvent());
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const NotificationsPage(),
+                    SizedBox(width: screenWidth * 0.03),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hello,',
+                            style: GoogleFonts.outfit(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              shadows: const [
+                                Shadow(
+                                  color: Colors.black,
+                                  offset: Offset(2.0, 0.0),
+                                  blurRadius: 100.0,
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                        child: Hero(
-                          tag: NOTIFICATIONTAG,
-                          child: Rive.RiveAnimation.asset(
-                            "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
-                            artboard: "BELL",
-                            onInit: (artboard) {
-                              Rive.StateMachineController controller =
-                                  RiveUtils.getStateMachineController(
-                                artboard,
-                                stateMachineName: "BELL_Interactivity",
-                              );
-                              notificationIcon =
-                                  controller.findSMI("active") as Rive.SMIBool;
-                              notificationIcon.change(true);
-                            },
                           ),
+                          Text(
+                            widget.user_name,
+                            style: GoogleFonts.outfit(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              shadows: const [
+                                Shadow(
+                                  color: Colors.black,
+                                  offset: Offset(2.0, 0.0),
+                                  blurRadius: 100.0,
+                                ),
+                              ],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenWidth * 0.02),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _getGreeting(),
+                        style: GoogleFonts.outfit(
+                          fontSize: 28,
+                          color: OGS_THEME.yellow,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 60,
+                      width: 60,
+                      child: Rive.RiveAnimation.asset(
+                        "assets/animations/cloud_and_sun.riv",
                       ),
                     ),
                   ],
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 0.0),
-                  child: Text(
-                    _getGreeting(),
-                    style: GoogleFonts.outfit(
-                      fontSize: 32,
-                      color: OGS_THEME.yellow,
-                    ),
-                  ),
-                ),
-                // const SizedBox(
-                //   width: 20,
-                // ),
-                const SizedBox(
-                  height: 70,
-                  width: 70,
-                  child: Rive.RiveAnimation.asset(
-                    "assets/animations/cloud_and_sun.riv",
-                  ),
-                ),
-              ],
+          ),
+          SizedBox(width: screenWidth * 0.03),
+          _buildNotificationButton(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationButton(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: OGS_THEME.offWhite,
+            boxShadow: [
+              BoxShadow(
+                color: OGS_THEME.yellow,
+                blurRadius: 10,
+                spreadRadius: 5,
+              ),
+              BoxShadow(
+                color: Colors.yellow.withOpacity(0.4),
+                blurRadius: 10,
+                spreadRadius: 5,
+              ),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            serviceLocator<NotificationBloc>().add(GetNotificationEvent());
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationsPage(),
+              ),
+            );
+          },
+          child: Hero(
+            tag: NOTIFICATIONTAG,
+            child: SizedBox(
+              height: 40,
+              width: 40,
+              child: Rive.RiveAnimation.asset(
+                "assets/bottom_nav_icons/animated_icon_set_-_1_color.riv",
+                artboard: "BELL",
+                onInit: (artboard) {
+                  Rive.StateMachineController controller =
+                      RiveUtils.getStateMachineController(
+                    artboard,
+                    stateMachineName: "BELL_Interactivity",
+                  );
+                  notificationIcon =
+                      controller.findSMI("active") as Rive.SMIBool;
+                  notificationIcon.change(true);
+                },
+              ),
             ),
-          ],
+          ),
         ),
       ],
     );
   }
 
   Widget _buildSearchBar(BuildContext context, double screenWidth) {
-    return SizedBox(
+    return Container(
+      color: OGS_THEME.white,
       width: screenWidth,
       height: 50,
       child: Row(
         children: [
           Container(
+            margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
             height: 50,
             width: screenWidth / 1.35,
             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
@@ -328,7 +341,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
               ),
             ),
           ),
-          SizedBox(width: screenWidth * 0.03),
+          SizedBox(width: screenWidth * 0.05),
           Container(
             height: 50,
             width: 50,
@@ -367,35 +380,37 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
               textAlign: TextAlign.start,
               style: GoogleFonts.outfit(fontSize: 24),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () {},
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide.none,
-                  ),
+              style: TextButton.styleFrom(
+                backgroundColor: OGS_THEME.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                backgroundColor: const WidgetStatePropertyAll(OGS_THEME.white),
               ),
               child: Text(
                 "View All",
-                style: GoogleFonts.outfit(fontSize: 12, color: OGS_THEME.black),
+                style: GoogleFonts.outfit(fontSize: 15, color: OGS_THEME.black),
               ),
             ),
           ],
         ),
         const SizedBox(
-          height: 10,
+          height: 5,
         ),
-        Card(
-          color: OGS_THEME.blue,
-          margin: const EdgeInsets.all(5),
+        Container(
+          color: OGS_THEME.white,
+          margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: Container(
             padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-            height: 100,
-            width: 500,
-            child: Image.asset("assets/pngs/facilities_near_you.png"),
+            height: 177,
+            width: 379,
+            color: OGS_THEME.white,
+            child: Image.asset(
+              "assets/pngs/facilities_near_you.png",
+              color: OGS_THEME.black,
+              fit: BoxFit.fill,
+            ),
           ),
         ),
       ],
@@ -412,9 +427,13 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Events",
-          style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold),
+        Container(
+          margin: EdgeInsets.all(10),
+          child: Text(
+            title,
+            style:
+                GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
         ),
         const SizedBox(height: 8),
         SizedBox(
@@ -446,7 +465,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                     shadows: const [
                       BoxShadow(
                         color: Color(0x0A000000),
-                        blurRadius: 26,
+                        blurRadius: 13,
                         offset: Offset(12, 4),
                         spreadRadius: 0,
                       )
@@ -462,8 +481,12 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                             tag: item.uuid,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                item.lowResImageUrl!,
+                              child: CachedNetworkImage(
+                                imageUrl: item.lowResImageUrl!,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                                 width: double.infinity,
                                 height: 220,
                                 fit: BoxFit.cover,

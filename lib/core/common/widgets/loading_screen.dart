@@ -14,7 +14,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          child: Lottie.asset("assets/animations/loading.json"),
+          child: Image.asset("assets/images/splash.png"),
         ),
       ),
     );

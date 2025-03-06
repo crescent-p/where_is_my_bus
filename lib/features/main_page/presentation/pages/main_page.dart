@@ -45,15 +45,20 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   // late final FlutterBackgroundService flutterBackgroundService;
-  final List<Widget> pages = [
-    SocialPageWidget(items: {}),
-    ProfilePage(),
-    BusListPage(),
-    MapScreen(),
-  ];
+  late List<Widget> pages;
+
   @override
   void initState() {
     super.initState();
+    pages = [
+      SocialPageWidget(
+        items: {},
+        user_name: widget.user.name,
+      ),
+      BusListPage(),
+      ProfilePage(),
+      MapScreen(),
+    ];
     // initBackground();
   }
 

@@ -51,31 +51,49 @@ class _PostPageWidgetState extends State<PostPageWidget> {
             children: [
               BlocBuilder<SocialBloc, SocialState>(
                 builder: (context, state) {
-                  if (state is SocialStateInitial) {
-                    return Hero(
-                      tag: widget.postID,
-                      child: SizedBox(
-                        height: screenHeight,
-                        width: screenWidth,
-                        child: Lottie.asset(
-                          'assets/animations/list_loading_animation.json',
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
+                  if (state is! SocialPostFetchedState) {
+                    serviceLocator<SocialBloc>().add(
+                      FetchPostEvent(postID: widget.postID),
                     );
-                  } else if (state is SocialPostFetchedState) {
-                    return postWidget(context, state.post);
-                  } else {
-                    return SizedBox(
-                      height: screenHeight,
-                      width: screenWidth,
-                      child: Lottie.asset(
-                        'assets/animations/list_loading_animation.json',
-                        fit: BoxFit.fitWidth,
-                      ),
-                    );
-                    ;
                   }
+                  return AnimatedSwitcher(
+                      duration: const Duration(
+                          milliseconds: 500), // Transition duration
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return SizeTransition(
+                            sizeFactor: animation, child: child);
+                      },
+                      child: state is SocialStateInitial
+                          ? Hero(
+                              key: const Key(
+                                  'loading'), // Key for the loading state
+                              tag: widget.postID,
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width,
+                                child: Lottie.asset(
+                                  'assets/animations/list_loading_animation.json',
+                                  fit: BoxFit.fitWidth,
+                                ),
+                              ),
+                            )
+                          : state is SocialPostFetchedState
+                              ? postWidget(
+                                  context,
+                                  state.post,
+                                  // Key for the fetched state
+                                )
+                              : SizedBox(
+                                  key: const Key(
+                                      'loading'), // Key for other states
+                                  height: MediaQuery.of(context).size.height,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Lottie.asset(
+                                    'assets/animations/list_loading_animation.json',
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ));
                 },
               ),
               BlocListener<CommentsBloc, CommentsState>(
@@ -84,6 +102,9 @@ class _PostPageWidgetState extends State<PostPageWidget> {
                     postComments.insert(0, state.comment);
                     serviceLocator<CommentsBloc>()
                         .add(EmitFetchEvent(comments: postComments));
+                  } else if (state is CommentsFailedState) {
+                    serviceLocator<CommentsBloc>()
+                        .add(FetchCommentsEvent(postID: widget.postID));
                   }
                 },
                 child: BlocBuilder<CommentsBloc, CommentsState>(
