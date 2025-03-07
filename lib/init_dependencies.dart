@@ -18,6 +18,8 @@ import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_in_useca
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_out_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/register_with_fastapi_usecase.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:where_is_my_bus/features/locations/bloc/bloc/web_socket_bloc.dart';
+import 'package:where_is_my_bus/features/locations/pages/map_view.dart';
 import 'package:where_is_my_bus/features/main_page/data/data_sources/locations_remote_datasource.dart';
 import 'package:where_is_my_bus/features/main_page/data/repository_impl/locations_repository_impl.dart';
 import 'package:where_is_my_bus/features/main_page/domain/repository/locations_repository.dart';
@@ -80,7 +82,13 @@ Future<void> initDependencies() async {
   initComments();
   initMiniPosts();
   initNofitications();
+  initWebSocket();
   await initDatabase();
+}
+
+Future<void> initWebSocket() async {
+  serviceLocator.registerLazySingleton<WebSocketBloc>(() => WebSocketBloc());
+
 }
 
 Future<void> initNofitications() async {

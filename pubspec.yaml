@@ -121,6 +121,7 @@ flutter:
     - assets/images/avatar.png
     - assets/icons/app_logo.png
     - assets/images/splash.png
+    - assets/pngs/bus.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

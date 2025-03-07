@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
 import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:where_is_my_bus/features/locations/bloc/bloc/web_socket_bloc.dart';
+import 'package:where_is_my_bus/features/locations/pages/map_view.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav_cubit.dart';
 import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
@@ -64,7 +66,10 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => serviceLocator<NotificationBloc>(),
-          )
+          ),
+          BlocProvider(
+            create: (_) => serviceLocator<WebSocketBloc>(),
+          ),
         ],
         child: const MaterialApp(
           home: MyApp(),

@@ -6,6 +6,8 @@ import 'package:frosted_glass_effect/frosted_glass_effect.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rive/rive.dart' as Rive;
+import 'package:where_is_my_bus/core/common/widgets/cicular_loading_animation.dart';
+import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
 import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/theme/colors.dart';
 import 'package:where_is_my_bus/core/utils/rave_utils.dart';
@@ -135,7 +137,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                   children: [
                     const CircleAvatar(
                       backgroundImage: AssetImage("assets/images/avatar.png"),
-                      foregroundImage: NetworkImage(
+                      foregroundImage: CachedNetworkImageProvider(
                         "https://scontent.fccj2-2.fna.fbcdn.net/v/t1.6435-9/32294281_226822181400639_4070971510129426432_n.png?_nc_cat=101&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EfYA6wu9uVsQ7kNvgHoPMcr&_nc_oc=AdhQ4sBFKjBJBHQEu-FsYdlI0G3pHrzKRMa8jP-z6isEGVbFtUC-XcPMv04Nb3m3TkbyuecaOMqEKzVGINomZaex&_nc_zt=23&_nc_ht=scontent.fccj2-2.fna&_nc_gid=A5tkRPnUPd_0t95iIRjYhvS&oh=00_AYA4ITfXGO3hiPmnGObSkE03sWTEVYllVvV33A7S8rc8IQ&oe=67EA7F61",
                       ),
                       radius: 25,
@@ -484,7 +486,7 @@ class _SocialPageWidgetState extends State<SocialPageWidget> {
                               child: CachedNetworkImage(
                                 imageUrl: item.lowResImageUrl!,
                                 placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
+                                    CircularLoadingScreen(),
                                 errorWidget: (context, url, error) =>
                                     Icon(Icons.error),
                                 width: double.infinity,
