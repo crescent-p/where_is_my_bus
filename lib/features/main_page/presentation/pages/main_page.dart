@@ -103,6 +103,7 @@ class _MainPageState extends State<MainPage> {
                     return PageView(
                       controller: _pageController,
                       children: pages,
+                      physics: NeverScrollableScrollPhysics(),
                       onPageChanged: (index) {
                         context.read<BottomNavCubit>().changeTab(index);
                       },

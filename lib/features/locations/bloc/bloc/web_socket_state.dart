@@ -7,6 +7,15 @@ class WebSocketInitialState extends WebSocketState {}
 
 class WebSocketConnectedState extends WebSocketState {}
 
+class WebSocketConnectingState extends WebSocketState {}
+
+class WebSocketDisconnectedState extends WebSocketState {}
+
+class WebSocketErrorState extends WebSocketState {
+  final String message;
+  WebSocketErrorState({required this.message});
+}
+
 class WebSocketFailedState extends WebSocketState {
   final String message;
 

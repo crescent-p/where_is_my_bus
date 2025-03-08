@@ -5,6 +5,11 @@ sealed class WebSocketEvent {}
 
 class ConnectWebSocket extends WebSocketEvent {}
 
+class ConnectWebStartListeningEvent extends WebSocketEvent {}
+
+class WebSocketDisconnectEvent extends WebSocketEvent {}
+
+
 class SendMessageEvent extends WebSocketEvent {
   final String message;
   SendMessageEvent(this.message);

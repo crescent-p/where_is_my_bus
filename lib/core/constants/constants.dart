@@ -36,3 +36,31 @@ const IDTOKEN = "idToken";
 const USEREMAIL = "userEmail";
 const SEARCHPAGETAG = "searchpagetag";
 const NOTIFICATIONTAG = "notificationtag";
+const MAPSTYLE = [
+  {
+    "featureType": "administrative",
+    "elementType": "geometry",
+    "stylers": [
+      {"visibility": "off"}
+    ]
+  },
+  {
+    "featureType": "poi",
+    "stylers": [
+      {"visibility": "off"}
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      {"visibility": "off"}
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {"visibility": "off"}
+    ]
+  }
+];

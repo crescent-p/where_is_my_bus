@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
@@ -11,8 +12,8 @@ part 'web_socket_state.dart';
 class WebSocketManager {
   late IOWebSocketChannel channel;
 
-  void connect() {
-    channel = IOWebSocketChannel.connect(
+  Future<void> connect() async {
+    channel = await IOWebSocketChannel.connect(
         Uri.parse('ws://68.233.101.85/locations/subscribe'));
   }
 
@@ -43,35 +44,66 @@ class WebSocketManager {
 
 class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
   final WebSocketManager _webSocketManager = WebSocketManager();
+  StreamSubscription? _messageSubscription;
 
   WebSocketBloc() : super(WebSocketInitialState()) {
-    _webSocketManager.connect();
+    on<ConnectWebSocket>(_connectWebSocket);
+    on<MessageReceivedEvent>(_handleMessage);
+    on<WebSocketDisconnectEvent>(_disconnect);
+  }
 
-    //Moved here
-    _webSocketManager.listen((message) {
-      add(MessageReceivedEvent(message));
-    });
+  Future<void> _connectWebSocket(
+    ConnectWebSocket event,
+    Emitter<WebSocketState> emit,
+  ) async {
+    try {
+      emit(WebSocketConnectingState());
+      await _webSocketManager.connect();
 
-    on<ConnectWebSocket>((event, emit) {
+      _messageSubscription = _webSocketManager.channel.stream.listen(
+        (message) => add(MessageReceivedEvent(message)),
+        onError: (error) =>
+            emit(WebSocketErrorState(message: error.toString())),
+        onDone: () => emit(WebSocketDisconnectedState()),
+      );
       emit(WebSocketConnectedState());
-    });
+    } catch (e, stackTrace) {
+      add(ConnectWebSocket());
+      emit(
+        WebSocketFailedState(
+          message: 'Connection failed: ${e.toString()}',
+        ),
+      );
+      addError(e, stackTrace);
+    }
+  }
 
-    on<SendMessageEvent>((event, emit) {
-      _webSocketManager.sendMessage(event.message);
-    });
-
-    on<MessageReceivedEvent>((event, emit) {
+  void _handleMessage(
+    MessageReceivedEvent event,
+    Emitter<WebSocketState> emit,
+  ) {
+    try {
       final data = jsonDecode(event.message);
-      final latitude = data['latitude'];
-      final longitude = data['longitude'];
-      final busName = data['busName'];
-      final position = LatLng(latitude, longitude);
-      emit(WebSocketMessageReceivedState(event.message, position));
-    });
+      final position = LatLng(data['latitude'], data['longitude']);
+      emit(WebSocketMessageReceivedState(data['busName'], position));
+    } catch (e) {
+      emit(WebSocketErrorState(
+          message: 'Message parsing failed: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _disconnect(
+    WebSocketDisconnectEvent event,
+    Emitter<WebSocketState> emit,
+  ) async {
+    await _messageSubscription?.cancel();
+    _webSocketManager.close();
+    emit(WebSocketDisconnectedState());
   }
 
   @override
   Future<void> close() {
+    _messageSubscription?.cancel();
     _webSocketManager.close();
     return super.close();
   }
