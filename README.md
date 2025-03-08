@@ -48,8 +48,10 @@
         - ELSE if no seat vacant:
           discard request
 - When list is pulled down do reload of location data. //DONE
-- Add notification support
-- Add full support for posts (add date, venue, heading, description in database)
-- change animations
-- set default images for non-loaded images
-- set splash screen
+- Add notification support //DONE
+- Add full support for posts (add date, venue, heading, description in database) //FONE
+- change animations //DONE
+- set default images for non-loaded images //DONE
+- set splash screen //DONE
+- make map useful (add trailing markers.)
+  - > MAP<String, Markers>

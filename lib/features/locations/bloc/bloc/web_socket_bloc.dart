@@ -66,7 +66,7 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
       final longitude = data['longitude'];
       final busName = data['busName'];
       final position = LatLng(latitude, longitude);
-      emit(WebSocketMessageReceivedState(busName, position));
+      emit(WebSocketMessageReceivedState(event.message, position));
     });
   }
 

@@ -7,6 +7,12 @@ class WebSocketInitialState extends WebSocketState {}
 
 class WebSocketConnectedState extends WebSocketState {}
 
+class WebSocketFailedState extends WebSocketState {
+  final String message;
+
+  WebSocketFailedState({required this.message});
+}
+
 class WebSocketMessageReceivedState extends WebSocketState {
   final String busName;
   final LatLng coordinates;
