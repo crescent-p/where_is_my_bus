@@ -14,7 +14,7 @@ import 'package:where_is_my_bus/core/utils/login_success_dialog_box.dart';
 import 'package:where_is_my_bus/core/utils/snack_bar.dart';
 import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/signInWidget.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
+import 'package:where_is_my_bus/features/locations/pages/map_view.dart';
 
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
@@ -61,13 +61,13 @@ class _LoginpageState extends State<Loginpage> {
         // context.read<LocationsBloc>().add(GetBusLocationsEvent());
         Navigator.pushAndRemoveUntil(
           context,
-          MainPage.route(state.user),
+          MapScreen.route(),
           (route) => false,
         );
       }
     }, builder: (BuildContext context, AuthState state) {
       if (state is AuthSuccess) {
-        return MainPage(user: state.user);
+        return MapScreen();
       } else {
         return const LoginPageWidget();
       }

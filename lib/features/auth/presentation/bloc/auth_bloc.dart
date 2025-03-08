@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
-import 'package:where_is_my_bus/core/constants/constants.dart';
 import 'package:where_is_my_bus/core/entities/user.dart' as myUser;
 import 'package:flutter/material.dart';
 import 'package:where_is_my_bus/core/error/failure.dart';
@@ -12,8 +11,6 @@ import 'package:where_is_my_bus/features/auth/domain/usecases/auth_current_user_
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_in_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/auth_sign_out_usecase.dart';
 import 'package:where_is_my_bus/features/auth/domain/usecases/register_with_fastapi_usecase.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
-import 'package:where_is_my_bus/init_dependencies.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

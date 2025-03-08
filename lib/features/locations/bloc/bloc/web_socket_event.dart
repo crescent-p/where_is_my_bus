@@ -9,6 +9,13 @@ class ConnectWebStartListeningEvent extends WebSocketEvent {}
 
 class WebSocketDisconnectEvent extends WebSocketEvent {}
 
+class SendLocationToWebSocket extends WebSocketEvent {
+  final double latitude;
+  final double longitude;
+  final String name;
+
+  SendLocationToWebSocket({required this.latitude, required this.longitude, required this.name});
+}
 
 class SendMessageEvent extends WebSocketEvent {
   final String message;

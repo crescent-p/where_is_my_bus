@@ -14,7 +14,7 @@ class WebSocketManager {
 
   Future<void> connect() async {
     channel = await IOWebSocketChannel.connect(
-        Uri.parse('ws://68.233.101.85/locations/subscribe'));
+        Uri.parse('ws://68.233.101.85/locations/send'));
   }
 
   void listen(Function(dynamic) onMessage) {
@@ -50,6 +50,27 @@ class WebSocketBloc extends Bloc<WebSocketEvent, WebSocketState> {
     on<ConnectWebSocket>(_connectWebSocket);
     on<MessageReceivedEvent>(_handleMessage);
     on<WebSocketDisconnectEvent>(_disconnect);
+    on<SendLocationToWebSocket>(_sendData);
+  }
+
+  Future<void> _sendData(
+    SendLocationToWebSocket event,
+    Emitter<WebSocketState> emit,
+  ) async {
+    try {
+      print(jsonEncode({
+        'latitude': event.latitude,
+        'longitude': event.longitude,
+        'busName': event.name.toString()
+      }));
+      _webSocketManager.sendMessage(jsonEncode({
+        'latitude': event.latitude,
+        'longitude': event.longitude,
+        'busName': event.name.toString()
+      }));
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> _connectWebSocket(
