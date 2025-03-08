@@ -15,28 +15,20 @@ import 'package:where_is_my_bus/features/social/presentation/blocs/notification_
 import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
 import 'package:where_is_my_bus/init_dependencies.dart';
 import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
+import 'package:flutter_foreground_service/flutter_foreground_service.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+void startForegroundService() async {
+  ForegroundService().start();
+  debugPrint("Started service");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependencies();
-  // Register MethodChannel
-  // const MethodChannel platformChannel = MethodChannel('com.example.channel');
-
-  // Listen for calls from the background service
-  // platformChannel.setMethodCallHandler((MethodCall call) async {
-  //   switch (call.method) {
-  //     case 'updateUI':
-  //       // Perform specific actions in the main isolate
-  //       final arguments = call.arguments;
-  //       print("Received updateUI with arguments: $arguments");
-  //       break;
-  //     default:
-  //       throw PlatformException(
-  //         code: 'Unimplemented',
-  //         details: "The method ${call.method} is not implemented.",
-  //       );
-  //   }
-  // });
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Locks portrait mode
@@ -71,84 +63,71 @@ void main() async {
             create: (_) => serviceLocator<WebSocketBloc>(),
           ),
         ],
-        child: const MaterialApp(
+        child: MaterialApp(
           home: MyApp(),
           debugShowCheckedModeBanner: false,
         )));
   });
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+void startLocation() {
+  final channel = WebSocketChannel.connect(
+    Uri.parse('ws://68.233.101.85/locations/send'),
+  );
 
+  Timer.periodic(Duration(seconds: 1), (timer) async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    final locationData = jsonEncode({
+      'latitude': position.latitude,
+      'longitude': position.longitude,
+      'busName': "1",
+    });
+    channel.sink.add(locationData);
+  });
+
+  channel.stream.listen((message) {
+    debugPrint('Received: $message');
+  }, onDone: () {
+    debugPrint('WebSocket closed');
+  }, onError: (error) {
+    debugPrint('WebSocket error: $error');
+  });
+}
+
+class MyApp extends StatefulWidget {
   @override
-  State<MyApp> createState() => _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // initBackground();
-    context.read<AuthBloc>().add(AuthCurrentUserEvent());
+    startLocation();
   }
-
-  // Future<void> initBackground() async {
-  //   final service = FlutterBackgroundService();
-
-  //   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  //     notificationChannelId,
-  //     'Background services for where is my bus.',
-  //     description: 'This notification is used for finding buses near you.',
-  //     importance: Importance.low,
-  //   );
-
-  //   // Create notification channel for Android
-  //   await flutterLocalNotificationsPlugin
-  //       .resolvePlatformSpecificImplementation<
-  //           AndroidFlutterLocalNotificationsPlugin>()
-  //       ?.createNotificationChannel(channel);
-
-  //   await service.configure(
-  //     androidConfiguration: AndroidConfiguration(
-  //       onStart: onStart,
-  //       autoStart: true,
-  //       isForegroundMode: true,
-  //       notificationChannelId: notificationChannelId,
-  //       initialNotificationTitle: 'Background Service for Where is my Bus?',
-  //       initialNotificationContent: 'Searching for Buses near you!',
-  //       foregroundServiceNotificationId: NOTIFICATION_ID,
-  //     ),
-  //     iosConfiguration: IosConfiguration(),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UserCubit, UserState>(
-      listener: (context, state) {
-        if (state is UserLoggedIn) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (context) => MainPage(user: state.getUser)),
-          );
-        } else if (state is UserLoggedOut) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const Loginpage()),
-          );
-        }
-      },
-      child: BlocBuilder<UserCubit, UserState>(
-        builder: (context, state) {
-          if (state is UserInitial) {
-            return const LoadingScreen();
-          } else {
-            return const SizedBox
-                .shrink(); // Return an empty widget as the actual navigation is handled in the listener
-          }
-        },
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('OGS BUS CLIENT APP'),
+        ),
+        body: Center(
+            child: Text(
+          'Sending Location to Server...',
+          style: TextStyle(fontSize: 24),
+        )),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    ForegroundService().stop();
+    super.dispose();
   }
 }
 
