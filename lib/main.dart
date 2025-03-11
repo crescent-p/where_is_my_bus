@@ -1,74 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:where_is_my_bus/core/common/cubit/cubit/user_cubit.dart';
-import 'package:where_is_my_bus/core/common/widgets/loading_screen.dart';
-import 'package:where_is_my_bus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:where_is_my_bus/features/locations/bloc/bloc/web_socket_bloc.dart';
-import 'package:where_is_my_bus/features/locations/pages/map_view.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/bloc/bloc/locations_bloc.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/cubit/bottom_nav_cubit.dart';
-import 'package:where_is_my_bus/features/main_page/presentation/pages/main_page.dart';
-import 'package:where_is_my_bus/features/social/presentation/blocs/comments_bloc/comments_bloc.dart';
-import 'package:where_is_my_bus/features/social/presentation/blocs/mini_posts_bloc/mini_posts_bloc.dart';
-import 'package:where_is_my_bus/features/social/presentation/blocs/notification_bloc/notification_bloc.dart';
-import 'package:where_is_my_bus/features/social/presentation/blocs/social_bloc/social_bloc.dart';
-import 'package:where_is_my_bus/init_dependencies.dart';
-import 'package:where_is_my_bus/features/auth/presentation/pages/loginPage.dart';
-import 'package:flutter_foreground_service/flutter_foreground_service.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
-void startForegroundService() async {
-  ForegroundService().start();
-  debugPrint("Started service");
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initDependencies();
-
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp, // Locks portrait mode
-  ]).then((_) {
-    runApp(MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => serviceLocator<UserCubit>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<AuthBloc>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<LocationsBloc>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<SocialBloc>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<BottomNavCubit>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<CommentsBloc>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<MiniPostsBloc>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<NotificationBloc>(),
-          ),
-          BlocProvider(
-            create: (_) => serviceLocator<WebSocketBloc>(),
-          ),
-        ],
-        child: MaterialApp(
-          home: MyApp(),
-          debugShowCheckedModeBanner: false,
-        )));
-  });
-}
+import 'package:workmanager/workmanager.dart';
 
 void startLocation() {
   final channel = WebSocketChannel.connect(
@@ -95,6 +31,30 @@ void startLocation() {
   });
 }
 
+@pragma('vm:entry-point') // Required for Flutter 3.1+ or obfuscated apps
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    print("Task executed: $task");
+    // Perform your background task here
+    startLocation();
+    return Future.value(true); // Return true if successful, false otherwise
+  });
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Workmanager().registerOneOffTask("uniqueTaskId", "simpleTask");
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Locks portrait mode
+  ]).then((_) {
+    runApp(MaterialApp(
+          home: MyApp(),
+          debugShowCheckedModeBanner: false,
+        ));
+  });
+}
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -104,7 +64,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    startLocation();
   }
 
   @override
@@ -126,7 +85,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    ForegroundService().stop();
     super.dispose();
   }
 }
