@@ -18,44 +18,50 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        color:
-            AppPallete.backgroundColor, // This is the overall app theme color
+        color: Colors.black, // This is the overall app theme color
         debugShowCheckedModeBanner: false,
         home: Scaffold(
+          backgroundColor: Colors.black,
           body: Container(
             decoration: BoxDecoration(
-                image: DecorationImage(
-              image: AssetImage("assets/images/login_background.png"),
-              fit: BoxFit.fitHeight,
-            )),
+                // image: DecorationImage(
+                // image: AssetImage("assets/images/money.jpg"),
+                // fit: BoxFit.fitHeight,
+                // ),
+                ),
             alignment: Alignment.center,
             child: FrostedGlassBox(
               theWidth: MediaQuery.of(context).size.width / 1.1,
               theHeight: MediaQuery.of(context).size.height / 1.2,
               theChild: Column(
                 children: [
-                  const Spacer(flex: 1),
+                  const Spacer(flex: 3),
                   Row(
                     children: [
                       const Spacer(flex: 1),
                       Expanded(
-                        flex: 8,
-                        child: Lottie.asset("assets/animations/hi.json"),
+                        flex: 10,
+                        child: Lottie.asset(
+                            "assets/animations/money_crypto_lottie.json"),
                       ),
                       const Spacer(),
                     ],
                   ),
-                  const Spacer(flex: 2),
-                  SignInButton(
-                    padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                    Buttons.Google,
-                    onPressed: () {
-                      context.read<AuthBloc>().add(AuthSignInEvent());
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                  const Spacer(flex: 3),
+                  Stack(children: [
+                    Center(
+                      child: SignInButton(
+                        padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        Buttons.Google,
+                        onPressed: () {
+                          context.read<AuthBloc>().add(AuthSignInEvent());
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
                     ),
-                  ),
+                  ]),
                   const Spacer(flex: 1),
                 ],
               ),

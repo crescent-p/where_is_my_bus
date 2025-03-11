@@ -14,7 +14,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          child: Image.asset("assets/images/splash.png"),
+          child: Image.asset("assets/pngs/splash.png"),
         ),
       ),
     );
